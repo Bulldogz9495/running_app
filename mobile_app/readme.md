@@ -12,16 +12,28 @@ This should allow runners new runners to score some points and experienced runne
 
 
 
-##Dev environment
+## Dev environment
+### Docker
 The front end is written in react-native and uses docker to reduce env noise.
 docker build -t running_app .
 ```
-docker run -it -p 8081:8081 -v ${PWD}/running_app/:/usr/src/app running_app
+docker run -it -p 8081:8081 -p 19000:19000 -p 19001:19001 -p 19002:19002 -v ${PWD}/running_app/:/usr/src/app running_app
 ```
 ```
 Once docker is up and running the web host is at localhost:8081
 ```
 
+### Android or iOS with a Device
+1. Downlaod the expo go app
+2. Ensure you are on the same network as the computer you are using.
+3. Capture the QR code on your device.
+4. Start debugging.
+### Android Without an Android device
+We are using expo go to run the android app. 
+1. Install the Android sdks via android studio.
+2. Create a virtual android device. 
+3. Download the expo go apk and install to the virtual device.
 
-##Stack:
+## Stack:
 Docker
+Android sdk

@@ -1,11 +1,17 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 
+import { registerRootComponent } from 'expo';
+
+import App from './App';
+
+registerRootComponent(App);
+
 export default function App() {
   return (
     <View style={styles.container}>
       <Text>Open up App.js to start working on your app!</Text>
-      <Text>Testing</Text>
+      <Text>Testing v4</Text>
       <StatusBar style="auto" />
     </View>
   );

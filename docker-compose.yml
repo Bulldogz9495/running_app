@@ -1,0 +1,10 @@
+version: '3'
+services:
+
+  expo:
+    build:
+      context: /mobile_app/
+      dockerfile: /mobile_app/Dockerfile
+    container_name: expo
+    volumes:
+      - /mobile_app/running_app/:/usr/src/app
