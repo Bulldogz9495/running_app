@@ -15,13 +15,15 @@ This should allow runners new runners to score some points and experienced runne
 ## Dev environment
 ### Docker
 The front end is written in react-native and uses docker to reduce env noise.
+You need to change the REACT_NATIVE_PACKAGER_HOSTNAME env variable in the docker file to your local IP address (IPV4)
+```
 docker build -t running_app .
+```
 ```
 docker run -it -p 8081:8081 -p 19000:19000 -p 19001:19001 -p 19002:19002 -v ${PWD}/running_app/:/usr/src/app running_app
 ```
-```
+
 Once docker is up and running the web host is at localhost:8081
-```
 
 ### Android or iOS with a Device
 1. Downlaod the expo go app
@@ -37,3 +39,12 @@ We are using expo go to run the android app.
 ## Stack:
 Docker
 Android sdk
+
+
+
+
+
+
+
+# Issue Tracker
+Hot Reloads aren't working in docker container - App changes require server restart - Check if true not in container

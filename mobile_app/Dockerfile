@@ -29,7 +29,7 @@ ENV REACT_NATIVE_PACKAGER_HOSTNAME=192.168.4.109
 
 # Set up a custom debug log file location
 ENV NPM_CONFIG_LOGFILE /usr/src/app/debug.log
-ENV EXPO_DEVTOOLS_LISTEN_ADDRESS: 0.0.0.0
+ENV EXPO_DEVTOOLS_LISTEN_ADDRESS: 192.168.4.109
 
 # Start the React Native development server
 CMD ["npx", "expo", "start"]
