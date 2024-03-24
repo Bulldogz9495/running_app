@@ -10,6 +10,7 @@ Automated task container that runs automated tasks based on mongo database data
 
 ### Front End Framework
 React-Native running expo go to test android and ios data.
+This does not work well in the docker compose so disable the expo container in compose and use npx expo start to run front end.
 
 
 # Stack

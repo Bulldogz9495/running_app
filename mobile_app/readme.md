@@ -14,7 +14,7 @@ This should allow runners new runners to score some points and experienced runne
 
 ## Dev environment
 ### Docker
-The front end is written in react-native and uses docker to reduce env noise.
+The front end is written in react-native and uses docker to reduce env noise. (If you are doing front end dev then use npx expo start in local to dev rather than container)
 You need to change the REACT_NATIVE_PACKAGER_HOSTNAME env variable in the docker file to your local IP address (IPV4)
 ```
 docker build -t running_app .

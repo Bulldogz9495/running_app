@@ -1,15 +1,15 @@
 version: '3'
 services:
 
-  expo:
-    build:
-      context: /mobile_app/
-      dockerfile: Dockerfile
-    container_name: expo
-    volumes:
-      - ./mobile_app/running_app/:/usr/src/app
-    networks:
-      - running_network
+  # expo:
+  #   build:
+  #     context: /mobile_app/
+  #     dockerfile: Dockerfile
+  #   container_name: expo
+  #   volumes:
+  #     - ./mobile_app/running_app/:/usr/src/app
+  #   networks:
+  #     - running_network
 
   mongodb:
     build:
