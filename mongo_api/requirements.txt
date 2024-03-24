@@ -1,3 +1,6 @@
 pymongo
+pymongo-schema
 fastapi
 uvicorn
+mongoengine
+motor

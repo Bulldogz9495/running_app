@@ -8,23 +8,35 @@ services:
     container_name: expo
     volumes:
       - ./mobile_app/running_app/:/usr/src/app
+    networks:
+      - running_network
 
   mongodb:
     build:
       context: /datastore/
     container_name: mongodb
+    ports:
+      - 27017:27017
     volumes:
       - ./datastore/data/:/data/db
+    networks:
+      - running_network
 
   mongo-api:
     build:
       context: ./mongo_api/
-      dockerfile: Dockerfile
     ports:
       - "8000:8000"
     volumes:
-      - ./mongo_api/:/usr/src  # Mount the app directory into the container
-
+      - ./mongo_api:/usr/src  # Mount the app directory into the container
+    working_dir: /usr/src
     # Define environment variables for MongoDB connection
     environment:
-      - MONGO_URI=mongodb://mongo:27017/mydatabase  # Update with your MongoDB URI
+      - DBHOST=mongodb
+      - DBPORT=27017
+    networks:
+      - running_network
+
+networks:
+  running_network:
+    driver: bridge
