@@ -19,7 +19,7 @@ def create_database():
         for collection_name, schema in data_schemas.items():
             if collection_name not in db.list_collection_names():
                 db.create_collection(collection_name)
-                seed_collection(db, collection_name, data_seed["collection_name"])
+                seed_collection(db, collection_name, data_seed[collection_name])
                 logger.info(f"Collection '{collection_name}' created.")
             else:
                 logger.info(f"Collection '{collection_name}' already exists.")
@@ -51,7 +51,6 @@ def wait_for_server():
 
 
 def seed_collection(db, collection, data):
-    print("DATA: ", data)
     for d in data:
         try:
             db[collection].insert_one(d)

@@ -26,7 +26,8 @@ sample_teams = [
         'name': 'Team A',
         'size': 5,
         'motto': 'We strive for excellence',
-        'members': ["933d1bba-aa0b-485f-8e10-95697fb86bd2", "99443ade-f889-415a-a2cb-65f3bbab032b"]
+        'members': ["933d1bba-aa0b-485f-8e10-95697fb86bd2", "99443ade-f889-415a-a2cb-65f3bbab032b"],
+        'owner': '99443ade-f889-415a-a2cb-65f3bbab032b'
     }
 ]
 

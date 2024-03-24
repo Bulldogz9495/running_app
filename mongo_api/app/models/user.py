@@ -54,7 +54,7 @@ sample_users = [
     },
     {
         '_id': "99443ade-f889-415a-a2cb-65f3bbab032b",
-        'email': 'user1@example.com',
+        'email': 'user2@example.com',
         'first_name': 'Jain',
         'last_name': 'Doe',
         'middle_name': 'Smith',
