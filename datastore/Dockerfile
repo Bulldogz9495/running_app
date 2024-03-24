@@ -19,7 +19,5 @@ RUN apt-get update && apt-get install -y \
 # Remove any existing socket file
 RUN rm -f /tmp/mongodb-27017.sock
 
-COPY mongod.conf.orig /etc/mongod.conf.orig
-
 # Start MongoDB when the container starts
 CMD ["mongod", "--bind_ip_all"]
