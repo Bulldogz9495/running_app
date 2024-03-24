@@ -15,7 +15,7 @@ class GeoPoint(BaseModel):
     pace: Optional[float] = None
 
 class Run(BaseModel):
-    _id: UUID
+    id: UUID = Field(alias="_id")
     user_id: UUID
     start_location: Location  # Assuming PointField is a string for latitude and longitude
     start_datetime: datetime

@@ -5,7 +5,7 @@ from bson.binary import Binary
 from datetime import datetime
 
 class User(BaseModel):
-    _id: UUID
+    id: UUID = Field(alias="_id")
     email: str
     first_name: Optional[str] = None
     last_name: Optional[str] = None

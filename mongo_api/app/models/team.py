@@ -1,15 +1,15 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, root_validator
 from typing import List
 from uuid import UUID
 
 class Team(BaseModel):
-    _id: UUID
+    # id: UUID
     name: str
     size: int
     motto: str = None
     members: List[UUID] = []
     owner: UUID
-    
+
 
 team_schema = {
     "_id": {"type": "uuid", "required": True, "unique": True},
