@@ -7,29 +7,31 @@ from typing import List
 from bson import Binary, UuidRepresentation
 from uuid import UUID
 import uuid
+from pymongo.results import InsertOneResult
 
 router = APIRouter()
 db_service = MongoDBService()
 
 @router.get("/Users/{item_id}", response_model=User)
 async def read_item(item_id: str):
-    user_data = await db_service.db.users.find_one({"_id": item_id})
+    user_data = await db_service.db.users.find_one({"id": item_id})
     if user_data is None:
         raise HTTPException(status_code=404, detail="User not found")
     return user_data
 
 @router.post("/Users", response_model=User)
 async def create_user(user_data: User):
-    print(user_data)
+    existing_id = await db_service.db.users.find_one({'id': user_data.id})
+    if existing_id:
+        raise HTTPException(status_code=409, detail="id Already Exists")
     existing_user = await db_service.db.users.find_one({'email': user_data.email})
     if existing_user:
         raise HTTPException(status_code=400, detail="Email Already Exists")
-    user_data._id = Binary.from_uuid(user_data._id)
     result = await db_service.db.users.insert_one(user_data.model_dump())
     inserted_user = await db_service.db.users.find_one({"_id": result.inserted_id})
     if inserted_user is None:
         raise HTTPException(status_code=404, detail="Failed to create user")
-
+    inserted_user.pop('_id')
     # Return the inserted user data
     return inserted_user
 
@@ -42,20 +44,21 @@ async def get_all_users():
 
 @router.get("/Teams/{item_id}", response_model=Team)
 async def read_team(item_id: str):
-    team_data = await db_service.db.teams.find_one({"_id": item_id})
+    team_data = await db_service.db.teams.find_one({"id": item_id})
     if team_data is None:
         raise HTTPException(status_code=404, detail="Team not found")
     return team_data
 
 @router.post("/Teams", response_model=Team)
 async def create_team(team_data: Team):
-    team_data._id = uuid.uuid4()
+    existing_id = await db_service.db.users.find_one({'id': team_data.id})
+    if existing_id:
+        raise HTTPException(status_code=409, detail="id Already Exists")
     result = await db_service.db.teams.insert_one(team_data.model_dump())
-    inserted_team = await db_service.db.teams.find_one({"_id": result.inserted_id})
-    if inserted_team is None:
-        raise HTTPException(status_code=404, detail="Failed to create team")
-
-    return inserted_team
+    if isinstance(result, InsertOneResult) and result.acknowledged:
+        return team_data
+    else:
+        return HTTPException(status_code=422, detail="Team failed to create")
 
 @router.get("/Teams", response_model=List[Team])
 async def get_all_teams():
@@ -66,22 +69,23 @@ async def get_all_teams():
 
 @router.get("/Runs/{item_id}", response_model=Run)
 async def read_run(item_id: str):
-    run_data = await db_service.db.runs.find_one({"_id": item_id})
+    run_data = await db_service.db.runs.find_one({"id": item_id})
     if run_data is None:
         raise HTTPException(status_code=404, detail="Run not found")
     return run_data
 
 @router.post("/Runs", response_model=Run)
 async def create_run(run_data: Run):
+    existing_id = await db_service.db.users.find_one({'id': run_data.id})
+    if existing_id:
+        raise HTTPException(status_code=409, detail="id Already Exists")
     result = await db_service.db.runs.insert_one(run_data.model_dump())
-    # Manually encode UUID fields to BSON binary
-    run_data._id = Binary.from_uuid(run_data._id)
-    run_data.user_id = Binary.from_uuid(run_data.user_id)
-    inserted_run = await db_service.db.runs.find_one({"_id": result.inserted_id})
-    if inserted_run is None:
-        raise HTTPException(status_code=404, detail="Failed to create run")
+    inserted_run = await db_service.db.runs.find_one({"id": result.inserted_id})
+    if isinstance(result, InsertOneResult) and result.acknowledged:
+        return run_data
+    else:
+        return HTTPException(status_code=422, detail="Run failed to create")
 
-    return inserted_run
 
 @router.get("/Runs", response_model=List[Run])
 async def get_all_runs():

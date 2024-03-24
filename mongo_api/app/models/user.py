@@ -5,7 +5,7 @@ from bson.binary import Binary
 from datetime import datetime
 
 class User(BaseModel):
-    id: UUID = Field(alias="_id")
+    id: str # UUID
     email: str
     first_name: Optional[str] = None
     last_name: Optional[str] = None
@@ -21,7 +21,7 @@ class User(BaseModel):
     
 
 user_schema = {
-    "_id": {"type": "uuid", "required": True, "unique": True},
+    "id": {"type": "uuid", "required": True, "unique": True},
     "email": {"type": "string", "required": True, "unique": True},
     "first_name": {"type": "string", "required": False},
     "last_name": {"type": "string", "required": False},
@@ -38,7 +38,7 @@ user_schema = {
 
 sample_users = [
     {
-        '_id': str("933d1bba-aa0b-485f-8e10-95697fb86bd2"),
+        'id': str("933d1bba-aa0b-485f-8e10-95697fb86bd2"),
         'email': 'user1@example.com',
         'first_name': 'John',
         'last_name': 'Doe',
@@ -53,7 +53,7 @@ sample_users = [
         'updated': datetime.now()
     },
     {
-        '_id': "99443ade-f889-415a-a2cb-65f3bbab032b",
+        'id': "99443ade-f889-415a-a2cb-65f3bbab032b",
         'email': 'user2@example.com',
         'first_name': 'Jain',
         'last_name': 'Doe',

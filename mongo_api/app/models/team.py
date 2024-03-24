@@ -3,16 +3,16 @@ from typing import List
 from uuid import UUID
 
 class Team(BaseModel):
-    # id: UUID
+    id: str # UUID
     name: str
     size: int
     motto: str = None
-    members: List[UUID] = []
-    owner: UUID
+    members: List[str] = [] # UUID
+    owner: str # UUID
 
 
 team_schema = {
-    "_id": {"type": "uuid", "required": True, "unique": True},
+    "id": {"type": "uuid", "required": True, "unique": True},
     "name": {"type": "string", "required": True},
     "size": {"type": "int", "required": True, "min_value": 0},
     "motto": {"type": "string", "required": False},
@@ -22,7 +22,7 @@ team_schema = {
 
 sample_teams = [
     {
-        '_id': "6eaf4c12-8aa0-42d5-8447-e0b598c03bb2",
+        'id': "6eaf4c12-8aa0-42d5-8447-e0b598c03bb2",
         'name': 'Team A',
         'size': 5,
         'motto': 'We strive for excellence',

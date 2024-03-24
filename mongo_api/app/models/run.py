@@ -15,8 +15,8 @@ class GeoPoint(BaseModel):
     pace: Optional[float] = None
 
 class Run(BaseModel):
-    id: UUID = Field(alias="_id")
-    user_id: UUID
+    id: str # UUID
+    user_id: str # UUID
     start_location: Location  # Assuming PointField is a string for latitude and longitude
     start_datetime: datetime
     end_location: Location  # Assuming PointField is a string for latitude and longitude
@@ -30,7 +30,7 @@ class Run(BaseModel):
     geopoints: List[GeoPoint]  # New field for an array of geopoints
 
 run_schema = {
-    "_id": {"type": "uuid", "required": True, "unique": True},
+    "id": {"type": "uuid", "required": True, "unique": True},
     "user_id": {"type": "uuid", "required": True, "unique":False},
     "start_location": {"type": "point", "required": True},
     "end_location": {"type": "point", "required": True},
@@ -46,7 +46,7 @@ run_schema = {
 # Sample data for seeding
 sample_runs = [
     {
-        '_id': "914a7fa8-5c92-44e8-b961-96c7aeca40cd",
+        'id': "914a7fa8-5c92-44e8-b961-96c7aeca40cd",
         'user_id': '933d1bba-aa0b-485f-8e10-95697fb86bd2',
         'start_location': {"latitude": 40.7128, "longitude": -74.0060},
         'start_datetime': datetime.now(),
@@ -61,7 +61,7 @@ sample_runs = [
         'geopoints': [{"location": {"latitude": 40.7128, "longitude": -74.0060}, "cadence": 155, "pace": 6.7, "datetime": datetime.now()}]
     },
     {
-        '_id': "3ed45c43-6714-4bf4-adec-e3ddc22e8c76",
+        'id': "3ed45c43-6714-4bf4-adec-e3ddc22e8c76",
         'user_id': '3ed45c43-6714-4bf4-adec-e3ddc22e8c76',
         'start_location': {"latitude": 40.7128, "longitude": -74.0060},
         'start_datetime': datetime.now(),
@@ -76,7 +76,7 @@ sample_runs = [
         'geopoints': [{"location": {"latitude": 40.7128, "longitude": -74.0060}, "cadence": 156, "pace": 6.7, "datetime": datetime.now()}]
     },
     {
-        '_id': "f8f3335c-9c7a-403e-a004-d07e47cdb82f",
+        'id': "f8f3335c-9c7a-403e-a004-d07e47cdb82f",
         'user_id':'99443ade-f889-415a-a2cb-65f3bbab032b',
         'start_location': {"latitude": 40.7128, "longitude": -74.0060},
         'start_datetime': datetime.now(),
