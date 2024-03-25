@@ -7,6 +7,7 @@ from typing import List
 from bson import Binary, UuidRepresentation
 from uuid import UUID
 import uuid
+import json
 from pymongo.results import InsertOneResult
 
 router = APIRouter()
@@ -34,6 +35,21 @@ async def create_user(user_data: User):
     inserted_user.pop('_id')
     # Return the inserted user data
     return inserted_user
+
+
+@router.patch("/Users/{item_id}", response_model=User)
+async def update_user(user_data: User, item_id: str):
+    print(user_data)
+    existing_data = await db_service.db.users.find_one({"id": item_id})
+    if existing_data is None:
+        raise HTTPException(status_code=404, detail="User could not be found")
+    update_data = user_data.model_dump()
+    await db_service.db.users.update_one({'id': item_id}, {'$set': update_data})
+    # Fetch and return the updated user data
+    updated_user = await db_service.db.users.find_one({'id': item_id})
+    updated_user.pop('_id')  # Remove MongoDB ObjectId
+    return updated_user
+    
 
 @router.get("/Users", response_model=List[User])
 async def get_all_users():
