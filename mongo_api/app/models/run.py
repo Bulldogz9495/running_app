@@ -11,8 +11,13 @@ class Location(BaseModel):
 class GeoPoint(BaseModel):
     location: Location
     datetime: datetime
+    altitude: float = None
     cadence: Optional[int] = None
     pace: Optional[float] = None
+    accuracy: Optional[float] = None
+    altitudeAccuracy: Optional[float] = None
+    heading: Optional[float] = None
+    speed: Optional[float] = None # meters / second
 
 class Run(BaseModel):
     id: str # UUID

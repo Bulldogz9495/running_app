@@ -44,8 +44,8 @@ Android sdk
 maps api key AIzaSyCFpCDhy_BA2M0WD54M1tAFlm2rDAvoPXE
 
 
-
 # Task List
+Add profile log in screen
 Add polyline to mapview so that previous path is marked
 Activity Page displays previous runs
 Activity Page allows new runs to be created

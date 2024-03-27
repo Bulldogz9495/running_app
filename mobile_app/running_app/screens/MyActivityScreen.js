@@ -4,7 +4,6 @@ import { useUser } from '../navigation/userContext'
 
 const MyActivityScreen = () => {
   const { userData, setUserData } = useUser();
-  console.log(userData);
   return (
     <MapComponent />
   );
