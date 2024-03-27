@@ -41,10 +41,15 @@ Docker
 Android sdk
 
 
+maps api key AIzaSyCFpCDhy_BA2M0WD54M1tAFlm2rDAvoPXE
 
 
 
-
-
+# Task List
+Activity Page displays previous runs
+Activity Page allows new runs to be created
+Challenge page shows individual challenge performance and team challenge performance
+Enforce Email format on profile edit
 # Issue Tracker
 Hot Reloads aren't working in docker container - App changes require server restart - Check if true not in container
+Move tabs to top of page

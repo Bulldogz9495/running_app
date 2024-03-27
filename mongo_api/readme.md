@@ -28,3 +28,4 @@ project_name/
 Authentication
 Score calculation on run post
 automated tasks for team calculation
+Email confirmation

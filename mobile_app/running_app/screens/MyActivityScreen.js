@@ -1,11 +1,11 @@
-import React from 'react';
-import { View, Text } from 'react-native';
+import React, { useRef, useEffect, useState } from 'react';
+import MapComponent from '../components/MapComponent';
+import * as Location from 'expo-location';
 
 const MyActivityScreen = () => {
+
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Activity Screen</Text>
-    </View>
+    <MapComponent />
   );
 };
 
