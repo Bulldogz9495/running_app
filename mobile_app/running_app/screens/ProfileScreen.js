@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import axios from 'axios';
 import CalendarPicker from "react-native-calendar-picker";
+import { useUser } from '../navigation/userContext'
 
 const ProfileScreen = () => {
-  const [userData, setUserData] = useState(null);
+  const { userData, setUserData } = useUser();
   const [editMode, setEditMode] = useState(false);
   const [editedData, setEditedData] = useState(null);
   const [originalData, setOriginalData] = useState(null);
@@ -19,6 +20,9 @@ const ProfileScreen = () => {
         setOriginalData(response.data);
       } catch (error) {
         console.error('Error fetching user data:', error);
+        // setUserData({
+        //   "email": "test@test.com"
+        // });
       }
     };
     fetchUserData();

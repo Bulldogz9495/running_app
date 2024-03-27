@@ -3,16 +3,19 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Provider as PaperProvider } from 'react-native-paper';
 
-import TabNavigation from './components/TabNavigation';
+import TabNavigation from './navigation/TabNavigation';
+import { UserProvider } from './navigation/userContext';
 
 const Tab = createBottomTabNavigator();
 
 export default function App() {
   return (
     <PaperProvider>
-      <NavigationContainer>
-        <TabNavigation />
-      </NavigationContainer>
+      <UserProvider>
+        <NavigationContainer>
+          <TabNavigation />
+        </NavigationContainer>
+      </UserProvider>
     </PaperProvider>
   );
 }

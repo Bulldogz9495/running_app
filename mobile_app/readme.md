@@ -46,6 +46,7 @@ maps api key AIzaSyCFpCDhy_BA2M0WD54M1tAFlm2rDAvoPXE
 
 
 # Task List
+Add polyline to mapview so that previous path is marked
 Activity Page displays previous runs
 Activity Page allows new runs to be created
 Challenge page shows individual challenge performance and team challenge performance
