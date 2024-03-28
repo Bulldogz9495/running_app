@@ -4,3 +4,7 @@ fastapi
 uvicorn
 mongoengine
 motor
+python-jose[cryptography]
+passlib
+python-dotenv
+python-multipart

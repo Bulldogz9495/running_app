@@ -1,5 +1,6 @@
-from fastapi import APIRouter, HTTPException
-from app.models.user import User
+from fastapi import APIRouter, HTTPException, Depends
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from app.models.user import User, Token
 from app.models.run import Run
 from app.models.team import Team
 from app.services.mongodb_service import MongoDBService
@@ -9,12 +10,28 @@ from uuid import UUID
 import uuid
 import json
 from pymongo.results import InsertOneResult
+from app.settings import JWT_EXPIRATION_TIME_MINUTES
+from app.utils.security import authenticate_user, create_access_token, get_password_hash
+from datetime import timedelta
 
 router = APIRouter()
 db_service = MongoDBService()
 
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/token")
+
+@router.post("/token", response_model=Token)
+async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
+    user = await authenticate_user(form_data.username, form_data.password)
+    if not user:
+        raise HTTPException(status_code=401, detail="Invalid username or password")
+    access_token_expires = timedelta(minutes=JWT_EXPIRATION_TIME_MINUTES)
+    access_token = create_access_token(
+        data={"sub": user['email']}, expires_delta=access_token_expires
+    )
+    return {"access_token": access_token, "token_type": "bearer"}
+
 @router.get("/Users/{item_id}", response_model=User)
-async def read_item(item_id: str):
+async def read_item(item_id: str = Depends(oauth2_scheme)):
     user_data = await db_service.db.users.find_one({"id": item_id})
     if user_data is None:
         raise HTTPException(status_code=404, detail="User not found")
@@ -22,6 +39,8 @@ async def read_item(item_id: str):
 
 @router.post("/Users", response_model=User)
 async def create_user(user_data: User):
+    if user_data.password:
+        user_data.password = get_password_hash(user_data.password)
     existing_id = await db_service.db.users.find_one({'id': user_data.id})
     if existing_id:
         raise HTTPException(status_code=409, detail="id Already Exists")
@@ -38,7 +57,7 @@ async def create_user(user_data: User):
 
 
 @router.patch("/Users/{item_id}", response_model=User)
-async def update_user(user_data: User, item_id: str):
+async def update_user(user_data: User, item_id: str = Depends(oauth2_scheme)):
     print(user_data)
     existing_data = await db_service.db.users.find_one({"id": item_id})
     if existing_data is None:

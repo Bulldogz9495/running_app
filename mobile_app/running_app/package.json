@@ -30,6 +30,7 @@
     "react-native-safe-area-context": "^4.9.0",
     "react-native-screens": "^3.29.0",
     "react-native-web": "~0.19.6",
+    "react-native-web-maps": "^0.3.0",
     "react-navigation": "^5.0.0"
   },
   "devDependencies": {

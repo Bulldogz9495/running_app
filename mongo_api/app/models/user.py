@@ -3,9 +3,15 @@ from uuid import UUID
 from typing import Optional
 from bson.binary import Binary
 from datetime import datetime
+from app.utils.security import get_password_hash
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
 
 class User(BaseModel):
     id: str # UUID
+    password: str
     email: str
     first_name: Optional[str] = None
     last_name: Optional[str] = None
@@ -39,6 +45,7 @@ user_schema = {
 sample_users = [
     {
         'id': str("933d1bba-aa0b-485f-8e10-95697fb86bd2"),
+        'password': str(get_password_hash("test password")),
         'email': 'user1@example.com',
         'first_name': 'John',
         'last_name': 'Doe',
@@ -54,6 +61,7 @@ sample_users = [
     },
     {
         'id': "99443ade-f889-415a-a2cb-65f3bbab032b",
+        'password': str(get_password_hash("test password")),
         'email': 'user2@example.com',
         'first_name': 'Jain',
         'last_name': 'Doe',
