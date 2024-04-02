@@ -1,0 +1,36 @@
+name: Deploy FastAPI to ECS
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Login to AWS ECR
+        uses: aws-actions/amazon-ecr-login@v2
+        with:
+          region: us-east-1
+
+      - name: Build Docker image
+        run: docker build -t 920990234657.dkr.ecr.us-east-1.amazonaws.com/challenge_run .
+
+      - name: Push Docker image to AWS ECR
+        run: |
+          docker tag 920990234657.dkr.ecr.us-east-1.amazonaws.com/challenge_run:latest ${{ steps.login.outputs.registry }}/$challenge_run:latest
+          docker push ${{ steps.login.outputs.registry }}/$challenge_run:latest
+
+      - name: Deploy to ECS
+        uses: aws-actions/amazon-ecs-deploy-task@v2
+        with:
+          cluster: challenge_run_cluster
+          service: api-service
+          image: ${{ steps.login.outputs.registry }}/$challenge_run:latest
+          aws-region: your-aws-region
+          wait-for-service-stability: true
