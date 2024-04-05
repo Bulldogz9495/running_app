@@ -31,6 +31,7 @@ jobs:
         
       - name: Push Image
         run:
+          $(aws ecr get-login --no-include-email --region us-east-1)
           docker push 920990234657.dkr.ecr.us-east-1.amazonaws.com/challenge_run/challenge_run_cluster/api-service/mongo_api_image
       
 
