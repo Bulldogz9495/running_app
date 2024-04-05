@@ -24,6 +24,8 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY}}
 
       - name: Deploy container to Cluster - Task
-        run: docker push arn:aws:ecs:us-east-1:920990234657:service/challenge_run_cluster/api-service/mongo_api_image
+        run: 
+          aws ecr get-login-password --region us-east-1 | docker login --username aboyer --password-stdin 920990234657.dkr.ecr.us-east-1.amazonaws.com
+          docker push 920990234657.dkr.ecr.us-east-1.amazonaws.com/challenge_run_cluster/api-service/mongo_api_image
       
 
