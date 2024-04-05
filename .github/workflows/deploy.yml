@@ -18,19 +18,15 @@ jobs:
         with:
           region: us-east-1
 
-      - name: Build Docker image
-        run: docker build -t 920990234657.dkr.ecr.us-east-1.amazonaws.com/challenge_run .
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Push Docker image to AWS ECR
-        run: |
-          docker tag 920990234657.dkr.ecr.us-east-1.amazonaws.com/challenge_run:latest ${{ steps.login.outputs.registry }}/$challenge_run:latest
-          docker push ${{ steps.login.outputs.registry }}/$challenge_run:latest
-
-      - name: Deploy to ECS
-        uses: aws-actions/amazon-ecs-deploy-task@v2
+      - name: Build and redeploy
+        uses: jaroldwong/ecr-push-and-ecs-deploy@v1.1
         with:
-          cluster: challenge_run_cluster
-          service: api-service
-          image: ${{ steps.login.outputs.registry }}/$challenge_run:latest
-          aws-region: your-aws-region
-          wait-for-service-stability: true
+          ecr-registry: ${{ steps.login-ecr.outputs.registry }}
+          ecr-repository: 'challenge_run'
+          ecs-cluster: 'challenge_run_cluster'
+          ecs-service: 'api-service'
+
