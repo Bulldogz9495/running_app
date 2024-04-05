@@ -20,8 +20,8 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: us-east-1
-          aws-access-key-id: echo ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: echo ${{ secrets.AWS_SECRET_ACCESS_KEY}}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY}}
 
       - name: Deploy container to Cluster - Task
         run: docker push arn:aws:ecs:us-east-1:920990234657:service/challenge_run_cluster/api-service/mongo_api_image
