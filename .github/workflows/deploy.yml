@@ -13,20 +13,17 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Login to AWS ECR
-        uses: aws-actions/amazon-ecr-login@v2
+      - name: Build container
+        run: docker build -t mongo_api_image ./mongo_api/
+      
+      - name: Login to aws
+        uses: aws-actions/configure-aws-credentials@v4
         with:
-          region: us-east-1
+          aws-region: us-east-1
+          aws-access-key-id: echo ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: echo ${{ secrets.AWS_SECRET_ACCESS_KEY}}
 
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
-
-      - name: Build and redeploy
-        uses: jaroldwong/ecr-push-and-ecs-deploy@v1.1
-        with:
-          ecr-registry: ${{ steps.login-ecr.outputs.registry }}
-          ecr-repository: 'challenge_run'
-          ecs-cluster: 'challenge_run_cluster'
-          ecs-service: 'api-service'
+      - name: Deploy container to Cluster - Task
+        run: docker push arn:aws:ecs:us-east-1:920990234657:service/challenge_run_cluster/api-service/mongo_api_image
+      
 
