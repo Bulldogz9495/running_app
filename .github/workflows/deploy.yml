@@ -10,9 +10,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      
       - name: Login to aws
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -21,8 +18,13 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY}}
 
       - name: Login to ECR
-        run: 
-          aws ecr get-login-password --region us-east-1 | docker login --username aboyer --password-stdin 920990234657.dkr.ecr.us-east-1.amazonaws.com/challenge_run
+        uses: aws-actions/amazon-ecr-login@v1
+        with:
+          region: us-east-1
+          registry: 920990234657.dkr.ecr.us-east-1.amazonaws.com
+
+      - name: Checkout code
+        uses: actions/checkout@v2
 
       - name: Build Image
         run: docker build -t 920990234657.dkr.ecr.us-east-1.amazonaws.com/challenge_run/challenge_run_cluster/api-service/mongo_api_image ./mongo_api/
