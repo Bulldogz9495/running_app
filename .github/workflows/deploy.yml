@@ -12,9 +12,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-
-      - name: Build container
-        run: docker build -t mongo_api_image ./mongo_api/
       
       - name: Login to aws
         uses: aws-actions/configure-aws-credentials@v4
@@ -23,9 +20,15 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY}}
 
-      - name: Deploy container to Cluster - Task
+      - name: Login to ECR
         run: 
-          aws ecr get-login-password --region us-east-1 | docker login --username aboyer --password-stdin 920990234657.dkr.ecr.us-east-1.amazonaws.com
-          docker push 920990234657.dkr.ecr.us-east-1.amazonaws.com/challenge_run_cluster/api-service/mongo_api_image
+          aws ecr get-login-password --region us-east-1 | docker login --username aboyer --password-stdin 920990234657.dkr.ecr.us-east-1.amazonaws.com/challenge_run
+
+      - name: Build Image
+        run: docker build -t 920990234657.dkr.ecr.us-east-1.amazonaws.com/challenge_run/challenge_run_cluster/api-service/mongo_api_image ./mongo_api/
+        
+      - name: Push Image
+        run:
+          docker push 920990234657.dkr.ecr.us-east-1.amazonaws.com/challenge_run/challenge_run_cluster/api-service/mongo_api_image
       
 
