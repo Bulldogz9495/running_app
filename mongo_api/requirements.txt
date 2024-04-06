@@ -1,3 +1,5 @@
+jwt
+python-dotenv
 pymongo
 pymongo-schema
 fastapi

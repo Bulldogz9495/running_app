@@ -21,7 +21,10 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/token")
 
 @router.post("/token", response_model=Token)
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
-    user = await authenticate_user(form_data.username, form_data.password)
+    user = db_service.db.users.find_one({"email": form_data.username})
+    if not user:
+        raise HTTPException(status=404, detail="User Email not found")
+    user = await authenticate_user(form_data.username, form_data.password, user.password)
     if not user:
         raise HTTPException(status_code=401, detail="Invalid username or password")
     access_token_expires = timedelta(minutes=JWT_EXPIRATION_TIME_MINUTES)

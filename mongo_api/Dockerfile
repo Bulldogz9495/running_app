@@ -7,6 +7,8 @@ WORKDIR /usr/src
 # Copy the requirements.txt file into the container at /app
 COPY requirements.txt .
 
+RUN pip install --upgrade pip setuptools
+
 # Install the dependencies from requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 

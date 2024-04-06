@@ -1,12 +1,13 @@
 import os
 
-DBHOST = os.environ.get('DBHOST')
-DBPORT = os.environ.get('DBPORT')
+DBHOST = os.environ.get('DBHOST', default="mongodb")
+DBPORT = os.environ.get('DBPORT', default=27017)
 DATABASE_URL = f"mongodb+srv://{DBHOST}:{DBPORT}/"
 DATABASE_NAME = "running_data"
+JWT_SECRET_KEY = os.environ.get("JWT_SECRET_KEY")
 LOCALDEV = True
 JWT_EXPIRATION_TIME_MINUTES = 5
-
+JWT_ALGORITHM = "HS256"
 
 
 import logging
