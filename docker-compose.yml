@@ -31,9 +31,6 @@ services:
       - ./mongo_api:/usr/src  # Mount the app directory into the container
     working_dir: /usr/src
     # Define environment variables for MongoDB connection
-    environment:
-      - DBHOST=mongodb
-      - DBPORT=27017
     networks:
       - running_network
 
