@@ -16,15 +16,15 @@ def create_access_token(data: dict, expires_delta: timedelta=JWT_EXPIRATION_TIME
     to_encode = data.copy()
     expire = datetime.now() + expires_delta
     to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, JWT_SECRET_KEY, algorithm=JWT_ALGORITHM)
+    encoded_jwt = jwt.encode(to_encode, str(JWT_SECRET_KEY), algorithm=JWT_ALGORITHM)
     return encoded_jwt
 
 # Function to verify password
 def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)
 
-def authenticate_user(fake_db, username: str, password: str, hashed_password: str):
-
+def authenticate_user(username: str, password: str, hashed_password: str):
+    
     if not verify_password(password, hashed_password):
         return False
-    return user
+    return True

@@ -1,4 +1,4 @@
-jwt
+PyJWT
 python-dotenv
 pymongo
 pymongo-schema

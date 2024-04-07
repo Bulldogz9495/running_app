@@ -4,7 +4,7 @@ from app.models.user import User, Token
 from app.models.run import Run
 from app.models.team import Team
 from app.services.mongodb_service import MongoDBService
-from typing import List
+from typing import List, Annotated
 from bson import Binary, UuidRepresentation
 from uuid import UUID
 import uuid
@@ -21,11 +21,10 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/token")
 
 @router.post("/token", response_model=Token)
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
-    user = db_service.db.users.find_one({"email": form_data.username})
+    user = await db_service.db.users.find_one({"email": form_data.username})
     if not user:
         raise HTTPException(status=404, detail="User Email not found")
-    user = await authenticate_user(form_data.username, form_data.password, user.password)
-    if not user:
+    if not authenticate_user(form_data.username, form_data.password, user['password']):
         raise HTTPException(status_code=401, detail="Invalid username or password")
     access_token_expires = timedelta(minutes=JWT_EXPIRATION_TIME_MINUTES)
     access_token = create_access_token(
@@ -34,7 +33,7 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     return {"access_token": access_token, "token_type": "bearer"}
 
 @router.get("/Users/{item_id}", response_model=User)
-async def read_item(item_id: str = Depends(oauth2_scheme)):
+async def read_item(item_id: str, token: str = Depends(oauth2_scheme)):
     user_data = await db_service.db.users.find_one({"id": item_id})
     if user_data is None:
         raise HTTPException(status_code=404, detail="User not found")
@@ -60,7 +59,7 @@ async def create_user(user_data: User):
 
 
 @router.patch("/Users/{item_id}", response_model=User)
-async def update_user(user_data: User, item_id: str = Depends(oauth2_scheme)):
+async def update_user(user_data: User, item_id: str, token: str = Depends(oauth2_scheme)):
     print(user_data)
     existing_data = await db_service.db.users.find_one({"id": item_id})
     if existing_data is None:
@@ -74,7 +73,7 @@ async def update_user(user_data: User, item_id: str = Depends(oauth2_scheme)):
     
 
 @router.get("/Users", response_model=List[User])
-async def get_all_users():
+async def get_all_users(token: str = Depends(oauth2_scheme)):
     users = []
     async for user_data in db_service.db.users.find():
         users.append(user_data)
@@ -99,7 +98,7 @@ async def create_team(team_data: Team):
         return HTTPException(status_code=422, detail="Team failed to create")
 
 @router.get("/Teams", response_model=List[Team])
-async def get_all_teams():
+async def get_all_teams(token: str = Depends(oauth2_scheme)):
     teams = []
     async for team_data in db_service.db.teams.find():
         teams.append(team_data)
@@ -126,7 +125,7 @@ async def create_run(run_data: Run):
 
 
 @router.get("/Runs", response_model=List[Run])
-async def get_all_runs():
+async def get_all_runs(token: str = Depends(oauth2_scheme)):
     runs = []
     async for run_data in db_service.db.runs.find():
         runs.append(run_data)
@@ -134,7 +133,7 @@ async def get_all_runs():
 
 
 @router.delete("/delete_all")
-async def delete_all_collections():
+async def delete_all_collections(token: str = Depends(oauth2_scheme)):
     collection_names = await db_service.db.list_collection_names()
     for collection_name in collection_names:
         await db_service.db[collection_name].drop()
