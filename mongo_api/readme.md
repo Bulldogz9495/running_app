@@ -25,7 +25,8 @@ project_name/
 
 
 # Task List
-Authentication
+Create about endpoint and set up aws to monitor it
+Buy HTTPS ssl Cert (research)
 Score calculation on run post
 automated tasks for team calculation
 Email confirmation

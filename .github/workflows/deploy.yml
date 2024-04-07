@@ -34,3 +34,7 @@ jobs:
           $(aws ecr get-login --no-include-email --region us-east-1)
           docker push 920990234657.dkr.ecr.us-east-1.amazonaws.com/challenge_run
 
+      - name: Force deployment
+        run: |
+          aws ecs update-service --cluster challenge_run_cluster --service mongo-api-service --force-new-deployment
+
