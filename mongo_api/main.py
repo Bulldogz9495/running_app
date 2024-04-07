@@ -1,3 +1,4 @@
+import os
 import pymongo
 import time
 from fastapi import FastAPI
@@ -6,6 +7,7 @@ from app.routes.api import router as api_router
 from app.services.mongodb_service import MongoDBService
 from app.services.mongodb_seed import initialize_database
 from app.models import data_models
+from app.settings import logger
 import dotenv
 
 

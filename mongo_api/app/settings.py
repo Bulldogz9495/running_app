@@ -1,9 +1,13 @@
 import os
+import dotenv
+
+
+dotenv.load_dotenv()
 
 DBHOST = os.environ.get('DBHOST', default="mongodb")
 DBPORT = os.environ.get('DBPORT', default=27017)
-ENVIRONMENT= os.getenv('ENVIRONMENT')
-DATABASE_URL = f"""mongodb+srv://{os.getenv("DATABASE_USER")}:{os.getenv("DATABASE_PASSWORD")}@cluster0.dku630t.mongodb.net/"""
+ENVIRONMENT= os.environ.get('ENVIRONMENT')
+DATABASE_URL = f"""mongodb+srv://{os.environ.get("DATABASE_USER")}:{os.environ.get("DATABASE_PASSWORD")}@cluster0.dku630t.mongodb.net/"""
 DATABASE_NAME = "running_data"
 JWT_SECRET_KEY = os.environ.get("JWT_SECRET_KEY")
 LOCALDEV = True

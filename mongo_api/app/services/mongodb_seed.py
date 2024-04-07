@@ -3,6 +3,7 @@ import pymongo
 from pymongo import MongoClient
 from pymongo.errors import ServerSelectionTimeoutError, ConnectionFailure
 from app.models import data_schemas, data_seed
+from app.settings import DATABASE_URL, ENVIRONMENT
 
 def initialize_database(collections):
     wait_for_server()
@@ -11,8 +12,12 @@ def initialize_database(collections):
 def create_database():
     try:
         # Connect to MongoDB server
-        logger.info(f"Connecting: DBHOST: {DBHOST} - DBPORT: {DBPORT}")
-        client = MongoClient(DBHOST, int(DBPORT))
+        if ENVIRONMENT == "LOCAL":
+            logger.info(f"Connecting: DBHOST: {DBHOST} - DBPORT: {DBPORT}")
+            client = MongoClient(DBHOST, int(DBPORT))
+        else:
+            logger.info(f"Connecting: DBURL: {DATABASE_URL}")
+            client = MongoClient(DATABASE_URL)
         db = client[DATABASE_NAME]
         
         # Create collections with their respective schemas
@@ -35,8 +40,12 @@ def wait_for_server():
     connection = False
     while not connection:
         try:
-            logger.info(f"Connecting: DBHOST: {DBHOST} - DBPORT: {DBPORT}")
-            client = pymongo.MongoClient(DBHOST, int(DBPORT))
+            if ENVIRONMENT == "LOCAL":
+                logger.info(f"Connecting: DBHOST: {DBHOST} - DBPORT: {DBPORT}")
+                client = MongoClient(DBHOST, int(DBPORT))
+            else:
+                logger.info(f"Connecting: DBURL: {DATABASE_URL}")
+                client = MongoClient(DATABASE_URL)
             # Use any database command to check the server status
             server_info = client.server_info()
             connection = True
