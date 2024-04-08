@@ -1,6 +1,8 @@
 PyJWT
 python-dotenv
 pymongo
+pymongo[srv]
+pymongo[aws]
 pymongo-schema
 fastapi
 uvicorn
