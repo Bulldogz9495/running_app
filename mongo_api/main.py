@@ -8,12 +8,7 @@ from app.services.mongodb_service import MongoDBService
 from app.services.mongodb_seed import initialize_database
 from app.models import data_models
 from app.settings import logger
-import dotenv
 
-
-dotenv.load_dotenv()
-
-logger.info(f"DB USER: {os.environ.get('DATABASE_USER')}")
 
 initialize_database(data_models)
 
