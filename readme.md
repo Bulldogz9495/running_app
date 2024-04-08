@@ -22,3 +22,8 @@ Python
 * Pymongo
 Mongo DB
 Docker
+AWS - ECR, Cluster, Service, Task, s3
+MongoDB Atlas
+
+# Dev setup
+Requires access to aws account and mongodb account

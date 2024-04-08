@@ -13,6 +13,8 @@ import dotenv
 
 dotenv.load_dotenv()
 
+logger.info(f"DB USER: {os.environ.get('DATABASE_USER')}")
+
 initialize_database(data_models)
 
 db_service = MongoDBService()
