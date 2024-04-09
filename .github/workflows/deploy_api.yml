@@ -1,0 +1,42 @@
+name: Deploy FastAPI to ECS
+
+on:
+  push:
+    branches:
+      - dev
+    paths:
+      mongo_api/**
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Login to aws
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: us-east-1
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY}}
+
+      - name: Login to ECR
+        uses: aws-actions/amazon-ecr-login@v1
+        with:
+          region: us-east-1
+          registry: 920990234657.dkr.ecr.us-east-1.amazonaws.com
+
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Build Image
+        run: docker build -t 920990234657.dkr.ecr.us-east-1.amazonaws.com/challenge_run ./mongo_api/
+        
+      - name: Push Image
+        run:
+          $(aws ecr get-login --no-include-email --region us-east-1)
+          docker push 920990234657.dkr.ecr.us-east-1.amazonaws.com/challenge_run
+
+      - name: Force deployment
+        run: |
+          aws ecs update-service --cluster challenge_run_cluster --service mongo-api-service --force-new-deployment
+
