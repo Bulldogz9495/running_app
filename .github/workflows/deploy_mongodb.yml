@@ -1,4 +1,4 @@
-name: Deploy FastAPI to ECS
+name: Deploy Mongo DB to ECS
 
 on:
   push:
