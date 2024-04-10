@@ -33,7 +33,7 @@ else:
         RoleSessionName="AssumeRoleSession1"
     )
     credentials=assumed_role_object['Credentials']
-    DATABASE_URL = f"""mongodb+srv://{credentials['AccessKeyId']}:{credentials['SecretAccessKey']}@serverlessinstancechall.ztcznqz.mongodb.net/?authSource=%24external&authMechanism=MONGODB-AWS&retryWrites=true&w=majority&authMechanismProperties=AWS_SESSION_TOKEN:{credentials['SessionToken']}&appName=ServerlessInstanceChallengeRun
+    DATABASE_URL = f"""mongodb+srv://{credentials['AccessKeyId']}:{credentials['SecretAccessKey']}@serverlessinstancechall.ztcznqz.mongodb.net/?authSource=%24external&authMechanism=MONGODB-AWS&retryWrites=true&w=majority&authMechanismProperties=AWS_SESSION_TOKEN:{credentials['SessionToken']}&appName=ServerlessInstanceChallengeRun"""
 DATABASE_NAME = "running_data"
 JWT_SECRET_KEY = os.environ.get("JWT_SECRET_KEY")
 LOCALDEV = True
