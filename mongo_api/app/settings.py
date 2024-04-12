@@ -31,7 +31,7 @@ else:
     assumed_role_object=sts_client.assume_role(
         RoleArn=os.environ.get("ROLE_ARN")
     )
-    credentials=assumed_role_object['Credentials']
+    credentials=boto3.Session().get_credentials()
     DATABASE_URL = f"""mongodb+srv://{credentials['AccessKeyId']}:{credentials['SecretAccessKey']}@serverlessinstancechall.ztcznqz.mongodb.net/?authSource=%24external&authMechanism=MONGODB-AWS&retryWrites=true&w=majority&authMechanismProperties=AWS_SESSION_TOKEN:{credentials['SessionToken']}&appName=ServerlessInstanceChallengeRun"""
 DATABASE_NAME = "running_data"
 JWT_SECRET_KEY = os.environ.get("JWT_SECRET_KEY")
