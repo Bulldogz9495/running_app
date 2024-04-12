@@ -38,5 +38,5 @@ jobs:
 
       - name: Force deployment
         run: |
-          aws ecs update-service --cluster challenge_run_cluster --service mongo-api-service --force-new-deployment
+          aws ecs update-service --cluster challenge_run_cluster --service mongo-api-service --force-new-deployment --enable-execute-command
 
