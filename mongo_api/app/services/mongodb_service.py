@@ -13,7 +13,3 @@ class MongoDBService:
             self.client = AsyncIOMotorClient(DATABASE_URL)
         self.sync_db = self.sync_client[DATABASE_NAME]
         self.db = self.client[DATABASE_NAME]
-
-    
-    
-    

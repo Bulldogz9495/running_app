@@ -4,6 +4,13 @@ An idea that will allow runners to compete with each other in teams. The initial
 # Mongo API
 This app is based on fastapi and pymongo and will host a set of endpoints that allow the front end to make rest requests to the mongo database.
 
+
+# Deployment
+Tricks:
+```
+aws ecs execute-command --cluster challenge_run_cluster --task arn:aws:ecs:us-east-1:920990234657:task/challenge_run_cluster/d54876dc950b465f8e46f961f77890fd --container api-service --interactive --command "/bin/bash"
+```
+
 # Code Structure
 project_name/
 ├── app/
