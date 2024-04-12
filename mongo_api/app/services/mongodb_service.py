@@ -9,7 +9,6 @@ class MongoDBService:
             self.sync_client = pymongo.MongoClient(DBHOST, int(DBPORT))
             self.client = AsyncIOMotorClient(DBHOST, int(DBPORT))
         else:
-            logger.info(f"DB Service URLL {DATABASE_URL}")
             self.sync_client = pymongo.MongoClient(DATABASE_URL)
             self.client = AsyncIOMotorClient(DATABASE_URL)
         self.sync_db = self.sync_client[DATABASE_NAME]
