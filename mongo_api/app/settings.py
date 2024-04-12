@@ -29,6 +29,7 @@ if ENVIRONMENT == "local":
 else:
     credentials=boto3.Session().get_credentials()
     DATABASE_URL = f"""mongodb+srv://{credentials.access_key}:{credentials.secret_key}@serverlessinstancechall.ztcznqz.mongodb.net/?authSource=%24external&authMechanism=MONGODB-AWS&retryWrites=true&w=majority&authMechanismProperties=AWS_SESSION_TOKEN:{credentials.token}&appName=ServerlessInstanceChallengeRun"""
+    logger.info(f"{DATABASE_URL}")
 DATABASE_NAME = "running_data"
 JWT_SECRET_KEY = os.environ.get("JWT_SECRET_KEY")
 LOCALDEV = True
