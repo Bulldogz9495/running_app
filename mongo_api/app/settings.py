@@ -28,7 +28,7 @@ if ENVIRONMENT == "local":
     DATABASE_URL = f"""mongodb+srv://{os.environ.get("DATABASE_USER")}:{os.environ.get("DATABASE_PASSWORD")}@cluster0.dku630t.mongodb.net/"""
 else:
     credentials=boto3.Session().get_credentials()
-    DATABASE_URL = f"""mongodb+srv://{credentials['AccessKeyId']}:{credentials['SecretAccessKey']}@serverlessinstancechall.ztcznqz.mongodb.net/?authSource=%24external&authMechanism=MONGODB-AWS&retryWrites=true&w=majority&authMechanismProperties=AWS_SESSION_TOKEN:{credentials['SessionToken']}&appName=ServerlessInstanceChallengeRun"""
+    DATABASE_URL = f"""mongodb+srv://{credentials.access_key}:{credentials.secret_key}@serverlessinstancechall.ztcznqz.mongodb.net/?authSource=%24external&authMechanism=MONGODB-AWS&retryWrites=true&w=majority&authMechanismProperties=AWS_SESSION_TOKEN:{credentials.token}&appName=ServerlessInstanceChallengeRun"""
 DATABASE_NAME = "running_data"
 JWT_SECRET_KEY = os.environ.get("JWT_SECRET_KEY")
 LOCALDEV = True
