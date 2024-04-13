@@ -2,6 +2,7 @@ import os, time
 import logging
 import dotenv
 import boto3
+from urllib.parse import quote_plus
 
 
 def setup_logger():
@@ -28,7 +29,7 @@ if ENVIRONMENT == "local":
     DATABASE_URL = f"""mongodb+srv://{os.environ.get("DATABASE_USER")}:{os.environ.get("DATABASE_PASSWORD")}@cluster0.dku630t.mongodb.net/"""
 else:
     credentials=boto3.Session().get_credentials()
-    DATABASE_URL = f"""mongodb+srv://{credentials.access_key}:{credentials.secret_key}@serverlessinstancechall.ztcznqz.mongodb.net/?authSource=%24external&authMechanism=MONGODB-AWS&retryWrites=true&w=majority&authMechanismProperties=AWS_SESSION_TOKEN:{credentials.token}&appName=ServerlessInstanceChallengeRun"""
+    DATABASE_URL = f"""mongodb+srv://{quote_plus(credentials.access_key)}:{quote_plus(credentials.secret_key)}@serverlessinstancechallengerun-pe-0.ztcznqz.mongodb.net/?authSource=%24external&authMechanism=MONGODB-AWS&retryWrites=true&w=majority&authMechanismProperties=AWS_SESSION_TOKEN:{quote_plus(credentials.token)}&appName=ServerlessInstanceChallengeRun"""
     logger.info(f"{DATABASE_URL}")
 DATABASE_NAME = "running_data"
 JWT_SECRET_KEY = os.environ.get("JWT_SECRET_KEY")
