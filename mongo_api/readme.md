@@ -9,6 +9,8 @@ This app is based on fastapi and pymongo and will host a set of endpoints that a
 Tricks:
 ```
 aws ecs execute-command --cluster challenge_run_cluster --task arn:aws:ecs:us-east-1:920990234657:task/challenge_run_cluster/d54876dc950b465f8e46f961f77890fd --container api-service --interactive --command "/bin/bash"
+
+aws ecs update-service --desired-count 1 --cluster challenge_run_cluster --service mongo-api-service
 ```
 
 # Code Structure

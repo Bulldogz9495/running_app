@@ -1,6 +1,9 @@
 # Use an official Python runtime as a parent image
 FROM python:3.12-slim
 
+RUN apt-get update
+RUN apt-get install inetutils-ping
+
 # Set the working directory inside the container
 WORKDIR /usr/src
 
