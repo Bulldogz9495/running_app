@@ -32,6 +32,11 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     )
     return {"access_token": access_token, "token_type": "bearer"}
 
+
+@router.get("/health")
+async def health():
+    return {"status": "ok"}
+
 @router.get("/Users/{item_id}", response_model=User)
 async def read_item(item_id: str, token: str = Depends(oauth2_scheme)):
     user_data = await db_service.db.users.find_one({"id": item_id})
