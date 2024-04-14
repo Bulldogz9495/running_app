@@ -18,6 +18,7 @@ origins = [
     "https://your-production-app.com",  # Add other allowed origins as needed
 ]
 
+app.port = 80
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
