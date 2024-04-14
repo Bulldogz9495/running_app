@@ -3,6 +3,7 @@ FROM python:3.12-slim
 
 RUN apt-get update
 RUN apt-get install inetutils-ping
+RUN apt-get install -y curl
 
 # Set the working directory inside the container
 WORKDIR /usr/src

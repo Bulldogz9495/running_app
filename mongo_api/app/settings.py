@@ -1,4 +1,4 @@
-import os, time
+import os, time, json
 import logging
 import dotenv
 import boto3
@@ -16,6 +16,39 @@ def setup_logger():
 # Initialize the logger
 logger = setup_logger()
 
+feature_toggles = {
+    "secret_manager": False
+}
+
+if feature_toggles["secret_manager"]:
+    try:
+        secret_name = "prod/env"
+        region_name = "us-east-1"
+
+        # Create a Secrets Manager client
+        session = boto3.session.Session()
+        client = session.client(
+            service_name='secretsmanager',
+            region_name=region_name
+        )
+
+        get_secret_value_response = client.get_secret_value(
+            SecretId=secret_name
+        )
+        secret = json.loads(get_secret_value_response['SecretString'])
+
+        JWT_SECRET_KEY = secret["JWT_SECRET_KEY"]
+        DATABASE_PASSWORD = secret["DATABASE_ABOYER_PASSWORD"]
+        ENVIRONMENT = secret["ENVIRONMENT_PROD"]
+    except Exception as e:
+        logger.info("You are probably not in production so boto fails when trying to get secrets")
+        logger.info(e)
+        JWT_SECRET_KEY = os.environ.get("JWT_SECRET_KEY")
+        DATABASE_PASSWORD = os.environ.get("DATABASE_PASSWORD")
+else:
+    JWT_SECRET_KEY = os.environ.get("JWT_SECRET_KEY")
+    DATABASE_PASSWORD = os.environ.get("DATABASE_PASSWORD")
+
 
 while "DATABASE_USER" not in os.environ:
     dotenv.load_dotenv()
@@ -26,14 +59,12 @@ DBHOST = os.environ.get('DBHOST', default="mongodb")
 DBPORT = os.environ.get('DBPORT', default=27017)
 ENVIRONMENT= os.environ.get('ENVIRONMENT')
 if ENVIRONMENT == "local":
-    DATABASE_URL = f"""mongodb+srv://{os.environ.get("DATABASE_USER")}:{os.environ.get("DATABASE_PASSWORD")}@cluster0.dku630t.mongodb.net/"""
+    DATABASE_URL = f"""mongodb+srv://{os.environ.get("DATABASE_USER")}:{DATABASE_PASSWORD}@cluster0.dku630t.mongodb.net/"""
 else:
     credentials=boto3.Session().get_credentials()
     DATABASE_URL = f"""mongodb+srv://{quote_plus(credentials.access_key)}:{quote_plus(credentials.secret_key)}@serverlessinstancechallengerun-pe-0.ztcznqz.mongodb.net/?authSource=%24external&authMechanism=MONGODB-AWS&retryWrites=true&w=majority&authMechanismProperties=AWS_SESSION_TOKEN:{quote_plus(credentials.token)}&appName=ServerlessInstanceChallengeRun"""
     logger.info(f"{DATABASE_URL}")
 DATABASE_NAME = "running_data"
-JWT_SECRET_KEY = os.environ.get("JWT_SECRET_KEY")
-LOCALDEV = True
 JWT_EXPIRATION_TIME_MINUTES = 5
 JWT_ALGORITHM = "HS256"
 

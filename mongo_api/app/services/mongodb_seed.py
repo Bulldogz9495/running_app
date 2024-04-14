@@ -1,4 +1,4 @@
-from app.settings import DATABASE_URL, DATABASE_NAME, logger, DBHOST, DBPORT, LOCALDEV
+from app.settings import DATABASE_URL, DATABASE_NAME, logger, DBHOST, DBPORT
 import pymongo
 from pymongo import MongoClient
 from pymongo.errors import ServerSelectionTimeoutError, ConnectionFailure
@@ -24,7 +24,7 @@ def create_database():
         for collection_name, schema in data_schemas.items():
             if collection_name not in db.list_collection_names():
                 db.create_collection(collection_name)
-                if LOCALDEV:
+                if ENVIRONMENT == "LOCAL":
                     seed_collection(db, collection_name, data_seed[collection_name])
                 logger.info(f"Collection '{collection_name}' created.")
             else:
