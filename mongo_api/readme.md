@@ -12,6 +12,8 @@ aws ecs execute-command --cluster challenge_run_cluster --task arn:aws:ecs:us-ea
 
 aws ecs update-service --desired-count 1 --cluster challenge_run_cluster --service mongo-api-service
 ```
+Connection from aws ecs instance to atlas mongo db (AWS VPC) is a privatelink private endpoint
+
 
 # Code Structure
 project_name/
