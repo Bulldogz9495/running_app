@@ -2,24 +2,28 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import axios from 'axios';
-import { MONGO_API } from 'react-native-dotenv';
+import { settings } from '../utils/settings';
+import {AsyncStorage} from 'react-native';
 
 const LoginScreen = ({ navigation }) => {
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
     const [error, setError] = useState('');
 
     const handleLogin = async () => {
         try {
-            const response = await axios.post(`${MONGO_API}/token`, {
-                username: username,
-                password: password,
+            const response = await axios({
+                method: 'post',
+                url: `${settings.MONGO_API_URL}/token`,
+                headers: {
+                    'Accept': 'application/json, text/plain, */*',
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                data: `grant_type=password&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`,
+                validateStatus: () => true,
             });
             const accessToken = response.data.access_token;
             // Save the access token in AsyncStorage or Context for future requests
-            // For simplicity, we'll just log it for now
-            console.log('Access Token:', accessToken);
-            navigation.navigate('Home'); // Navigate to Home screen after successful login
+            localStorage.setItem('accessToken', accessToken);
+            navigation.navigate('main'); // Navigate to Challenge Run screen after successful login
         } catch (error) {
             setError('Invalid username or password');
             console.error(error);

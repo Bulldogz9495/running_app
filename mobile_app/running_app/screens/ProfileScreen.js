@@ -2,20 +2,21 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import axios from 'axios';
 import CalendarPicker from "react-native-calendar-picker";
-import { useUser } from '../navigation/userContext'
+import { settings } from '../utils/settings';
+import { UserContext } from '../navigation/UserProvider';
+
 
 const ProfileScreen = () => {
-  const { userData, setUserData } = useUser();
+  const { userData, setUserData } = UserContext();
   const [editMode, setEditMode] = useState(false);
   const [editedData, setEditedData] = useState(null);
   const [originalData, setOriginalData] = useState(null);
   user_data_id = '933d1bba-aa0b-485f-8e10-95697fb86bd2'
-  mongo_api_url = 'http://127.0.0.1:8000'
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await axios.get(`${mongo_api_url}/Users/${user_data_id}`);
+        const response = await axios.get(`${settings.MONGO_API_URL}/Users/${user_data_id}`);
         setUserData(response.data);
         setOriginalData(response.data);
       } catch (error) {
