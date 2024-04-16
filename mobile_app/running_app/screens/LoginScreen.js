@@ -26,6 +26,7 @@ const LoginScreen = ({ navigation }) => {
             // Save the access token in AsyncStorage or Context for future requests
             console.log(response)
             await AsyncStorage.setItem('MyAccessToken', response.data.accessToken);
+            // Ping backend for user information
             await AsyncStorage.setItem('Profile', response.data.user);
             navigation.navigate('main'); // Navigate to Challenge Run screen after successful login
         } catch (error) {

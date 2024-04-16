@@ -36,17 +36,15 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
         "token_type": "bearer", 
     }
 
-
-
 @router.get("/health")
 async def health():
     return {"status": "ok"}
 
-@router.get("/Users/{item_id}", response_model=User)
-async def read_item(item_id: str, token: str = Depends(oauth2_scheme)):
-    user_data = await db_service.db.users.find_one({"id": item_id})
+@router.get("/Users/{username}", response_model=User)
+async def read_item(username: str, token: str = Depends(oauth2_scheme)):
+    user_data = await db_service.db.users.find_one({"username": username})
     if user_data is None:
-        raise HTTPException(status_code=404, detail="User not found")
+        raise HTTPException(status_code=404, detail="User {username} not found")
     return user_data
 
 @router.post("/Users", response_model=User)

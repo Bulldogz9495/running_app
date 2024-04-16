@@ -11,6 +11,12 @@ This should allow runners new runners to score some points and experienced runne
 * An olympic mile pace of 220 seconds is worth approximately 560 points.
 
 
+## Details
+Local storage is implemented with asyncstorage for things like user name and profile information:
+Async Key: Value
+Profile: objeect with profile info
+MyAccessToken: str with access token
+
 
 ## Dev environment
 ### Docker
