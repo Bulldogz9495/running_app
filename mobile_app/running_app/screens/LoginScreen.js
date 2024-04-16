@@ -3,10 +3,12 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import axios from 'axios';
 import { settings } from '../utils/settings';
-import {AsyncStorage} from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const LoginScreen = ({ navigation }) => {
     const [error, setError] = useState('');
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
 
     const handleLogin = async () => {
         try {
@@ -22,7 +24,9 @@ const LoginScreen = ({ navigation }) => {
             });
             const accessToken = response.data.access_token;
             // Save the access token in AsyncStorage or Context for future requests
-            localStorage.setItem('accessToken', accessToken);
+            console.log(response)
+            await AsyncStorage.setItem('MyAccessToken', response.data.accessToken);
+            await AsyncStorage.setItem('Profile', response.data.user);
             navigation.navigate('main'); // Navigate to Challenge Run screen after successful login
         } catch (error) {
             setError('Invalid username or password');

@@ -6,11 +6,7 @@ from pymongo.server_api import ServerApi
 
 class MongoDBService:
     def __init__(self):
-        if ENVIRONMENT == 'local':
-            self.sync_client = pymongo.MongoClient(DBHOST, int(DBPORT))
-            self.client = AsyncIOMotorClient(DBHOST, int(DBPORT))
-        else:
-            self.sync_client = pymongo.MongoClient(DATABASE_URL, server_api=ServerApi('1'))
-            self.client = AsyncIOMotorClient(DATABASE_URL, server_api=ServerApi('1'))
+        self.sync_client = pymongo.MongoClient(DATABASE_URL, server_api=ServerApi('1'))
+        self.client = AsyncIOMotorClient(DATABASE_URL, server_api=ServerApi('1'))
         self.sync_db = self.sync_client[DATABASE_NAME]
         self.db = self.client[DATABASE_NAME]

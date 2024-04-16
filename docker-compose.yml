@@ -26,7 +26,7 @@ services:
     build:
       context: ./mongo_api/
     ports:
-      - "8000:8000"
+      - "80:80"
     volumes:
       - ./mongo_api:/usr/src  # Mount the app directory into the container
     working_dir: /usr/src

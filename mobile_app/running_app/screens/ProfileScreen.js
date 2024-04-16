@@ -3,11 +3,10 @@ import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import axios from 'axios';
 import CalendarPicker from "react-native-calendar-picker";
 import { settings } from '../utils/settings';
-import { UserContext } from '../navigation/UserProvider';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const ProfileScreen = () => {
-  const { userData, setUserData } = UserContext();
   const [editMode, setEditMode] = useState(false);
   const [editedData, setEditedData] = useState(null);
   const [originalData, setOriginalData] = useState(null);
@@ -17,7 +16,7 @@ const ProfileScreen = () => {
     const fetchUserData = async () => {
       try {
         const response = await axios.get(`${settings.MONGO_API_URL}/Users/${user_data_id}`);
-        setUserData(response.data);
+        AsyncStorage.setItem('Profile', JSON.stringify(response.data))
         setOriginalData(response.data);
       } catch (error) {
         console.error('Error fetching user data:', error);

@@ -57,9 +57,11 @@ while "DATABASE_USER" not in os.environ:
     logger.info(os.environ)
 DBHOST = os.environ.get('DBHOST', default="mongodb")
 DBPORT = os.environ.get('DBPORT', default=27017)
+DATABASE_USER = os.environ.get('DATABASE_USER')
+DATABASE_PASSWORD = os.environ.get('DATABASE_PASSWORD')
 ENVIRONMENT= os.environ.get('ENVIRONMENT')
 if ENVIRONMENT == "local":
-    DATABASE_URL = f"""mongodb+srv://{os.environ.get("DATABASE_USER")}:{DATABASE_PASSWORD}@cluster0.dku630t.mongodb.net/"""
+    DATABASE_URL = f"""mongodb+srv://{DATABASE_USER}:{DATABASE_PASSWORD}@cluster0.dku630t.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"""
 else:
     credentials=boto3.Session().get_credentials()
     DATABASE_URL = f"""mongodb+srv://{quote_plus(credentials.access_key)}:{quote_plus(credentials.secret_key)}@serverlessinstancechallengerun-pe-0.ztcznqz.mongodb.net/?authSource=%24external&authMechanism=MONGODB-AWS&retryWrites=true&w=majority&authMechanismProperties=AWS_SESSION_TOKEN:{quote_plus(credentials.token)}&appName=ServerlessInstanceChallengeRun"""
