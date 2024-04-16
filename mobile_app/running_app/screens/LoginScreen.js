@@ -25,8 +25,14 @@ const LoginScreen = ({ navigation }) => {
             const accessToken = response.data.access_token;
             // Save the access token in AsyncStorage or Context for future requests
             console.log(response)
-            await AsyncStorage.setItem('MyAccessToken', response.data.accessToken);
-            // Ping backend for user information
+            await AsyncStorage.setItem('MyAccessToken', accessToken);
+            const userData = await axios({
+                method: 'get',
+                url: `${settings.MONGO_API_URL}/Users/${encodeURIComponent(username)}`,
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`
+                }
+            });
             await AsyncStorage.setItem('Profile', response.data.user);
             navigation.navigate('main'); // Navigate to Challenge Run screen after successful login
         } catch (error) {
