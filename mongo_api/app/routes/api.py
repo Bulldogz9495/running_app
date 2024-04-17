@@ -66,8 +66,8 @@ async def create_user(user_data: User):
     return inserted_user
 
 
-@router.patch("/Users/{item_id}", response_model=User)
-async def update_user(user_data: User, item_id: str, token: str = Depends(oauth2_scheme)):
+@router.patch("/Users/id/{item_id}", response_model=User)
+async def update_user_by_id(user_data: User, item_id: str, token: str = Depends(oauth2_scheme)):
     print(user_data)
     existing_data = await db_service.db.users.find_one({"id": item_id})
     if existing_data is None:
@@ -78,7 +78,20 @@ async def update_user(user_data: User, item_id: str, token: str = Depends(oauth2
     updated_user = await db_service.db.users.find_one({'id': item_id})
     updated_user.pop('_id')  # Remove MongoDB ObjectId
     return updated_user
-    
+
+
+@router.patch("/Users/username/{username}", response_model=User)
+async def update_user_by_(user_data: User, username: str, token: str = Depends(oauth2_scheme)):
+    existing_data = await db_service.db.users.find_one({"email": username})
+    if existing_data is None:
+        raise HTTPException(status_code=404, detail="User could not be found")
+    update_data = user_data.model_dump()
+    await db_service.db.users.update_one({'email': username}, {'$set': update_data})
+    # Fetch and return the updated user data
+    updated_user = await db_service.db.users.find_one({'email': username})
+    updated_user.pop('_id')  # Remove MongoDB ObjectId
+    return updated_user
+
 
 @router.get("/Users", response_model=List[User])
 async def get_all_users(token: str = Depends(oauth2_scheme)):

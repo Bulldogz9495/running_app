@@ -3,12 +3,13 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import axios from 'axios';
 import { settings } from '../utils/settings';
+import { setUserDataInAsyncStorage } from '../utils/AsyncStorageUtils';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const LoginScreen = ({ navigation }) => {
     const [error, setError] = useState('');
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
+    const [username, setUsername] = useState('user1@example.com');
+    const [password, setPassword] = useState('test password');
 
     const handleLogin = async () => {
         try {
@@ -23,8 +24,8 @@ const LoginScreen = ({ navigation }) => {
                 validateStatus: () => true,
             });
             const accessToken = response.data.access_token;
+            console.log("User ", username, " logged in")
             // Save the access token in AsyncStorage or Context for future requests
-            console.log(response)
             await AsyncStorage.setItem('MyAccessToken', accessToken);
             const userData = await axios({
                 method: 'get',
@@ -33,7 +34,10 @@ const LoginScreen = ({ navigation }) => {
                     'Authorization': `Bearer ${accessToken}`
                 }
             });
-            await AsyncStorage.setItem('Profile', response.data.user);
+            console.log("userData ", userData.data.email, " data retrieved")
+            // console.log(userData.data)
+            await setUserDataInAsyncStorage(userData);
+
             navigation.navigate('main'); // Navigate to Challenge Run screen after successful login
         } catch (error) {
             setError('Invalid username or password');
@@ -48,11 +52,13 @@ const LoginScreen = ({ navigation }) => {
                 <TextInput
                     style={styles.input}
                     onChangeText={(text) => setUsername(text)}
+                    defaultValue="user1@example.com"
                 />
                 <Text style={styles.label}>Password:</Text>
                 <TextInput
                     style={styles.input}
                     onChangeText={(text) => setPassword(text)}
+                    defaultValue='test password'
                     secureTextEntry={true}
                 />
             </View>

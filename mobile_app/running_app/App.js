@@ -9,7 +9,6 @@ import LoginScreen from './screens/LoginScreen';
 import TabNavigation from './navigation/TabNavigation';
 
 const Stack = createStackNavigator();
-const Tab = createBottomTabNavigator();
 
 const initialRouteName = "Login";
 
