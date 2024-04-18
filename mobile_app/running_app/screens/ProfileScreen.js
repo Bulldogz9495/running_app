@@ -4,6 +4,7 @@ import axios from 'axios';
 import CalendarPicker from "react-native-calendar-picker";
 import { settings } from '../utils/settings';
 import { getUserDataFromAsyncStorage } from '../utils/AsyncStorageUtils';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const ProfileScreen = () => {
@@ -35,7 +36,16 @@ const ProfileScreen = () => {
 
   const handleSave = async () => {
     try {
-      await axios.patch(`${mongo_api_url}/Users/${userData?.data.email}`, editedData);
+      console.log('editedData', editedData);
+      const accessToken = await AsyncStorage.getItem('MyAccessToken');
+      await axios.patch(`${settings.MONGO_API_URL}/Users/username/${editedData?.data.email}`, 
+      {
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          'accept': 'application/json'
+        },
+        data: editedData.data
+      });
       setUserData(editedData); // Update userData with editedData
       setEditMode(false); // Exit edit mode
     } catch (error) {
