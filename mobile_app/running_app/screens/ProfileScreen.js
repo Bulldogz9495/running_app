@@ -38,11 +38,13 @@ const ProfileScreen = () => {
     try {
       console.log('editedData', editedData);
       const accessToken = await AsyncStorage.getItem('MyAccessToken');
-      await axios.patch(`${settings.MONGO_API_URL}/Users/username/${editedData?.data.email}`, 
+      console.log('accessToken', accessToken);
+      await axios.patch(`${settings.MONGO_API_URL}/Users/username/${encodeURIComponent(editedData?.data.email)}`, 
       {
         headers: {
+          'accept': 'application/json',
           'Authorization': `Bearer ${accessToken}`,
-          'accept': 'application/json'
+          'Content-Type': 'application/json'
         },
         data: editedData.data
       });

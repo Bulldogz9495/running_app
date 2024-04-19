@@ -24,7 +24,7 @@ const LoginScreen = ({ navigation }) => {
                 validateStatus: () => true,
             });
             const accessToken = response.data.access_token;
-            console.log("User ", username, " logged in")
+            console.log("User ", username, " logged in with access token: ", accessToken)
             await AsyncStorage.setItem('MyAccessToken', accessToken)
                 .then(() => console.log("Access token saved to AsyncStorage"))
                 .catch(error => console.log("Error saving access token to AsyncStorage: ", error));
