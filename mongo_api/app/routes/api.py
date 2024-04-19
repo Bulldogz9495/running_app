@@ -10,7 +10,7 @@ from uuid import UUID
 import uuid
 import json
 from pymongo.results import InsertOneResult
-from app.settings import JWT_EXPIRATION_TIME_MINUTES
+from app.settings import JWT_EXPIRATION_TIME_MINUTES, logger
 from app.utils.security import authenticate_user, create_access_token, get_password_hash
 from datetime import timedelta
 
@@ -30,22 +30,26 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     access_token = create_access_token(
         data={"sub": user['email']}, expires_delta=access_token_expires
     )
-    print(user)
+    logger.info("User Login Successful: %s, %s", user, access_token)
     return {
         "access_token": access_token, 
         "token_type": "bearer", 
     }
 
+
 @router.get("/health")
 async def health():
     return {"status": "ok"}
+
 
 @router.get("/Users/{email}", response_model=User)
 async def read_item(email: str, token: str = Depends(oauth2_scheme)):
     user_data = await db_service.db.users.find_one({"email": email})
     if user_data is None:
         raise HTTPException(status_code=404, detail="User {email} not found")
+    logger.info(f"Getting User: {email}")
     return user_data
+
 
 @router.post("/Users", response_model=User)
 async def create_user(user_data: User):
@@ -63,12 +67,12 @@ async def create_user(user_data: User):
         raise HTTPException(status_code=404, detail="Failed to create user")
     inserted_user.pop('_id')
     # Return the inserted user data
+    logger.info(f"User Created: {user_data}")
     return inserted_user
 
 
 @router.patch("/Users/id/{item_id}", response_model=User)
 async def update_user_by_id(user_data: dict, item_id: str, token: str = Depends(oauth2_scheme)):
-    print(user_data)
     existing_data = await db_service.db.users.find_one({"id": item_id})
     if existing_data is None:
         raise HTTPException(status_code=404, detail="User could not be found")
@@ -80,6 +84,7 @@ async def update_user_by_id(user_data: dict, item_id: str, token: str = Depends(
     # Fetch and return the updated user data
     updated_user = await db_service.db.users.find_one({'id': item_id})
     updated_user.pop('_id')  # Remove MongoDB ObjectId
+    logger.info(f"User {item_id} patched with data {user_data}")
     return updated_user
 
 
@@ -95,6 +100,7 @@ async def update_user_by_(user_data: dict, username: str, token: str = Depends(o
     # Fetch and return the updated user data
     updated_user = await db_service.db.users.find_one({'email': username})
     updated_user.pop('_id')  # Remove MongoDB ObjectId
+    logger.info(f"User {username} patched with data {user_data} to create {updated_user}")
     return updated_user
 
 
@@ -103,14 +109,18 @@ async def get_all_users(token: str = Depends(oauth2_scheme)):
     users = []
     async for user_data in db_service.db.users.find():
         users.append(user_data)
+    logger.info(f"Get All Users")
     return users
+
 
 @router.get("/Teams/{item_id}", response_model=Team)
 async def read_team(item_id: str):
     team_data = await db_service.db.teams.find_one({"id": item_id})
     if team_data is None:
         raise HTTPException(status_code=404, detail="Team not found")
+    logger.info(f"Get Team: {item_id}")
     return team_data
+
 
 @router.post("/Teams", response_model=Team)
 async def create_team(team_data: Team):
@@ -119,23 +129,29 @@ async def create_team(team_data: Team):
         raise HTTPException(status_code=409, detail="id Already Exists")
     result = await db_service.db.teams.insert_one(team_data.model_dump())
     if isinstance(result, InsertOneResult) and result.acknowledged:
+        logger.info(f"Team Created: {team_data}")
         return team_data
     else:
         return HTTPException(status_code=422, detail="Team failed to create")
+
 
 @router.get("/Teams", response_model=List[Team])
 async def get_all_teams(token: str = Depends(oauth2_scheme)):
     teams = []
     async for team_data in db_service.db.teams.find():
         teams.append(team_data)
-    return teams    
+    logger.info(f"Get All Teams")
+    return teams
+
 
 @router.get("/Runs/{item_id}", response_model=Run)
 async def read_run(item_id: str):
     run_data = await db_service.db.runs.find_one({"id": item_id})
     if run_data is None:
         raise HTTPException(status_code=404, detail="Run not found")
+    logger.info(f"Get Run: {item_id}")
     return run_data
+
 
 @router.post("/Runs", response_model=Run)
 async def create_run(run_data: Run):
@@ -145,6 +161,7 @@ async def create_run(run_data: Run):
     result = await db_service.db.runs.insert_one(run_data.model_dump())
     inserted_run = await db_service.db.runs.find_one({"id": result.inserted_id})
     if isinstance(result, InsertOneResult) and result.acknowledged:
+        logger.info(f"Run Created: {run_data}")
         return run_data
     else:
         return HTTPException(status_code=422, detail="Run failed to create")
@@ -155,6 +172,7 @@ async def get_all_runs(token: str = Depends(oauth2_scheme)):
     runs = []
     async for run_data in db_service.db.runs.find():
         runs.append(run_data)
+    logger.info(f"Get All Runs")
     return runs    
 
 
@@ -163,4 +181,5 @@ async def delete_all_collections(token: str = Depends(oauth2_scheme)):
     collection_names = await db_service.db.list_collection_names()
     for collection_name in collection_names:
         await db_service.db[collection_name].drop()
+    logger.info("All collections deleted")
     return {"message": "All collections deleted"}

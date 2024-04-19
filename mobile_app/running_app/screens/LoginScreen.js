@@ -25,8 +25,9 @@ const LoginScreen = ({ navigation }) => {
             });
             const accessToken = response.data.access_token;
             console.log("User ", username, " logged in")
-            // Save the access token in AsyncStorage or Context for future requests
-            await AsyncStorage.setItem('MyAccessToken', accessToken);
+            await AsyncStorage.setItem('MyAccessToken', accessToken)
+                .then(() => console.log("Access token saved to AsyncStorage"))
+                .catch(error => console.log("Error saving access token to AsyncStorage: ", error));
             const userData = await axios({
                 method: 'get',
                 url: `${settings.MONGO_API_URL}/Users/${encodeURIComponent(username)}`,
