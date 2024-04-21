@@ -15,14 +15,29 @@ const initialRouteName = "Login";
 export default function App() {
   const getInitialRouteName = async () => {
     try {
-      const value = await AsyncStorage.getItem('MyAccessToken');
-      if (value !== null) {
+      const accessToken = await AsyncStorage.getItem('MyAccessToken');
+      if (accessToken !== null) {
+        try {
+          const response = await axios({
+            method: 'get',
+            url: `${settings.MONGO_API_URL}/Users/${encodeURIComponent(username)}`,
+            headers: {
+              'Authorization': `Bearer ${accessToken}`
+            }
+          });
+        } catch (error) {
+          if (error.response.status === 401) {
+            return 'Login';
+          } else {
+            throw error;
+          }
+        }
         return 'main';
       }
     } catch (e) {
       // error reading value
     }
-    return initialRouteName;
+    return 'Login';
   }
 
   return (

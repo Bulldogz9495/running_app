@@ -121,6 +121,18 @@ async def read_team(item_id: str):
     logger.info(f"Get Team: {item_id}")
     return team_data
 
+@router.get("/Teams/user_id/{user_id}", response_model=List[Team])
+async def read_teams_for_user(
+    user_id: str,
+    skip: int = 0,
+    limit: int = 10,
+):
+    teams = []
+    async for team_data in db_service.db.teams.find({"members": user_id}).skip(skip).limit(limit):
+        teams.append(team_data)
+    logger.info(f"Get Teams for user: {user_id}")
+    return teams
+
 
 @router.post("/Teams", response_model=Team)
 async def create_team(team_data: Team):
@@ -151,6 +163,17 @@ async def read_run(item_id: str):
         raise HTTPException(status_code=404, detail="Run not found")
     logger.info(f"Get Run: {item_id}")
     return run_data
+
+
+@router.get("/Runs/user_id/{user_id}", response_model=List[Run])
+async def read_runs_for_user(user_id: str,
+                             skip: int = 0,
+                             limit: int = 10):
+    runs = []
+    async for run_data in db_service.db.runs.find({"user_id": user_id}).skip(skip).limit(limit):
+        runs.append(run_data)
+    logger.info(f"Get Runs for user: {user_id}")
+    return runs
 
 
 @router.post("/Runs", response_model=Run)

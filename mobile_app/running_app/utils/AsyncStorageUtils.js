@@ -64,7 +64,7 @@ export const getUserDataFromAsyncStorage = async () => {
         userData.data.first_name = first_name;
         userData.data.height_feet = parseFloat(height_feet);
         userData.data.height_inches = parseFloat(height_inches);
-        userData.data.id = parseInt(id, 10);
+        userData.data.id = id;
         userData.data.last_name = last_name;
         userData.data.middle_name = middle_name;
         userData.data.motto = motto;

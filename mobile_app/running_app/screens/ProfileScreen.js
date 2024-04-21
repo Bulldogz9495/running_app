@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, ScrollView } from 'react-native';
 import axios from 'axios';
 import CalendarPicker from "react-native-calendar-picker";
 import { settings } from '../utils/settings';
@@ -36,17 +36,15 @@ const ProfileScreen = () => {
 
   const handleSave = async () => {
     try {
-      console.log('editedData', editedData);
       const accessToken = await AsyncStorage.getItem('MyAccessToken');
-      console.log('accessToken', accessToken);
       await axios.patch(`${settings.MONGO_API_URL}/Users/username/${encodeURIComponent(editedData?.data.email)}`, 
+      data=editedData.data,
       {
         headers: {
           'accept': 'application/json',
           'Authorization': `Bearer ${accessToken}`,
           'Content-Type': 'application/json'
-        },
-        data: editedData.data
+        }
       });
       setUserData(editedData); // Update userData with editedData
       setEditMode(false); // Exit edit mode
@@ -80,9 +78,9 @@ const ProfileScreen = () => {
           </>
         )}
       </View>
-      <View style={styles.userDataContainer}>
+      <ScrollView style={styles.userDataContainer}>
         <>
-          <Text>Email: </Text>{editMode ? 
+          <Text>Email: </Text>{false ? // Set to False until new email can be done
           ( <TextInput
               placeholder="Enter new Email"
               defaultValue={editedData?.data?.email}
@@ -189,7 +187,7 @@ const ProfileScreen = () => {
             <Text>{`${editedData?.data?.weight_lbs} lbs ${editedData?.data?.weight_ounces} oz`}</Text>
           )}
         </>
-      </View>
+      </ScrollView>
     </View>
   );
 };
