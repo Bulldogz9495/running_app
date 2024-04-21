@@ -169,6 +169,7 @@ async def read_run(item_id: str):
 async def read_runs_for_user(user_id: str,
                              skip: int = 0,
                              limit: int = 10):
+    user_id = user_id[:-1] if user_id[-1] == '"' else user_id
     runs = []
     async for run_data in db_service.db.runs.find({"user_id": user_id}).skip(skip).limit(limit):
         runs.append(run_data)
