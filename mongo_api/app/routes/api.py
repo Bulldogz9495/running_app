@@ -169,7 +169,6 @@ async def read_run(item_id: str):
 async def read_runs_for_user(user_id: str,
                              skip: int = 0,
                              limit: int = 10):
-    user_id = user_id[:-1] if user_id[-1] == '"' else user_id
     runs = []
     async for run_data in db_service.db.runs.find({"user_id": user_id}).skip(skip).limit(limit):
         runs.append(run_data)
@@ -179,13 +178,10 @@ async def read_runs_for_user(user_id: str,
 
 @router.post("/Runs", response_model=Run)
 async def create_run(run_data: Run):
-    existing_id = await db_service.db.users.find_one({'id': run_data.id})
-    if existing_id:
-        raise HTTPException(status_code=409, detail="id Already Exists")
     result = await db_service.db.runs.insert_one(run_data.model_dump())
     inserted_run = await db_service.db.runs.find_one({"id": result.inserted_id})
     if isinstance(result, InsertOneResult) and result.acknowledged:
-        logger.info(f"Run Created: {run_data}")
+        logger.info(f"Run {run_data.id} Created for user {run_data.user_id}")
         return run_data
     else:
         return HTTPException(status_code=422, detail="Run failed to create")

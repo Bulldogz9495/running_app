@@ -35,7 +35,7 @@ const LoginScreen = ({ navigation }) => {
                     'Authorization': `Bearer ${accessToken}`
                 }
             });
-            console.log("userData ", userData.data.email, " data retrieved")
+            console.log("userData ", userData.data, " data retrieved")
             // console.log(userData.data)
             await setUserDataInAsyncStorage(userData);
 

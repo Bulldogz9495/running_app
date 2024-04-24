@@ -18,7 +18,7 @@ export const setUserDataInAsyncStorage = async (userData) => {
             ['weight_ounces', userData.data.weight_ounces.toString()],
         ]);
         console.log('Successfully set user data in AsyncStorage');
-        console.log(userData);
+        // console.log(userData);
     } catch (error) {
         console.error(error);
     }
@@ -74,7 +74,7 @@ export const getUserDataFromAsyncStorage = async () => {
         userData.data.weight_ounces = parseFloat(weight_ounces);
 
         console.log('Successfully retrieved user data from AsyncStorage');
-        console.log(userData);
+        // console.log(userData);
         return userData;
 
     } catch (error) {

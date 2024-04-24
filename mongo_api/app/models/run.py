@@ -26,11 +26,11 @@ class Run(BaseModel):
     start_datetime: datetime
     end_location: Location  # Assuming PointField is a string for latitude and longitude
     end_datetime: datetime
-    distance: int
+    distance: float # miles
     notes: Optional[str] = None
     cadence: Optional[int] = None
     pace: Optional[float] = None
-    duration: float
+    duration: float # seconds
     score: Optional[float] = Field(None, ge=0, le=1500)  # Min value of 0 and max value of 1500
     geopoints: List[GeoPoint]  # New field for an array of geopoints
 

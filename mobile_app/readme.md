@@ -58,5 +58,4 @@ Activity Page allows new runs to be created
 Challenge page shows individual challenge performance and team challenge performance
 Enforce Email format on profile edit
 # Issue Tracker
-Hot Reloads aren't working in docker container - App changes require server restart - Check if true not in container
 Move tabs to top of page
