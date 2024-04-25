@@ -24,6 +24,7 @@ class User(BaseModel):
     weight_ounces: Optional[float] = None
     created: datetime = Field(default_factory=datetime.now)
     updated: datetime = Field(default_factory=datetime.now)
+    paid: Optional[bool] = False
     
 
 user_schema = {

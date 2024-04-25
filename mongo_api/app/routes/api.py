@@ -128,7 +128,7 @@ async def read_teams_for_user(
     limit: int = 10,
 ):
     teams = []
-    async for team_data in db_service.db.teams.find({"members": user_id}).skip(skip).limit(limit):
+    async for team_data in db_service.db.teams.find({"members":{"$in": [user_id]}}).skip(skip).limit(limit):
         teams.append(team_data)
     logger.info(f"Get Teams for user: {user_id}")
     return teams
