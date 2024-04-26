@@ -121,7 +121,7 @@ async def read_team(item_id: str):
     logger.info(f"Get Team: {item_id}")
     return team_data
 
-@router.get("/Teams/user_id/{user_id}", response_model=List[Team])
+@router.get("/Teams/user_id/{user_id}")
 async def read_teams_for_user(
     user_id: str,
     skip: int = 0,
@@ -129,7 +129,14 @@ async def read_teams_for_user(
 ):
     teams = []
     async for team_data in db_service.db.teams.find({"members":{"$in": [user_id]}}).skip(skip).limit(limit):
+        members_info = []
+        for member in team_data['members']:
+            member_info = await db_service.db.users.find_one({"id": member})
+            members_info.append({'email': member_info['email'], 'first_name': member_info['first_name'], 'last_name': member_info['last_name'], 'id': member_info['id']})
+        team_data['members_info'] = members_info
+        team_data.pop('_id')
         teams.append(team_data)
+    print(teams)
     logger.info(f"Get Teams for user: {user_id}")
     return teams
 
