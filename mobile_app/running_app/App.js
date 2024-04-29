@@ -4,6 +4,7 @@ import { createStackNavigator } from '@react-navigation/stack'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Provider as PaperProvider } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { settings } from './utils/settings';
 
 import LoginScreen from './screens/LoginScreen';
 import TabNavigation from './navigation/TabNavigation';
@@ -43,7 +44,7 @@ export default function App() {
   return (
     <PaperProvider>
         <NavigationContainer>
-          <Stack.Navigator initialRouteName={getInitialRouteName()}>
+          <Stack.Navigator initialRouteName={settings.disable_auth ? 'main' : getInitialRouteName()}>
             <Stack.Screen name="Login" component={LoginScreen} />
             <Stack.Screen name="main" component={TabNavigation} />
           </Stack.Navigator>

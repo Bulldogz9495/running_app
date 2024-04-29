@@ -36,8 +36,7 @@ project_name/
 
 
 # Task List
-Create about endpoint and set up aws to monitor it
+Reset mongodb connection after 6 hours to reset credentials
 Buy HTTPS ssl Cert (research)
-Score calculation on run post
 automated tasks for team calculation
 Email confirmation

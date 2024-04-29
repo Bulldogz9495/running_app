@@ -58,4 +58,5 @@ Activity Page allows new runs to be created
 Challenge page shows individual challenge performance and team challenge performance
 Enforce Email format on profile edit
 # Issue Tracker
+Confimr save of a run
 Move tabs to top of page

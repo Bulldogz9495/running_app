@@ -9,6 +9,8 @@ class Team(BaseModel):
     motto: str = None
     members: List[str] = [] # UUID
     owner: str # UUID
+    last_challenge_date: Optional[datetime] = None
+    last_challenge_score: Optional[int] = None
 
 
 team_schema = {
@@ -24,10 +26,11 @@ sample_teams = [
     {
         'id': "6eaf4c12-8aa0-42d5-8447-e0b598c03bb2",
         'name': 'Team A',
-        'size': 5,
         'motto': 'We strive for excellence',
         'members': ["933d1bba-aa0b-485f-8e10-95697fb86bd2", "99443ade-f889-415a-a2cb-65f3bbab032b"],
-        'owner': '99443ade-f889-415a-a2cb-65f3bbab032b'
+        'owner': '99443ade-f889-415a-a2cb-65f3bbab032b',
+        'last_cahllenge_score': 0,
+        'last_challenge_date': None
     }
 ]
 
