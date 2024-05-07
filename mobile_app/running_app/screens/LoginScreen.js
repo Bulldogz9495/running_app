@@ -5,11 +5,42 @@ import axios from 'axios';
 import { settings } from '../utils/settings';
 import { setUserDataInAsyncStorage } from '../utils/AsyncStorageUtils';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import sampleData from '../utils/sample_data';
+import { v4 as uuidv4 } from 'uuid';
+import styles from '../styles';
 
 const LoginScreen = ({ navigation }) => {
     const [error, setError] = useState('');
     const [username, setUsername] = useState('user1@example.com');
     const [password, setPassword] = useState('test password');
+
+    const handleCreateUser = async () => {
+        try {
+            const response = await axios({
+                method: 'post',
+                url: `${settings.MONGO_API_URL}/Users`,
+                headers: {
+                    'Accept': 'application/json, text/plain, */*',
+                    'Content-Type': 'application/json'
+                },
+                data: JSON.stringify({
+                    email: username,
+                    password: password,
+                    id: uuidv4(),
+                }),
+                validateStatus: () => true
+            });
+            handleLogin();
+            console.log(response.data);
+        } catch (error) {
+            if (error.response.status === 409) {
+                setError('Email already used');
+            } else {
+                setError('Failed to create user');
+            }
+            console.log(error);
+        }
+    }
 
     const handleLogin = async () => {
         try {
@@ -38,63 +69,43 @@ const LoginScreen = ({ navigation }) => {
             console.log("userData ", userData.data, " data retrieved")
             // console.log(userData.data)
             await setUserDataInAsyncStorage(userData);
-
             navigation.navigate('main'); // Navigate to Challenge Run screen after successful login
         } catch (error) {
-            setError('Invalid username or password');
-            console.error(error);
+            if (error.response.status >= 500) {
+                console.log(error);
+                navigation.navigate('main'); // Navigate to Challenge Run screen after successful login
+            } else {
+                setError('Invalid username or password');
+                console.error(error);
+                await setUserDataInAsyncStorage({"data": sampleData.user})
+            }
         }
     };
 
     return (
-        <View style={styles.container}>
-            <View style={styles.topContainer}>
-                <Text style={styles.label}>Email:</Text>
+        <View style={styles.loginContainer}>
+            <View style={styles.topLoginContainer}>
+                <Text style={styles.loginLabel}>Email:</Text>
                 <TextInput
-                    style={styles.input}
+                    style={styles.inputLogin}
                     onChangeText={(text) => setUsername(text)}
                     defaultValue="user1@example.com"
                 />
-                <Text style={styles.label}>Password:</Text>
+                <Text style={styles.loginLabel}>Password:</Text>
                 <TextInput
-                    style={styles.input}
+                    style={styles.inputLogin}
                     onChangeText={(text) => setPassword(text)}
                     defaultValue='test password'
                     secureTextEntry={true}
                 />
             </View>
-            {error ? <Text style={styles.error}>{error}</Text> : null}
-            <Button title="Login" onPress={handleLogin} />
+            {error ? <Text style={styles.errorLogin}>{error}</Text> : null}
+            <View style={{flexDirection: 'row', justifyContent: 'space-between', width: '100%'}}>
+                <Button title="Login" onPress={handleLogin} />
+                <Button title="Create New Account" onPress={handleCreateUser} />
+            </View>
         </View>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: 20,
-    },
-    topContainer: {
-        width: '100%',
-    },
-    label: {
-        fontSize: 18,
-        marginBottom: 5,
-    },
-    input: {
-        width: '100%',
-        height: 40,
-        borderColor: 'gray',
-        borderWidth: 1,
-        marginBottom: 10,
-        paddingHorizontal: 10,
-    },
-    error: {
-        color: 'red',
-        marginBottom: 10,
-    },
-});
 
 export default LoginScreen;

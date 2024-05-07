@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, Pressable, FlatList } from 'react-native';
 import { getUserDataFromAsyncStorage } from '../utils/AsyncStorageUtils';
 import { settings } from '../utils/settings';
+import { sampleData } from '../utils/sample_data';
 
 const ChallengeRunScreen = () => {
   const [teams, setTeams] = React.useState([]);
@@ -19,6 +20,7 @@ const ChallengeRunScreen = () => {
         setTeams(data);
       } catch (error) {
         console.error(error);
+        setTeams(sampleData.teams);
       }
     };
     fetchTeams();

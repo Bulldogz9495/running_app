@@ -33,6 +33,7 @@ class Run(BaseModel):
     duration: float # seconds
     score: Optional[float] = Field(None, ge=0, le=1500)  # Min value of 0 and max value of 1500
     geopoints: List[GeoPoint]  # New field for an array of geopoints
+    teams: List[str]
 
 run_schema = {
     "id": {"type": "uuid", "required": True, "unique": True},
@@ -63,7 +64,8 @@ sample_runs = [
         'pace': 6.5,
         'duration': 3600,
         'score': 100,
-        'geopoints': [{"location": {"latitude": 40.7128, "longitude": -74.0060}, "cadence": 155, "pace": 6.7, "datetime": datetime.now()}]
+        'geopoints': [{"location": {"latitude": 40.7128, "longitude": -74.0060}, "cadence": 155, "pace": 6.7, "datetime": datetime.now()}],
+        'teams': ['6eaf4c12-8aa0-42d5-8447-e0b598c03bb2']
     },
     {
         'id': "3ed45c43-6714-4bf4-adec-e3ddc22e8c76",
@@ -93,7 +95,8 @@ sample_runs = [
         'pace': 600,
         'duration': 600,
         'score': 130,
-        'geopoints': [{"location": {"latitude": 40.7128, "longitude": -74.0060}, "cadence": 155, "pace": 6.7, "datetime": datetime.now()}]
+        'geopoints': [{"location": {"latitude": 40.7128, "longitude": -74.0060}, "cadence": 155, "pace": 6.7, "datetime": datetime.now()}],
+        'teams': ['6eaf4c12-8aa0-42d5-8447-e0b598c03bb2']
     }
 ]
 

@@ -2,7 +2,7 @@
   "expo": {
     "name": "running_app",
     "slug": "running_app",
-    "version": "1.0.0",
+    "version": "0.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -18,7 +18,8 @@
       "supportsTablet": true,
       "config": {
         "googleMapsApiKey": "AIzaSyCFpCDhy_BA2M0WD54M1tAFlm2rDAvoPXE"
-      }
+      },
+      "bundleIdentifier": "challenge-run"
     },
     "android": {
       "adaptiveIcon": {
@@ -33,6 +34,11 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "347c5065-47a0-4afc-8d4d-482a27cb2abf"
+      }
     }
   }
 }

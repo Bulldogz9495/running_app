@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import MapView, { Polyline } from 'react-native-maps';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text } from 'react-native';
+import { styles } from '../styles';
 
 const MapComponent = ({locations, recording, totalDistanceMiles, totalScore, averagePacePmin, currentPace}) => {
   const [polylines, setPolylines] = useState([]);
@@ -51,36 +52,22 @@ const MapComponent = ({locations, recording, totalDistanceMiles, totalScore, ave
         justifyContent: 'center',
       }}>
         <View style={styles.greenCircle}>
-          <Text style={styles.textStyle}>Score</Text>
-          <Text style={styles.textStyle}>{totalScore.toFixed(2)}</Text>
+          <Text style={styles.mapTextStyle}>Score</Text>
+          <Text style={styles.mapTextStyle}>{totalScore.toFixed(2)}</Text>
         </View>
         <View style={styles.greenCircle}>
-          <Text style={styles.textStyle}>Distance</Text>
-          <Text style={styles.textStyle}>{totalDistanceMiles.toFixed(2)} </Text>
-          <Text style={styles.textStyle}>miles</Text>
+          <Text style={styles.mapTextStyle}>Distance</Text>
+          <Text style={styles.mapTextStyle}>{totalDistanceMiles.toFixed(2)} </Text>
+          <Text style={styles.mapTextStyle}>miles</Text>
         </View>
         <View style={styles.greenCircle}>
-          <Text style={styles.textStyle}>Pace</Text>
-          <Text style={styles.textStyle}>{currentPace.toFixed(1)}</Text>
-          <Text style={styles.textStyle}>min/mile</Text>
+          <Text style={styles.mapTextStyle}>Pace</Text>
+          <Text style={styles.mapTextStyle}>{currentPace.toFixed(1)}</Text>
+          <Text style={styles.mapTextStyle}>min/mile</Text>
         </View>
       </View>
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  greenCircle: {
-    backgroundColor: 'rgba(0, 200, 0, 0.55)',
-    borderRadius: 100,
-    height: 100,
-    width: 100,
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  textStyle: {
-    fontSize: 18
-  }
-});
 
 export default MapComponent;

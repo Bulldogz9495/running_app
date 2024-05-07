@@ -7,7 +7,7 @@ import { getUserDataFromAsyncStorage } from '../utils/AsyncStorageUtils';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
-const ProfileScreen = () => {
+const ProfileScreen = ({navigation}) => {
   const [editMode, setEditMode] = useState(false);
   const [editedData, setEditedData] = useState(null);
   const [userData, setUserData] = useState(null);
@@ -70,7 +70,10 @@ const ProfileScreen = () => {
     <View style={styles.container}>
       <View style={styles.editButton}>
         {!editMode ? (
-          <Button title="Edit" onPress={handleEdit} />
+          <>
+            <Button title="Edit" onPress={handleEdit} />
+            <Button title="Purchase" onPress={() => navigation.navigate('Payment')} style={{}} />
+          </>
         ) : (
           <>
             <Button title="Save" onPress={handleSave} />

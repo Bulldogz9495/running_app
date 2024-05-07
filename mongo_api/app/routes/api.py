@@ -13,6 +13,7 @@ from pymongo.results import InsertOneResult
 from app.settings import JWT_EXPIRATION_TIME_MINUTES, logger
 from app.utils.security import authenticate_user, create_access_token, get_password_hash
 from datetime import timedelta
+from datetime import datetime
 
 router = APIRouter()
 db_service = MongoDBService()
@@ -180,11 +181,42 @@ async def read_run(item_id: str):
 @router.get("/Runs/user_id/{user_id}", response_model=List[Run])
 async def read_runs_for_user(user_id: str,
                              skip: int = 0,
-                             limit: int = 10):
+                             limit: int = 10,
+                             include_geopoints: bool = True):
     runs = []
     async for run_data in db_service.db.runs.find({"user_id": user_id}).skip(skip).limit(limit):
+        if not include_geopoints:
+            run_data['geopoints'] = []
         runs.append(run_data)
     logger.info(f"Get Runs for user: {user_id}")
+    return runs
+
+@router.get("/Runs/team_id/{team_id}", response_model=List[Run])
+async def read_runs_for_user(team_id: str,
+                             skip: int = 0,
+                             limit: int = 10,
+                             include_geopoints: bool = True):
+    runs = []
+    async for run_data in db_service.db.runs.find({"teams":{"$in": [team_id]}}).skip(skip).limit(limit):
+        if not include_geopoints:
+            run_data['geopoints'] = []
+        runs.append(run_data)
+    logger.info(f"Get Runs for Team: {team_id}")
+    return runs
+
+@router.get("/Runs/team_id/{team_id}/date/{date}", response_model=List[Run])
+async def read_runs_for_user(team_id: str,
+                             date: str,
+                             skip: int = 0,
+                             limit: int = 10,
+                             include_geopoints: bool = True):
+    runs = []
+    date_filter = {'$gte': datetime.fromisoformat(date), '$lt': datetime.fromisoformat(date+"T23:59:59.999Z")}
+    async for run_data in db_service.db.runs.find({"teams":{"$in": [team_id]}, "end_datetime": date_filter}).skip(skip).limit(limit):
+        if not include_geopoints:
+            run_data['geopoints'] = []
+        runs.append(run_data)
+    logger.info(f"Get Runs for Team: {team_id} on Date: {date}")
     return runs
 
 

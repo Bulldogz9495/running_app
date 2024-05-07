@@ -1,13 +1,16 @@
 from pydantic import BaseModel, Field, root_validator
-from typing import List
+from typing import List, Optional
 from uuid import UUID
+from datetime import datetime
+from .user import User
+
 
 class Team(BaseModel):
     id: str # UUID
     name: str
     size: int
     motto: str = None
-    members: List[str] = [] # UUID
+    members: List[User] = [] # UUID
     owner: str # UUID
     last_challenge_date: Optional[datetime] = None
     last_challenge_score: Optional[int] = None

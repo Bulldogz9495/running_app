@@ -4,6 +4,7 @@ import { settings } from '../utils/settings';
 import { getUserDataFromAsyncStorage } from '../utils/AsyncStorageUtils';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import { sampleData } from '../utils/sample_data';
 
 export default RunComponent = () => {
     const [runs, setRuns] = useState([]);
@@ -31,6 +32,7 @@ export default RunComponent = () => {
         })().catch(error => {
             console.log(error);
             setLoading(false);
+            setRuns(sampleData.runs);
         });
     }, []);
 

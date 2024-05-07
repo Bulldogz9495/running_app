@@ -27,3 +27,16 @@ MongoDB Atlas
 
 # Dev setup
 Requires access to aws account and mongodb account
+
+
+
+# Testing:
+Create account
+Edit profile information
+Start a run
+Save a run
+View State Challenge Data
+Join a Team
+Become a pro member
+Create a team
+Invite others to team

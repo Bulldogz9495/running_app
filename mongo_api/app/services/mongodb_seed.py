@@ -12,21 +12,18 @@ def initialize_database(collections):
 def create_database():
     try:
         # Connect to MongoDB server
-        if ENVIRONMENT == "LOCAL":
-            logger.info(f"Connecting: DBHOST: {DBHOST} - DBPORT: {DBPORT}")
-            client = MongoClient(DBHOST, int(DBPORT))
-        else:
-            logger.info(f"Connecting: DBURL: {DATABASE_URL}")
-            client = MongoClient(DATABASE_URL)
+        logger.info(f"Connecting: DBURL: {DATABASE_URL}")
+        client = MongoClient(DATABASE_URL)
         db = client[DATABASE_NAME]
         
         # Create collections with their respective schemas
         for collection_name, schema in data_schemas.items():
             if collection_name not in db.list_collection_names():
                 db.create_collection(collection_name)
-                if ENVIRONMENT == "LOCAL":
-                    seed_collection(db, collection_name, data_seed[collection_name])
                 logger.info(f"Collection '{collection_name}' created.")
+                if ENVIRONMENT == "local":
+                    seed_collection(db, collection_name, data_seed[collection_name])
+                    logger.info(f"Collection '{collection_name}' seeded.")
             else:
                 logger.info(f"Collection '{collection_name}' already exists.")
     
@@ -40,12 +37,8 @@ def wait_for_server():
     connection = False
     while not connection:
         try:
-            if ENVIRONMENT == "LOCAL":
-                logger.info(f"Connecting: DBHOST: {DBHOST} - DBPORT: {DBPORT}")
-                client = MongoClient(DBHOST, int(DBPORT))
-            else:
-                logger.info(f"Connecting: DBURL: {DATABASE_URL}")
-                client = MongoClient(DATABASE_URL)
+            logger.info(f"Connecting: DBURL: {DATABASE_URL}")
+            client = MongoClient(DATABASE_URL)
             # Use any database command to check the server status
             server_info = client.server_info()
             connection = True

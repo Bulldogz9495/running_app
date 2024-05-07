@@ -4,9 +4,11 @@ import { createStackNavigator } from '@react-navigation/stack'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Provider as PaperProvider } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { StripeProvider } from '@stripe/stripe-react-native';
 import { settings } from './utils/settings';
 
 import LoginScreen from './screens/LoginScreen';
+import PaymentScreen from './screens/PaymentScreen';
 import TabNavigation from './navigation/TabNavigation';
 
 const Stack = createStackNavigator();
@@ -42,13 +44,19 @@ export default function App() {
   }
 
   return (
-    <PaperProvider>
+    <StripeProvider
+      publishableKey={settings.TEST_STRIPE_PUBLISHABLE_KEY}
+      // merchantIdentifier="merchant.identifier" // required for Apple Pay
+      urlScheme="http" // required for 3D Secure and bank redirects
+      >
         <NavigationContainer>
           <Stack.Navigator initialRouteName={settings.disable_auth ? 'main' : getInitialRouteName()}>
             <Stack.Screen name="Login" component={LoginScreen} />
             <Stack.Screen name="main" component={TabNavigation} />
+            <Stack.Screen name="Payment" component={PaymentScreen} />
           </Stack.Navigator>
         </NavigationContainer>
-    </PaperProvider>
+    </StripeProvider>
+
   );
 }
