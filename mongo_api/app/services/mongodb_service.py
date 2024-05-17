@@ -4,6 +4,7 @@ import pymongo
 from pymongo.server_api import ServerApi
 import boto3
 import asyncio
+from urllib.parse import quote_plus
 
 
 class MongoDBService:
