@@ -10,6 +10,7 @@ from uuid import UUID
 import uuid
 import json
 from pymongo.results import InsertOneResult
+import pymongo
 from app.settings import JWT_EXPIRATION_TIME_MINUTES, logger
 from app.utils.security import authenticate_user, create_access_token, get_password_hash
 from datetime import timedelta
@@ -182,13 +183,15 @@ async def read_run(item_id: str):
 async def read_runs_for_user(user_id: str,
                              skip: int = 0,
                              limit: int = 10,
-                             include_geopoints: bool = True):
+                             include_geopoints: bool = True,
+                             sort_datetime: str = "asc"):
     runs = []
-    async for run_data in db_service.db.runs.find({"user_id": user_id}).skip(skip).limit(limit):
+    sort_datetime = pymongo.ASCENDING if sort_datetime == "asc" else pymongo.DESCENDING
+    async for run_data in db_service.db.runs.find({"user_id": user_id}).sort("start_datetime", sort_datetime).skip(skip).limit(limit):
         if not include_geopoints:
             run_data['geopoints'] = []
         runs.append(run_data)
-    logger.info(f"Get Runs for user: {user_id}")
+    logger.info(f"Get Runs for user: {user_id} - Sort Order: {sort_datetime}")
     return runs
 
 @router.get("/Runs/team_id/{team_id}", response_model=List[Run])

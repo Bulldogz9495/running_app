@@ -20,7 +20,9 @@ export default RunComponent = () => {
                 {
                     params: {
                         "skip": 0,
-                        "limit": 10
+                        "limit": 10,
+                        "include_geopoints": false,
+                        "sort_datetime": 'desc',
                     },
                     headers: {
                         'Authorization': `Bearer ${accessToken}`
