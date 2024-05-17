@@ -73,7 +73,12 @@ const LoginScreen = ({ navigation }) => {
         } catch (error) {
             if (error.response.status >= 500) {
                 console.log(error);
-                navigation.navigate('main'); // Navigate to Challenge Run screen after successful login
+                if (settings.disable_auth) {
+                    console.log("Auth is disabled. Logging in user automatically.")
+                    await setUserDataInAsyncStorage({"data": {"id": "1234567890", "email": "test@example.com", "first_name": "Test", "last_name": "User", "password": "test_password"}});
+                    navigation.navigate('main'); // Navigate to Challenge Run screen after successful login
+                    return;
+                }
             } else {
                 setError('Invalid username or password');
                 console.error(error);
@@ -100,9 +105,9 @@ const LoginScreen = ({ navigation }) => {
                 />
             </View>
             {error ? <Text style={styles.errorLogin}>{error}</Text> : null}
-            <View style={{flexDirection: 'row', justifyContent: 'space-between', width: '100%'}}>
-                <Button title="Login" onPress={handleLogin} />
-                <Button title="Create New Account" onPress={handleCreateUser} />
+            <View style={{flexDirection: 'row', justifyContent: 'space-between', width: '100%', height: '20%'}}>
+                <Button title="Login" onPress={handleLogin} color='blue'/>
+                <Button title="Create New Account" onPress={handleCreateUser} color='blue' />
             </View>
         </View>
     );

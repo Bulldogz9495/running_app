@@ -8,6 +8,7 @@ import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
 import { settings } from '../utils/settings';
 import { getUserDataFromAsyncStorage } from '../utils/AsyncStorageUtils';
+import styles from '../styles';
 
 const MyActivityScreen = () => {
   const [locations, setLocations] = useState([]);
@@ -59,6 +60,12 @@ const MyActivityScreen = () => {
     // Hide modal without resetting state
     setShowModal(false);
     setRecording(true);
+  };
+
+  const handleDelete = () => {
+    resetState();
+    setShowModal(false);
+    setRecording(false);
   };
 
   const resetState = () => {
@@ -139,10 +146,11 @@ const MyActivityScreen = () => {
 
 
   return (
-    <>
+    <View style={{ flex: 1, backgroundColor: 'lightgreen'}}>
       <Button
           title={recording ? 'Pause Run' : 'Start A Run'}
           onPress={() => setRecording((prevState) => !prevState)}
+          color={recording ? 'red' : 'blue'}
       />
       {recording ? 
       <MapComponent 
@@ -155,20 +163,21 @@ const MyActivityScreen = () => {
       />
       : 
       <RunComponent/>}
-      <Modal visible={showModal} animationType="slide">
-        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+      <Modal visible={showModal} animationType="slide" style={{flex: 1}}>
+        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'lightgreen'}}>
           <View style={{alignItems: 'center'}}>
-            <Text style={{textAlign: 'center'}}>Total Distance: {totalDistanceMiles.toFixed(2)} miles</Text>
-            <Text style={{textAlign: 'center'}}>Total Score: {totalScore.toFixed(2)}</Text>
-            <Text style={{textAlign: 'center'}}>Average Pace: {averagePacePmin} minutes per mile</Text>
+            <Text style={styles.userText}>Total Distance: {totalDistanceMiles.toFixed(2)} miles</Text>
+            <Text style={styles.userText}>Total Score: {totalScore.toFixed(2)}</Text>
+            <Text style={styles.userText}>Average Pace: {averagePacePmin} minutes per mile</Text>
             <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
-              <Button title="Save Run" onPress={handleConfirm} />
-              <Button title="Resume Run" onPress={handleCancel} />
+              <Button title="Save Run" onPress={handleConfirm} color={'blue'} />
+              <Button title="Resume Run" onPress={handleCancel} color={'darkgreen'}/>
+              <Button title="Delete Run" onPress={handleDelete} color={'red'}/>
             </View>
           </View>
         </View>
       </Modal>
-    </>
+    </View>
   );
 };
 

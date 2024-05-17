@@ -16,6 +16,7 @@ export const setUserDataInAsyncStorage = async (userData) => {
             ['updated', userData.data.updated.toString()],
             ['weight_lbs', userData.data.weight_lbs.toString()],
             ['weight_ounces', userData.data.weight_ounces.toString()],
+            ['paid', userData.data.paid.toString()],
         ]);
         console.log('Successfully set user data in AsyncStorage');
         // console.log(userData);
@@ -42,6 +43,7 @@ export const getUserDataFromAsyncStorage = async () => {
             'updated',
             'weight_lbs',
             'weight_ounces',
+            'paid',
         ]);
         const [
             birthday,
@@ -57,6 +59,7 @@ export const getUserDataFromAsyncStorage = async () => {
             updated,
             weight_lbs,
             weight_ounces,
+            paid,
         ] = result.map(([_, value]) => value);
 
         userData.data.birthday = birthday;
@@ -72,6 +75,10 @@ export const getUserDataFromAsyncStorage = async () => {
         userData.data.updated = updated;
         userData.data.weight_lbs = parseFloat(weight_lbs);
         userData.data.weight_ounces = parseFloat(weight_ounces);
+        userData.data.paid = paid;
+        if (userData.data.paid !== true) {
+            userData.data.paid = true;
+        }
 
         console.log('Successfully retrieved user data from AsyncStorage');
         // console.log(userData);
@@ -81,6 +88,5 @@ export const getUserDataFromAsyncStorage = async () => {
         console.error(error);
     }
 };
-
 
 

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import MapView, { Polyline } from 'react-native-maps';
 import { View, Text } from 'react-native';
-import { styles } from '../styles';
+import styles from '../styles';
 
 const MapComponent = ({locations, recording, totalDistanceMiles, totalScore, averagePacePmin, currentPace}) => {
   const [polylines, setPolylines] = useState([]);
@@ -10,27 +10,21 @@ const MapComponent = ({locations, recording, totalDistanceMiles, totalScore, ave
   return (
     <>
       <MapView
-        provider="google" 
+        // provider="google" 
         region={{
           latitude: 42.287930,
           longitude: -83.497437,
-          latitudeDelta: 0.1,
-          longitudeDelta: 0.1
-        }}
-        initialRegion={{
-          latitude: 42.287930,
-          longitude: -83.497437,
-          latitudeDelta: 0.005,
-          longitudeDelta: 0.005
+          latitudeDelta: 0.003,
+          longitudeDelta: 0.003
         }}
         style={{flex: 1, zindex: 0}}
-        showsUserLocation={true}
         followsUserLocation={true}
+        showsUserLocation={true}
+        showsMyLocationButton={true}
         zoomEnabled={false}
         zoomTapEnabled={false}
         zoomControlEnabled={false}
         rotateEnabled={true}
-        showsMyLocationButton={true}
         cacheEnabled={true}
         loadingEnabled={true}
       >

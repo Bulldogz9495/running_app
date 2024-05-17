@@ -83,60 +83,66 @@ const ProfileScreen = ({navigation}) => {
       </View>
       <ScrollView style={styles.userDataContainer}>
         <>
-          <Text>Email: </Text>{false ? // Set to False until new email can be done
+          <Text style={styles.userText}>Email: </Text>{editMode ? // Set to False until new email can be done
           ( <TextInput
               placeholder="Enter new Email"
               defaultValue={editedData?.data?.email}
               value={Text}
               onChangeText={(text) => handleChange('email', text)}
+              style={styles.userInput}
             />
           ) : (
             <Text>{editedData?.data?.email}</Text>
           )}
         </>
-        <><Text>Name: </Text>{editMode ? 
+        <><Text style={styles.userText}>Name: </Text>{editMode ? 
           ( <>
               <TextInput
                 placeholder="Enter new First Name"
                 defaultValue={editedData?.data?.first_name}
                 value={Text}
                 onChangeText={(text) => handleChange('first_name', text)}
+                style={styles.userInput}
               />
               <TextInput
                 placeholder="Enter new Middle Name"
                 defaultValue={editedData?.data?.middle_name}
                 value={Text}
                 onChangeText={(text) => handleChange('middle_name', text)}
+                style={styles.userInput}
               />
               <TextInput
                 placeholder="Enter new Last Name"
                 defaultValue={editedData?.data?.last_name}
                 value={Text}
                 onChangeText={(text) => handleChange('last_name', text)}
+                style={styles.userInput}
               />
             </>
           ) : (
             <Text>{editedData?.data?.first_name} {editedData?.data?.middle_name} {editedData?.data?.last_name}</Text>
           )}
         </>
-        <><Text>Motto: </Text>{editMode ? 
+        <><Text style={styles.userText}>Motto: </Text>{editMode ? 
           ( <TextInput
               placeholder="Enter new motto"
               defaultValue={editedData?.data?.motto}
               value={Text}
               onChangeText={(text) => handleChange('motto', text)}
+              style={styles.userInput}
             />
           ) : (
             <Text>{editedData?.data?.motto}</Text>
           )}
         </>
-        <><Text>Height: </Text>{editMode ? 
+        <><Text style={styles.userText}>Height: </Text>{editMode ? 
           ( <>
               <TextInput
                 placeholder="Enter new Height"
                 defaultValue={editedData?.data?.height_feet.toString()}
                 value={Text}
                 onChangeText={(text) => handleChange('height_feet', text)}
+                style={styles.userInput}
               />
               <Text>'</Text>
               <TextInput
@@ -144,13 +150,14 @@ const ProfileScreen = ({navigation}) => {
                 defaultValue={editedData?.data?.height_inches.toString()}
                 value={Text}
                 onChangeText={(text) => handleChange('height_inches', text)}
+                style={styles.userInput}
               /><Text>"</Text>
             </>
           ) : (
             <Text>{`${editedData?.data?.height_feet}' ${editedData?.data?.height_inches}"`}</Text>
           )}
         </>
-        <><Text>Birthday: </Text>{editMode ?
+        <><Text style={styles.userText}>Birthday: </Text>{editMode ?
           (
             <CalendarPicker 
             defaultValue={editedData?.data?.birthday}
@@ -166,25 +173,28 @@ const ProfileScreen = ({navigation}) => {
             width={375}
             ></CalendarPicker>
           ) : (
-            <Text>{editedData?.data?.birthday}</Text>
+            <Text>{editedData?.data?.birthday.split('T')[0]}</Text>
           )
         }
         </>
-        <><Text>Weight: </Text>{editMode ? 
+        <>
+          <Text style={ styles.userText }>Weight: </Text>{editMode ? 
           ( <>
               <TextInput
                 placeholder="Enter new Weight"
                 defaultValue={editedData?.data?.weight_lbs.toString()}
                 value={Text}
                 onChangeText={(text) => handleChange('weight_lbs', text)}
+                style={styles.userInput}
               />
-              <Text>lbs</Text>
+              <Text style={styles.userText}>lbs</Text>
               <TextInput
                 placeholder="Enter new Weight"
                 defaultValue={editedData?.data?.weight_ounces.toString()}
                 value={Text}
                 onChangeText={(text) => handleChange('weight_ounces', text)}
-              /><Text>oz</Text>
+                style={styles.userInput}
+              /><Text style={styles.userText}>oz</Text>
             </>
           ) : (
             <Text>{`${editedData?.data?.weight_lbs} lbs ${editedData?.data?.weight_ounces} oz`}</Text>
@@ -201,15 +211,29 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
     padding: 20,
+    backgroundColor: 'lightgreen',
   },
   editButton: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 10,
+    color: 'blue',
   },
   userDataContainer: {
     alignSelf: 'flex-start',
   },
+  userText: {
+    fontSize: 20
+  },
+  userInput: {
+    borderColor: 'blue',
+    borderWidth: 2,
+    borderRadius: 25,
+    margin: 5,
+    padding: 15,
+    color: 'black',
+    width: '80%'
+  }
 });
 
 export default ProfileScreen;

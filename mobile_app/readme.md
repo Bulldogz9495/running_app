@@ -47,6 +47,13 @@ Docker
 Android sdk
 
 
+#  Build / Deploy
+```npx eas build -p ios```
+Set a version number (app.json) and build numnber (app.json ios.buildnumber) This will build the ios version and push it to apple connect 
+```npx eas submit --platform ios ```
+This will push build to app store
+
+
 maps api key AIzaSyCFpCDhy_BA2M0WD54M1tAFlm2rDAvoPXE
 
 
@@ -57,6 +64,7 @@ Activity Page displays previous runs
 Activity Page allows new runs to be created
 Challenge page shows individual challenge performance and team challenge performance
 Enforce Email format on profile edit
+Add aa delete run button to run confirmation screen
 # Issue Tracker
 Confimr save of a run
 Move tabs to top of page

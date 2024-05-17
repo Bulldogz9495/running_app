@@ -28,10 +28,16 @@ export default function TabNavigation() {
           return <MaterialIcons name={iconName} size={size} color={color} />;
         },
         tabBarOptions: {
-          activeTintColor: 'blue', // Change the active tab color here
+          activeTintColor: 'lightgreen', // Change the active tab color here
           inactiveTintColor: 'gray', // Change the inactive tab color here
         },
-      })}
+        tabBarActiveBackgroundColor: 'lightgreen',
+        tabBarStyle: {
+          backgroundColor: 'darkgreen',
+        },
+        headerStyle: { backgroundColor: 'darkgreen', borderColor: 'darkgreen' },
+      })
+    }
     >
       <Tab.Screen name="Challenge Run" component={ChallengeRunScreen} />
       <Tab.Screen name="My Activity" component={MyActivityScreen} />

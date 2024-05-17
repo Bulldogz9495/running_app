@@ -1,4 +1,5 @@
 import React from 'react';
+import { View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -6,6 +7,7 @@ import { Provider as PaperProvider } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StripeProvider } from '@stripe/stripe-react-native';
 import { settings } from './utils/settings';
+import { styles } from './styles';
 
 import LoginScreen from './screens/LoginScreen';
 import PaymentScreen from './screens/PaymentScreen';
@@ -44,19 +46,19 @@ export default function App() {
   }
 
   return (
-    <StripeProvider
-      publishableKey={settings.TEST_STRIPE_PUBLISHABLE_KEY}
-      // merchantIdentifier="merchant.identifier" // required for Apple Pay
-      urlScheme="http" // required for 3D Secure and bank redirects
+    <NavigationContainer>
+      <Stack.Navigator 
+        screenOptions={{ 
+          headerShown: false,
+          headerTintColor: 'black', 
+          headerStyle: { backgroundColor: 'darkgreen' } 
+        }}
+        initialRouteName={settings.disable_auth ? 'main' : getInitialRouteName()} 
+        styles={{styles}}
       >
-        <NavigationContainer>
-          <Stack.Navigator initialRouteName={settings.disable_auth ? 'main' : getInitialRouteName()}>
-            <Stack.Screen name="Login" component={LoginScreen} />
-            <Stack.Screen name="main" component={TabNavigation} />
-            <Stack.Screen name="Payment" component={PaymentScreen} />
-          </Stack.Navigator>
-        </NavigationContainer>
-    </StripeProvider>
-
+        <Stack.Screen name="Login" component={LoginScreen}/>
+        <Stack.Screen name="main" component={TabNavigation}/>
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }

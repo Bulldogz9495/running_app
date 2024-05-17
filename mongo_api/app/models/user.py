@@ -40,7 +40,8 @@ user_schema = {
     "weight_lbs": {"type": "float", "required": False},
     "weight_ounces": {"type": "float", "required": False},
     "created": {"type": datetime, "required": True},
-    "updated": {"type": datetime, "required":True}
+    "updated": {"type": datetime, "required":True},
+    "paid": {"type": "bool", "required": True}
 }
 
 sample_users = [
@@ -58,7 +59,8 @@ sample_users = [
         'weight_lbs': 200,
         'weight_ounces': 8,
         'created': datetime.now(),
-        'updated': datetime.now()
+        'updated': datetime.now(),
+        'paid': True
     },
     {
         'id': "99443ade-f889-415a-a2cb-65f3bbab032b",
@@ -74,7 +76,8 @@ sample_users = [
         'weight_lbs': 130,
         'weight_ounces': 8,
         'created': datetime.now(),
-        'updated': datetime.now()
+        'updated': datetime.now(),
+        'paid': False
     }
 ]
 
