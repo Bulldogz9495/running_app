@@ -1,12 +1,45 @@
 from motor.motor_asyncio import AsyncIOMotorClient
-from app.settings import DATABASE_URL, DATABASE_NAME, logger, DBPORT, DBHOST, ENVIRONMENT
+from app.settings import DATABASE_NAME, logger, DBPORT, DBHOST, ENVIRONMENT, DATABASE_USER, DATABASE_PASSWORD, TOKEN_REFRESH_TIME
 import pymongo
 from pymongo.server_api import ServerApi
+import boto3
+import asyncio
 
 
 class MongoDBService:
     def __init__(self):
-        self.sync_client = pymongo.MongoClient(DATABASE_URL, server_api=ServerApi('1'))
-        self.client = AsyncIOMotorClient(DATABASE_URL, server_api=ServerApi('1'))
+        self.database_url = self.setupDatabaseUrl()
+        self.sync_client = pymongo.MongoClient(self.database_url, server_api=ServerApi('1'))
+        self.client = AsyncIOMotorClient(self.database_url, server_api=ServerApi('1'))
         self.sync_db = self.sync_client[DATABASE_NAME]
         self.db = self.client[DATABASE_NAME]
+        self._task = asyncio.ensure_future(self._background_task())
+
+    async def _background_task(self):
+        while True:
+            await asyncio.sleep(TOKEN_REFRESH_TIME)
+            await self._run_background_task()
+
+    async def _run_background_task(self):
+        background_task = asyncio.create_task(self.background_mongo_token_refresh())
+
+
+    def setupDatabaseUrl(self):
+        if ENVIRONMENT == 'local':
+            db_url = f"""mongodb+srv://{DATABASE_USER}:{DATABASE_PASSWORD}@cluster0.dku630t.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"""
+            logger.info(f"Local Database URL: {db_url}")
+            return db_url
+        else:
+            credentials=boto3.Session().get_credentials()
+            db_url = f"""mongodb+srv://{quote_plus(credentials.access_key)}:{quote_plus(credentials.secret_key)}@serverlessinstancechallengerun-pe-0.ztcznqz.mongodb.net/?authSource=%24external&authMechanism=MONGODB-AWS&retryWrites=true&w=majority&authMechanismProperties=AWS_SESSION_TOKEN:{quote_plus(credentials.token)}&appName=ServerlessInstanceChallengeRun"""
+            logger.info(f"Production Database URL: {db_url}")
+            return db_url
+    
+    
+    async def background_mongo_token_refresh(self):
+        self.database_url = self.setupDatabaseUrl()
+        self.sync_client.close()
+        self.sync_client = pymongo.MongoClient(self.database_url, server_api=ServerApi('1'))
+        self.client.close()
+        self.client = AsyncIOMotorClient(self.database_url, server_api=ServerApi('1'))
+        
