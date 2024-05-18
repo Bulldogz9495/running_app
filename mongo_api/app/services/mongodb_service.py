@@ -31,8 +31,10 @@ class MongoDBService:
             logger.info(f"Local Database URL: {db_url}")
             return db_url
         else:
-            credentials=boto3.Session().get_credentials()
-            db_url = f"""mongodb+srv://{quote_plus(credentials.access_key)}:{quote_plus(credentials.secret_key)}@serverlessinstancechallengerun-pe-0.ztcznqz.mongodb.net/?authSource=%24external&authMechanism=MONGODB-AWS&retryWrites=true&w=majority&authMechanismProperties=AWS_SESSION_TOKEN:{quote_plus(credentials.token)}&appName=ServerlessInstanceChallengeRun"""
+            sts = boto3.client('sts')
+            response = sts.get_session_token()
+            credentials = response['Credentials']
+            db_url = f"""mongodb+srv://{quote_plus(credentials['AccessKeyId'])}:{quote_plus(credentials['SecretAccessKey'])}@serverlessinstancechallengerun-pe-0.ztcznqz.mongodb.net/?authSource=%24external&authMechanism=MONGODB-AWS&retryWrites=true&w=majority&authMechanismProperties=AWS_SESSION_TOKEN:{quote_plus(credentials['SessionToken'])}&appName=ServerlessInstanceChallengeRun"""
             logger.info(f"Production Database URL: {db_url}")
             return db_url
     

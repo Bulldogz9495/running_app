@@ -1,11 +1,7 @@
 import React from 'react';
-import { View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack'
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Provider as PaperProvider } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { StripeProvider } from '@stripe/stripe-react-native';
 import { settings } from './utils/settings';
 import { styles } from './styles';
 
@@ -58,6 +54,7 @@ export default function App() {
       >
         <Stack.Screen name="Login" component={LoginScreen}/>
         <Stack.Screen name="main" component={TabNavigation}/>
+        <Stack.Screen name="Payment" component={PaymentScreen}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

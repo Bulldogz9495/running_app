@@ -1,57 +1,32 @@
-// PaymentScreen.ts
-import { CardField, useStripe, createToken } from '@stripe/stripe-react-native';
-import { Button } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { getSubscriptionSkus, purchaseSubscription } from 'react-native-iap';
 
 export default function PaymentScreen() {
+  const navigation = useNavigation();
+  const [subscriptions, setSubscriptions] = useState([]);
 
-  const onPayPress = async () => {
-    const { token, error } = await createToken({ name: 'Name' });
-    if (error) {
-      console.log('createToken error', error.message);
-    } else if (token) {
-      console.log('createToken success', token);
-      // send token to server to complete payment
-      try {
-        const response = await fetch(`{settings.MONGO_API_URL}/charge`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ token: token.id }),
-        });
-        const { status } = await response.json();
-        console.log('charge status', status);
-      } catch (error) {
-        console.log('charge error', error.message);
-      }
-    }
-  };
+  useEffect(() => {
+    getSubscriptionSkus().then(setSubscriptions);
+  }, []);
 
+  const handleSubscriptionPurchase = async (sku) => {
+    const purchase = await purchaseSubscription(sku);
+    console.log(purchase);
+    // handle purchase success
+  }
 
   return (
-    <>
-        <CardField
-        postalCodeEnabled={true}
-        placeholders={{
-            number: '4242 4242 4242 4242',
-        }}
-        cardStyle={{
-            backgroundColor: '#FFFFFF',
-            textColor: '#000000',
-        }}
-        style={{
-            width: '100%',
-            height: 50,
-            marginVertical: 30,
-        }}
-        onCardChange={(cardDetails) => {
-            console.log('cardDetails', cardDetails);
-        }}
-        onFocus={(focusedField) => {
-            console.log('focusField', focusedField);
-        }}
+    <View style={styles.container}>
+      <Text>Payment Screen</Text>
+      {subscriptions.map(subscription => (
+        <Button
+          key={subscription.id}
+          title={subscription.id}
+          onPress={() => handleSubscriptionPurchase(subscription.id)}
         />
-        <Button title="Confirm Payment" onPress={() => onPayPress({})} />
-    </>
+      ))}
+    </View>
   );
 }
