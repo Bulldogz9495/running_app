@@ -37,7 +37,6 @@ class MongoDBService:
                 RoleSessionName='task-execution'
             )
             credentials = response['Credentials']
-     credentials = response['Credentials']
             db_url = f"""mongodb+srv://{quote_plus(credentials['AccessKeyId'])}:{quote_plus(credentials['SecretAccessKey'])}@serverlessinstancechallengerun-pe-0.ztcznqz.mongodb.net/?authSource=%24external&authMechanism=MONGODB-AWS&retryWrites=true&w=majority&authMechanismProperties=AWS_SESSION_TOKEN:{quote_plus(credentials['SessionToken'])}&appName=ServerlessInstanceChallengeRun"""
             logger.info(f"Production Database URL: {db_url}")
             return db_url
