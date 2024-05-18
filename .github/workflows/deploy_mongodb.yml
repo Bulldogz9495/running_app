@@ -40,3 +40,11 @@ jobs:
         run: |
           aws ecs update-service --cluster challenge_run_cluster --service mongo-api-service --force-new-deployment
 
+      - name: Register private ip to target group
+        run: |
+          instance_id=$(aws ecs describe-tasks --cluster challenge_run_cluster --tasks $(aws ecs list-tasks --cluster challenge_run_cluster --service-name mongo-api-service --query "taskArns[0]" --output text) --query "tasks[0].containers[0].runtimeId" --output text | cut -d'/' -f 2)
+          instance_private_ip=$(aws ec2 describe-instances --instance-ids $instance_id --query "Reservations[0].Instances[0].PrivateIpAddress" --output text)
+          echo $instance_private_ip
+          aws elbv2 register-targets --target-group-arn arn:aws:elasticloadbalancer:us-east-1:920990234657:targetgroup/challenge-run-target-group/f495050e0f505ce4 --targets Id=$instance_private_ip
+
+

@@ -64,7 +64,7 @@ if ENVIRONMENT == "local":
     DATABASE_URL = f"""mongodb+srv://{DATABASE_USER}:{DATABASE_PASSWORD}@cluster0.dku630t.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"""
 else:
     credentials=boto3.Session().get_credentials()
-    DATABASE_URL = f"""mongodb+srv://{quote_plus(credentials.access_key)}:{quote_plus(credentials.secret_key)}@serverlessinstancechallengerun-pe-0.ztcznqz.mongodb.net/?authSource=%24external&authMechanism=MONGODB-AWS&retryWrites=true&w=majority&authMechanismProperties=AWS_SESSION_TOKEN:{quote_plus(credentials.token)}&appName=ServerlessInstanceChallengeRun"""
+    DATABASE_URL = f"""mongodb+srv://{quote_plus(credentials.access_key)}:{quote_plus(credentials.secret_key)}@cluster0.dku630t.mongodb.net/?authSource=%24external&authMechanism=MONGODB-AWS&retryWrites=true&w=majority&authMechanismProperties=AWS_SESSION_TOKEN:{quote_plus(credentials.token)}&appName=Cluster0"""
     logger.info(f"{DATABASE_URL}")
 DATABASE_NAME = "running_data"
 JWT_EXPIRATION_TIME_MINUTES = 5
