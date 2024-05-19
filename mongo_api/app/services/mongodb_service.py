@@ -39,8 +39,5 @@ class MongoDBService:
     
     async def background_mongo_token_refresh(self):
         self.database_url = self.setupDatabaseUrl()
-        self.sync_client.close()
         self.sync_client = pymongo.MongoClient(self.database_url, server_api=ServerApi('1'))
-        self.client.close()
         self.client = AsyncIOMotorClient(self.database_url, server_api=ServerApi('1'))
-        
