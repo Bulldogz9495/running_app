@@ -70,3 +70,7 @@ DATABASE_NAME = "running_data"
 JWT_EXPIRATION_TIME_MINUTES = 5
 JWT_ALGORITHM = "HS256"
 TOKEN_REFRESH_TIME = 30 * 60
+
+CLUSTER_NAME = "challenge_run_cluster"
+SERVICE_NAME = "mongo-api-service"
+TARGET_GROUP_ARN = "arn:aws:elasticloadbalancing:us-east-1:920990234657:targetgroup/challenge-run-target-group/77cce335ebd88560"

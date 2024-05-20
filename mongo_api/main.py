@@ -28,3 +28,35 @@ app.add_middleware(
 )
 
 app.include_router(api_router)
+
+@app.on_event("startup")
+async def add_private_ip_to_target_group():
+    from app.settings import CLUSTER_NAME as cluster_name
+    from app.settings import SERVICE_NAME as service_name
+    from app.settings import TARGET_GROUP_ARN as target_group_arn
+    
+    ecs = boto3.client('ecs')
+    elbv2 = boto3.client('elbv2')
+
+    # Get the container instance ARNs
+    response = ecs.execute_command(
+        cluster=cluster_name,
+        service=service_name,
+        command="echo container_instance_arn"
+    )
+    container_instance_arns = response['containerInstanceArn']
+
+    # Get the private IPs
+    response = ecs.describe_container_instances(
+        cluster=cluster_name,
+        containerInstances=container_instance_arns
+    )
+    private_ips = [container['container']['networkInterfaces'][0]['privateIpv4Address'] for container in response['containerInstances']]
+    logger.info(f"Private IPs: {private_ips}")
+    
+    # Register the private IPs with the target group
+    response = elbv2.register_targets(
+        TargetGroupArn=target_group_arn,
+        Targets=[{'Id': private_ip, 'Port': 80} for private_ip in private_ips]
+    )
+    logger.info(f"Response from register_targets: {response}")

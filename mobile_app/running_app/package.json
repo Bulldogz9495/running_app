@@ -19,6 +19,7 @@
     "@stripe/stripe-react-native": "0.37.2",
     "axios": "^1.6.8",
     "date-fns": "^3.6.0",
+    "easy-peasy": "^6.0.4",
     "expo": "51.0.6",
     "expo-location": "17.0.1",
     "expo-status-bar": "1.12.1",
