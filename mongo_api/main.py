@@ -45,13 +45,11 @@ async def add_private_ip_to_target_group():
         tasks = ecs.describe_tasks(cluster=cluster_name, tasks=tasks)
         ips = []
         for task in tasks['tasks']:
-            ips = [ips, (task['attachments'][0]['details'][-1]['value'])]
-        private_ips = [container['container']['networkInterfaces'][0]['privateIpv4Address'] for container in response['containerInstances']]
-        logger.info(f"Private IPs: {private_ips}")
+            ips.append(task['attachments'][0]['details'][-1]['value'])
         
         # Register the private IPs with the target group
         response = elbv2.register_targets(
             TargetGroupArn=target_group_arn,
-            Targets=[{'Id': private_ip, 'Port': 80} for private_ip in private_ips]
+            Targets=[{'Id': private_ip, 'Port': 80} for private_ip in ips]
         )
         logger.info(f"Response from register_targets: {response}")
