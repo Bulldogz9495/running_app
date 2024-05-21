@@ -1,6 +1,7 @@
 import os
 import pymongo
 import time
+import boto3
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.routes.api import router as api_router
@@ -31,32 +32,26 @@ app.include_router(api_router)
 
 @app.on_event("startup")
 async def add_private_ip_to_target_group():
-    from app.settings import CLUSTER_NAME as cluster_name
-    from app.settings import SERVICE_NAME as service_name
-    from app.settings import TARGET_GROUP_ARN as target_group_arn
-    
-    ecs = boto3.client('ecs')
-    elbv2 = boto3.client('elbv2')
+    if os.getenv("ENVIRONMENT") != "local":
+        from app.settings import CLUSTER_NAME as cluster_name
+        from app.settings import SERVICE_NAME as service_name
+        from app.settings import TARGET_GROUP_ARN as target_group_arn
+        
+        ecs = boto3.client('ecs', region_name='us-east-1')
+        elbv2 = boto3.client('elbv2', region_name='us-east-1')
 
-    # Get the container instance ARNs
-    response = ecs.execute_command(
-        cluster=cluster_name,
-        service=service_name,
-        command="echo container_instance_arn"
-    )
-    container_instance_arns = response['containerInstanceArn']
-
-    # Get the private IPs
-    response = ecs.describe_container_instances(
-        cluster=cluster_name,
-        containerInstances=container_instance_arns
-    )
-    private_ips = [container['container']['networkInterfaces'][0]['privateIpv4Address'] for container in response['containerInstances']]
-    logger.info(f"Private IPs: {private_ips}")
-    
-    # Register the private IPs with the target group
-    response = elbv2.register_targets(
-        TargetGroupArn=target_group_arn,
-        Targets=[{'Id': private_ip, 'Port': 80} for private_ip in private_ips]
-    )
-    logger.info(f"Response from register_targets: {response}")
+        # Get the container instance ARNs
+        tasks = ecs.list_tasks(cluster=cluster_name)['taskArns']
+        tasks = ecs.describe_tasks(cluster=cluster_name, tasks=tasks)
+        ips = []
+        for task in tasks:
+            ips.apppend(task['attachments'][0]['details'][-1]['value'])
+        private_ips = [container['container']['networkInterfaces'][0]['privateIpv4Address'] for container in response['containerInstances']]
+        logger.info(f"Private IPs: {private_ips}")
+        
+        # Register the private IPs with the target group
+        response = elbv2.register_targets(
+            TargetGroupArn=target_group_arn,
+            Targets=[{'Id': private_ip, 'Port': 80} for private_ip in private_ips]
+        )
+        logger.info(f"Response from register_targets: {response}")
