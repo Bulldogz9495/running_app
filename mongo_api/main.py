@@ -45,7 +45,7 @@ async def add_private_ip_to_target_group():
         tasks = ecs.describe_tasks(cluster=cluster_name, tasks=tasks)
         ips = []
         for task in tasks:
-            ips.append(task['attachments'][0]['details'][-1]['value'])
+            ips = [ips, (task['attachments'][0]['details'][-1]['value'])]
         private_ips = [container['container']['networkInterfaces'][0]['privateIpv4Address'] for container in response['containerInstances']]
         logger.info(f"Private IPs: {private_ips}")
         
