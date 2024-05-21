@@ -32,7 +32,7 @@ class MongoDBService:
             return db_url
         else:
             credentials=boto3.Session().get_credentials()
-            db_url = f"""mongodb+srv://{quote_plus(credentials.access_key)}:{quote_plus(credentials.secret_key)}@serverlessinstance0-pe-1.ytovzs1.mongodb.net/?authSource=%24external&authMechanism=MONGODB-AWS&retryWrites=true&w=majority&authMechanismProperties=AWS_SESSION_TOKEN:{quote_plus(credentials.token)}&appName=ServerlessInstance0"""
+            db_url = f"""mongodb+srv://{DATABASE_USER}:{DATABASE_PASSWORD}@serverlessinstance0-pe-1.ytovzs1.mongodb.net/?retryWrites=true&w=majority&appName=ServerlessInstance0"""
             logger.info(f"Production Database URL: {db_url}")
             return db_url
     
