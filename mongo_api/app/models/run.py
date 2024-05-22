@@ -33,7 +33,6 @@ class Run(BaseModel):
     duration: float # seconds
     score: Optional[float] = Field(None, ge=0, le=1500)  # Min value of 0 and max value of 1500
     geopoints: List[GeoPoint]  # New field for an array of geopoints
-    teams: List[str]
 
 run_schema = {
     "id": {"type": "uuid", "required": True, "unique": True},
