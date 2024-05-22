@@ -10,7 +10,7 @@ class Team(BaseModel):
     name: str
     size: int
     motto: str = None
-    members: List[User] = [] # UUID
+    members: List[str] = [] # UUID
     owner: str # UUID
     last_challenge_date: Optional[datetime] = None
     last_challenge_score: Optional[int] = None

@@ -59,7 +59,7 @@ const ChallengeRunScreen = () => {
             Last Challenge Date: {item.last_challenge_date}
           </Text>
           <View>
-            <Text>Team Size: {item.members.length}</Text>
+            <Text>Team Size: {item.size}</Text>
           </View>
         </Pressable>
         {isExpanded && (
@@ -80,11 +80,11 @@ const ChallengeRunScreen = () => {
   const createTeams = async () => {
     console.log("CREATING TEAM");
     const userInfo = await getUserDataFromAsyncStorage();
-    newTeam.members = [];
+    newTeam.members = [userInfo.data.id];
     newTeam.owner = userInfo.data.id
     newTeam.id = uuidv4();
-    newTeam.size = 0;
-    console.log(newTeam);
+    newTeam.size = newTeam.members.length;
+    console.log("NEW TEAM: ", newTeam);
     const accessToken = await AsyncStorage.getItem('MyAccessToken');
     try {
       const res = await fetch(`${settings.MONGO_API_URL}/Teams`, {
