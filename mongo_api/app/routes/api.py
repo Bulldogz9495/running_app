@@ -123,6 +123,8 @@ async def read_team(item_id: str):
     logger.info(f"Get Team: {item_id}")
     return team_data
 
+
+
 @router.get("/Teams/user_id/{user_id}", response_model=List[dict])
 async def read_teams_for_user(
     user_id: str,
@@ -161,10 +163,27 @@ async def create_team(team_data: Team):
         return HTTPException(status_code=422, detail="Team failed to create")
 
 
+@router.patch("/Teams/id/{team_id}", response_model=Team)
+async def update_team_by_id(team_data: Team, team_id: str):
+    existing_team = await db_service.db.teams.find_one({"id": team_id})
+    if existing_team is None:
+        raise HTTPException(status_code=404, detail="Team could not be found")
+    for k, v in team_data.dict().items():
+        if v is not None:
+            existing_team[k] = v
+    await db_service.db.teams.update_one({"id": team_id}, {'$set': existing_team})
+    # Fetch and return the updated team data
+    updated_team = await db_service.db.teams.find_one({"id": team_id})
+    updated_team.pop('_id')  # Remove MongoDB ObjectId
+    logger.info(f"Team {team_id} patched with data {team_data}")
+    return updated_team
+
+
 @router.get("/Teams", response_model=List[Team])
 async def get_all_teams(token: str = Depends(oauth2_scheme)):
     teams = []
     async for team_data in db_service.db.teams.find():
+        team_data.pop('_id')
         teams.append(team_data)
     logger.info(f"Get All Teams")
     return teams
