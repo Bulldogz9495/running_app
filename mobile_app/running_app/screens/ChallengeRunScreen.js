@@ -46,11 +46,11 @@ const ChallengeRunScreen = () => {
   }, []);
 
   const renderTeam = ({ item, index }) => {
-    const isExpanded = item._id === expandedTeam;
+    const isExpanded = item.id === expandedTeam;
     return (
       <View key={index} style={{ borderWidth: 1, padding: 10, borderWidth: 2.0, borderColor: 'blue'  }}>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Pressable onPress={() => setExpandedTeam(isExpanded ? null : item._id)}>
+          <Pressable onPress={() => setExpandedTeam(isExpanded ? null : item.id)}>
             <Text style={{ fontSize: 24, fontWeight: 'bold' }}>
               {item.name}
             </Text>
@@ -120,7 +120,7 @@ const editTeams = async (team) => {
     delete team.members_info;
     const accessToken = await AsyncStorage.getItem('MyAccessToken');
     try {
-        const res = await fetch(`${settings.MONGO_API_URL}/Teams/${newTeam.id}`, {
+        const res = await fetch(`${settings.MONGO_API_URL}/Teams/id/${team.id}`, {
         method: 'PATCH',
         headers: {
             'Content-Type': 'application/json',
@@ -132,6 +132,7 @@ const editTeams = async (team) => {
         console.log(data);
         const newTeams = teams.map(t => t.id === data.id ? data : t);
         setTeams(newTeams);
+        handleCancelCreateTeam();
     } catch (error) {
         console.error(error);
     }

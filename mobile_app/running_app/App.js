@@ -4,20 +4,34 @@ import { createStackNavigator } from '@react-navigation/stack'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { settings } from './utils/settings';
 import { styles } from './styles';
-import { View } from 'react-native';
+import { View, Text } from 'react-native';
+import * as Linking from 'expo-linking'
 
 import LoginScreen from './screens/LoginScreen';
 import PaymentScreen from './screens/PaymentScreen';
 import TabNavigation from './navigation/TabNavigation';
 import LoadingScreen from './screens/LoadingScreen';
+import InvitationScreen from './screens/InvitationScreen';
 import { ActivityIndicator } from 'react-native';
 
 const Stack = createStackNavigator();
 
 const initialRouteName = "Loading";
+const prefix = Linking.createURL('challenge-run://');
 
 export default function App() {
   const [initialRoute, setInitialRoute] = useState(initialRouteName);
+  const linking = {
+    prefixes: [prefix],
+    config: {
+      initialRouteName: 'Login',
+      screens: {
+        invitation: {
+          path: 'invitation/:inviterid/:teamid',
+          },
+        },
+      }
+    };
 
   useEffect(() => {
     const getInitialRoute = async () => {
@@ -58,20 +72,21 @@ export default function App() {
   }
 
   return (
-    <NavigationContainer>
+    <NavigationContainer linking={linking} fallback={<Text>Loading...</Text>}>
       <Stack.Navigator 
         screenOptions={{ 
           headerShown: false,
           headerTintColor: 'black', 
           headerStyle: { backgroundColor: 'darkgreen' } 
         }}
-        initialRouteName={initialRoute} 
+        initialRouteName={'invitation'} 
         styles={{styles}}
       >
         <Stack.Screen name="Login" component={LoginScreen}/>
         <Stack.Screen name="main" component={TabNavigation}/>
         <Stack.Screen name="payment" component={PaymentScreen}/>
         <Stack.Screen name="loading" component={LoadingScreen}/>
+        <Stack.Screen name="invitation" component={InvitationScreen}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

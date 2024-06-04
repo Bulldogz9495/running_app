@@ -115,14 +115,26 @@ async def get_all_users(token: str = Depends(oauth2_scheme)):
     return users
 
 
-@router.get("/Teams/{item_id}", response_model=Team)
+async def _get_member_info(member_id):
+    member_info = await db_service.db.users.find_one({"id": member_id})
+    return {
+        'id': member_info['id'],
+        'email': member_info['email'],
+        'last_name': member_info['last_name'],
+        'first_name': member_info['first_name']
+    }
+    
+
+@router.get("/Teams/{item_id}", response_model=dict)
 async def read_team(item_id: str):
     team_data = await db_service.db.teams.find_one({"id": item_id})
     if team_data is None:
         raise HTTPException(status_code=404, detail="Team not found")
+    team_data.pop('_id')
+    team_data['members_info'] = [await _get_member_info(member) for member in team_data['members']]
+    print(team_data)
     logger.info(f"Get Team: {item_id}")
     return team_data
-
 
 
 @router.get("/Teams/user_id/{user_id}", response_model=List[dict])
@@ -134,21 +146,10 @@ async def read_teams_for_user(
     teams = []
     async for team_data in db_service.db.teams.find({"members":{"$in": [user_id]}}).skip(skip).limit(limit):
         team_data.pop('_id')
-        members_info = []
-        for member in team_data['members']:
-            member_info = await db_service.db.users.find_one({"id": member})
-            members_info.append({
-                'id': member_info['id'],
-                'email': member_info['email'],
-                'last_name': member_info['last_name'],
-                'first_name': member_info['first_name']
-            })
-        team_data['members_info'] = members_info
+        team_data['members_info'] = [await _get_member_info(member) for member in team_data['members']]
         teams.append(team_data)
     logger.info(f"Get Teams for user: {user_id}")
-    print(teams)
     return teams
-
 
 @router.post("/Teams", response_model=Team)
 async def create_team(team_data: Team):

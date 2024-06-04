@@ -40,3 +40,13 @@ Join a Team
 Become a pro member
 Create a team
 Invite others to team
+
+
+## Tasks
+Create deep linking for invitations to new users and existing users via text and email
+Create a messaging setup for internal user communication.
+Fix apple maps
+Fix saving of runs.
+Create a challenges schema that will allow users to join a challenge.
+Add geographic challenges that will automatically allow track all users that meet the challenge in their area.
+Create a development build with expo eas and introduce react-native-purchases using revenue-cat

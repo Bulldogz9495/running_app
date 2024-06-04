@@ -10,6 +10,7 @@
     "postinstall": "npx react-native config"
   },
   "dependencies": {
+    "@expo/html-elements": "^0.10.1",
     "@expo/metro-runtime": "~3.2.1",
     "@react-native-async-storage/async-storage": "^1.23.1",
     "@react-native-community/masked-view": "^0.1.11",
@@ -20,6 +21,8 @@
     "axios": "^1.6.8",
     "date-fns": "^3.6.0",
     "expo": "51.0.6",
+    "expo-dev-client": "~4.0.15",
+    "expo-linking": "~6.3.1",
     "expo-location": "17.0.1",
     "expo-status-bar": "1.12.1",
     "fs": "^0.0.1-security",
@@ -40,8 +43,7 @@
     "react-native-web": "~0.19.6",
     "react-native-web-maps": "^0.3.0",
     "react-navigation": "^4.1.1",
-    "react-navigation-stack": "^2.10.4",
-    "expo-dev-client": "~4.0.15"
+    "react-navigation-stack": "^2.10.4"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

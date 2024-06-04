@@ -2,9 +2,10 @@
   "expo": {
     "name": "Challenge Run",
     "slug": "challenge-run",
+    "scheme": "challenge-run",
     "version": "0.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/challenge-run-icon1024x1024.jpg",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
@@ -16,7 +17,7 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "buildNumber": "3",
+      "buildNumber": "4",
       "config": {
         "googleMapsApiKey": "AIzaSyCFpCDhy_BA2M0WD54M1tAFlm2rDAvoPXE"
       },
