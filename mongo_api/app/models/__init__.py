@@ -20,5 +20,5 @@ data_seed = {
     "users": sample_users,
     "runs": sample_runs,
     "teams": sample_teams,
-    "challenges": sample_challenges
+    "challenges": sample_challenges,
 }

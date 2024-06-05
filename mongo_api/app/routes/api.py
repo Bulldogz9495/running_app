@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, Depends
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from app.models.user import User, Token
 from app.models.run import Run
-from app.models.team import Team
+from app.models.team import Team, Invitation
 from app.services.mongodb_service import MongoDBService
 from typing import List, Annotated
 from bson import Binary, UuidRepresentation
@@ -165,11 +165,11 @@ async def create_team(team_data: Team):
 
 
 @router.patch("/Teams/id/{team_id}", response_model=Team)
-async def update_team_by_id(team_data: Team, team_id: str):
+async def update_team_by_id(team_data: dict, team_id: str):
     existing_team = await db_service.db.teams.find_one({"id": team_id})
     if existing_team is None:
         raise HTTPException(status_code=404, detail="Team could not be found")
-    for k, v in team_data.dict().items():
+    for k, v in team_data.items():
         if v is not None:
             existing_team[k] = v
     await db_service.db.teams.update_one({"id": team_id}, {'$set': existing_team})
@@ -188,6 +188,103 @@ async def get_all_teams(token: str = Depends(oauth2_scheme)):
         teams.append(team_data)
     logger.info(f"Get All Teams")
     return teams
+
+# Add Invitation Using team id and user id
+@router.post("/Teams/{team_id}/invitations/{user_id}")
+async def add_invitation(team_id: str, user_id: str):
+    team = await db_service.db.teams.find_one({"id": team_id})
+    if not team:
+        raise HTTPException(status_code=404, detail="Team not found")
+    user = await db_service.db.users.find_one({"id": user_id})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    # if not any(invitation['user_id'] == user_id for invitation in team['invitations']):
+    #     raise HTTPException(status_code=400, detail="User Invitation not found")
+    team['invitations'].append(Invitation(
+        user_id=user_id,
+        team_id=team_id,
+        id = str(uuid.uuid4()),
+        date_created = datetime.now(),
+        pending = True,
+        date_accepted = None
+    ).dict())
+    await db_service.db.teams.update_one({"id": team_id}, {'$set': team})
+    return {"message": "Invitation added"}
+
+# Get Invitations By Team ID
+@router.get("/Teams/{team_id}/invitations", response_model=List[Invitation])
+async def get_invitations(team_id: str):
+    team = await db_service.db.teams.find_one({"id": team_id})
+    if not team:
+        raise HTTPException(status_code=404, detail="Team not found")
+    return team['invitations']
+
+# Create a team invitation without user id
+@router.post("/Teams/{team_id}/invitations")
+async def create_invitation(team_id: str):
+    team = await db_service.db.teams.find_one({"id": team_id})
+    if not team:
+        raise HTTPException(status_code=404, detail="Team not found")
+    team['invitations'].append(Invitation(
+        user_id=None,
+        team_id=team_id,
+        id = str(uuid.uuid4()),
+        date_created = datetime.now(),
+        pending = True,
+        date_accepted = None
+    ).dict())
+    await db_service.db.teams.update_one({"id": team_id}, {'$set': team})
+    return {"message": "Invitation created"}
+
+# Accept or reject an invitation based on invitee input
+@router.patch("/Teams/{team_id}/invitations/{invitation_id}")
+async def patch_invitation_by_id(team_id: str, invitation_id: str, accepted: bool, user_id: str = None):
+    team = await db_service.db.teams.find_one({"id": team_id})
+    if not team:
+        raise HTTPException(status_code=404, detail="Team not found")
+    if user_id in team['members']:
+        raise HTTPException(status_code=409, detail="User already a member")
+    if not any(invitation['id'] == invitation_id for invitation in team['invitations']):
+        raise HTTPException(status_code=400, detail="Invitation not found")
+    if accepted:
+        for invitation in team['invitations']:
+            if invitation['id'] == invitation_id:
+                invitation["pending"] = False
+                invitation["date_accepted"] = datetime.now()
+                if invitation["user_id"] is not None:
+                    print("Invitation User ID: ", invitation["user_id"])
+                    if invitation["user_id"] in team['members']:
+                        raise HTTPException(status_code=409, detail="User already a member")
+                    team['members'].append(invitation["user_id"])
+                else:
+                    if user_id is not None:
+                        team['members'].append(user_id)
+                    else:
+                        raise HTTPException(status_code=422, detail="User id must be sent for the given invitation")
+                break
+    else:
+        for invitation in team['invitations']:
+            if invitation['id'] == invitation_id:
+                invitation["pending"] = False
+                invitation["date_accepted"] = None
+                break
+    team['size'] = len(team['members'])
+    await db_service.db.teams.update_one({"id": team_id}, {'$set': team})
+    return {"message": "Invitation updated"}
+
+# Delete an invitation
+@router.delete("/Teams/{team_id}/invitations/{invitation_id}")
+async def delete_invitation(team_id: str, invitation_id: str):
+    team = await db_service.db.teams.find_one({"id": team_id})
+    if not team:
+        raise HTTPException(status_code=404, detail="Team not found")
+    if not any(invitation['id'] == invitation_id for invitation in team['invitations']):
+        raise HTTPException(status_code=400, detail="Invitation not found")
+    for invitation in team['invitations']:
+            if invitation['id'] == invitation_id:
+                team['invitations'].remove(invitation)
+    await db_service.db.teams.update_one({"id": team_id}, {'$set': team})
+    return {"message": "Invitation deleted"}
 
 
 @router.get("/Runs/{item_id}", response_model=Run)

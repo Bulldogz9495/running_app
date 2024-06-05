@@ -59,6 +59,17 @@ export default styles = StyleSheet.create({
         borderColor: 'blue',
         borderWidth: 1,
     },
+    b1: {
+        backgroundColor: 'green',
+        padding: 10,
+        borderRadius: 5,
+        borderWidth: 1,
+        borderColor: 'black',
+        color: 'lightyellow',
+        fontSize: 32,
+        borderColor: 'blue',
+        borderWidth: 1,
+    },
     userText: {
         fontSize: 20
     }

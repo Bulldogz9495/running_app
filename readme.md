@@ -50,3 +50,8 @@ Fix saving of runs.
 Create a challenges schema that will allow users to join a challenge.
 Add geographic challenges that will automatically allow track all users that meet the challenge in their area.
 Create a development build with expo eas and introduce react-native-purchases using revenue-cat
+
+
+
+## Nice to have tasks
+Invitations can expire
