@@ -4,7 +4,7 @@ from app.models.user import User, Token
 from app.models.run import Run
 from app.models.team import Team, Invitation
 from app.services.mongodb_service import MongoDBService
-from typing import List, Annotated
+from typing import List, Annotated, Optional
 from bson import Binary, UuidRepresentation
 from uuid import UUID
 import uuid
@@ -15,6 +15,7 @@ from app.settings import JWT_EXPIRATION_TIME_MINUTES, logger
 from app.utils.security import authenticate_user, create_access_token, get_password_hash
 from datetime import timedelta
 from datetime import datetime
+from pydantic import BaseModel
 
 router = APIRouter()
 db_service = MongoDBService()
@@ -52,6 +53,32 @@ async def read_item(email: str, token: str = Depends(oauth2_scheme)):
     logger.info(f"Getting User: {email}")
     return user_data
 
+
+@router.get("/Users/search/", response_model=List[User])
+async def search_users(
+    first_name: Optional[str] = None, 
+    last_name: Optional[str] = None, 
+    email: Optional[str] = None,
+    token: str = Depends(oauth2_scheme)
+):
+    print(first_name, last_name, email)
+    logger.info(f"Searching Users: {first_name}, {last_name}, {email}")
+    query = {"$and": []}
+    if first_name is not None:
+        logger.info(first_name)
+        query["$and"].append({"first_name": {"$regex": first_name, "$options": 'i'}})
+    if last_name is not None:
+        logger.info(last_name)
+        query["$and"].append({"last_name": {"$regex": last_name, "$options": 'i'}})
+    if email is not None:
+        logger.info(email)
+        query["$and"].append({"email": {"$regex": email, "$options": 'i'}})
+    logger.info(query)
+    users = []
+    async for user in db_service.db.users.find(query):
+        user.pop('_id')
+        users.append(user)
+    return users
 
 @router.post("/Users", response_model=User)
 async def create_user(user_data: User):

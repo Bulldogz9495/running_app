@@ -10,7 +10,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { TeamForm } from '../components/TeamForm';
 
 
-const ChallengeRunScreen = () => {
+const ChallengeRunScreen = (navigation) => {
   const [teams, setTeams] = React.useState([]);
   const [newTeam, setNewTeam] = React.useState({});
   const [expandedTeam, setExpandedTeam] = React.useState(null);
@@ -159,9 +159,9 @@ const editTeams = async (team) => {
           style={{ flex: 1 }}
         />
       ) : ( !editTeam ? 
-        <TeamForm team={newTeam} onSubmit={createTeams} onCancel={handleCancelCreateTeam} />
+        <TeamForm team={newTeam} onSubmit={createTeams} onCancel={handleCancelCreateTeam} navigation={navigation}/>
       : 
-        <TeamForm team={newTeam} onSubmit={editTeams} onCancel={handleCancelCreateTeam} /> )
+        <TeamForm team={newTeam} onSubmit={editTeams} onCancel={handleCancelCreateTeam} navigation={navigation} /> )
       }
     </View>
   );

@@ -1,10 +1,12 @@
-import { View, Text, Pressable, FlatList, Button, TextInput } from 'react-native';
+import { ScrollView, View, Text, Pressable, FlatList, Button, TextInput, KeyboardAvoidingView } from 'react-native';
+import React, { useState } from 'react';
+import { Picker } from '@react-native-picker/picker';
 import { settings } from '../utils/settings';
 import styles from '../styles';
 import { sampleData } from '../utils/sample_data';
 import { v4 as uuidv4 } from 'uuid';
 import { getUserDataFromAsyncStorage } from '../utils/AsyncStorageUtils';
-
+import { useNavigation } from '@react-navigation/native';
 
 const TeamInput = ({ label, defaultValue, onChangeText}) => (
     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -17,19 +19,21 @@ const TeamInput = ({ label, defaultValue, onChangeText}) => (
     </View>
   );
 
-export const TeamForm = ({ team, onSubmit, onCancel }) => (
+export const TeamForm = ({ team, onSubmit, onCancel }) => {
+  const [selectedSearch, setSelectedSearch] = useState('Email');
+  const navigation = useNavigation();
+
+  return (
     <View>
-        <TeamInput
+      <TeamInput
         label="Team Name"
         defaultValue={team.name}
-        onChangeText={value => {
-            console.log("Team name changed to: ", value);
-            team=({...team, name: value})
-        }}
-        />
-        <TeamInput label="Motto" defaultValue={team.motto} onChangeText={value => team=({...team, motto: value})} />
-        <Button title="Save Team" onPress={() => onSubmit(team)} />
-        <Button title="Cancel" onPress={onCancel} />
+        onChangeText={value => team=({...team, name: value})}
+      />
+      <TeamInput label="Motto" defaultValue={team.motto} onChangeText={value => team=({...team, motto: value})} />
+      <Button title="Invite New Team Members!" style={{fontSize: 20}} color="blue" onPress={() => navigation.navigate('inviteMembers')}></Button>
+      <Button title="Save Team" onPress={() => onSubmit(team, navigation)} color="blue"/>
+      <Button title="Cancel" onPress={() => onCancel(navigation)} color="red"/>
     </View>
-);
-
+  );
+};
