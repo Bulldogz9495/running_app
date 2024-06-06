@@ -54,7 +54,7 @@ async def read_item(email: str, token: str = Depends(oauth2_scheme)):
     return user_data
 
 
-@router.get("/Users/search/", response_model=List[User])
+@router.get("/search/Users", response_model=List[User])
 async def search_users(
     first_name: Optional[str] = None, 
     last_name: Optional[str] = None, 

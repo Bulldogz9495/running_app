@@ -5,6 +5,7 @@ import axios from 'axios';
 import { API_URL } from '../utils/settings';
 import styles from '../styles';
 import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const InviteMembers = () => {
   const [searchValue, setSearchValue] = useState('');
@@ -13,19 +14,28 @@ const InviteMembers = () => {
   const [searchResults, setSearchResults] = useState([]);
   const navigation = useNavigation();
 
-  const handleSearch = () => {
+  const handleSearch = async () => {
     if (searchTerm === 'name') {
-        url = `${API_URL}/api/users/search/first_name/${searchValue}/last_name/${searchValue2}`
+        const encodedFirstName = encodeURIComponent(searchValue);
+        const encodedLastName = encodeURIComponent(searchValue2);
+        url = `${API_URL}/api/users/search/?first_name=${encodedFirstName}&last_name=${encodedLastName}`
     } else {
-        url = `${API_URL}/api/users/search/${searchTerm}/${searchValue}`
+        const encodedEmail = encodeURIComponent(searchValue);
+        url = `${API_URL}/api/users/search/?email=${encodedEmail}`
     }
-    axios.get(url)
-      .then(response => {
-        setSearchResults(response.data);
-      })
-      .catch(error => {
-        console.log(error);
-      });
+    AsyncStorage.getItem('MyAccessToken').then(accessToken => {
+        axios.get(url, {
+        headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${accessToken}`
+                }
+            }).then(response => {
+            setSearchResults(response.data);
+        })
+        .catch(error => {
+            console.log(error);
+        });
+    });
   };
 
   const handleSearchTermChange = (selectedItem) => {
@@ -60,12 +70,12 @@ const InviteMembers = () => {
         <TextInput
           value={searchValue}
           onChangeText={setSearchValue}
-          placeholder="Search"
+          placeholder="Email"
           style={styles.inputLogin}
         />
       )}
       <Button title="Search" onPress={handleSearch} />
-      <Text>Search Results:</Text>
+      <Text style={styles.loginLabel}>Search Results:</Text>
       {searchResults.map(result => (
         <Text key={result.id}>{result.email}, {result.first_name} {result.last_name}</Text>
       ))}
