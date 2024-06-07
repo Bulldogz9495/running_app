@@ -54,9 +54,8 @@ const InviteMembers = ( route ) => {
         const invitation_id = uuidv4();
         const accessToken = await AsyncStorage.getItem('MyAccessToken');
         const teamId = route?.route?.params?.team_id;
-        const response = await axios.post(`${settings.MONGO_API_URL}/Teams/${teamId}/invitations/${user.id}`, {
-            invitation_id: invitation_id
-        }, {
+        const encodedInvitationId = encodeURIComponent(invitation_id);
+        const response = await axios.post(`${settings.MONGO_API_URL}/Teams/${teamId}/invitations/${user.id}?invitation_id=${encodedInvitationId}`, {
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${accessToken}`

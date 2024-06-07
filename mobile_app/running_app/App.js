@@ -80,7 +80,7 @@ export default function App() {
           headerTintColor: 'black', 
           headerStyle: { backgroundColor: 'darkgreen' } 
         }}
-        initialRouteName={'invitation'} 
+        initialRouteName={initialRoute} 
         styles={{styles}}
       >
         <Stack.Screen name="Login" component={LoginScreen}/>

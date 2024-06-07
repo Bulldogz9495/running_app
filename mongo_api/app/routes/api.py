@@ -222,6 +222,8 @@ async def add_invitation(team_id: str, user_id: str, invitation_id: Optional[str
         raise HTTPException(status_code=404, detail="User not found")
     # if not any(invitation['user_id'] == user_id for invitation in team['invitations']):
     #     raise HTTPException(status_code=400, detail="User Invitation not found")
+    if 'invitations' not in team:
+        team['invitations'] = []
     team['invitations'].append(Invitation(
         user_id=user_id,
         team_id=team_id,
