@@ -1,35 +1,38 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button } from 'react-native';
+import { View, Text, TextInput, Button, TouchableOpacity } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import axios from 'axios';
-import { API_URL } from '../utils/settings';
+import { settings } from '../utils/settings';
 import styles from '../styles';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { v4 as uuidv4 } from 'uuid';
 
-const InviteMembers = () => {
-  const [searchValue, setSearchValue] = useState('');
-  const [searchValue2, setSearchValue2] = useState('');
+
+const InviteMembers = ( route ) => {
+  const [first_name, setFirstName] = useState('');
+  const [last_name, setLastName] = useState('');
+  const [email, setEmail] = useState('');
   const [searchTerm, setSearchTerm] = useState('email');
   const [searchResults, setSearchResults] = useState([]);
   const navigation = useNavigation();
 
   const handleSearch = async () => {
+    const urlParams = new URLSearchParams();
     if (searchTerm === 'name') {
-        const encodedFirstName = encodeURIComponent(searchValue);
-        const encodedLastName = encodeURIComponent(searchValue2);
-        url = `${API_URL}/api/users/search/?first_name=${encodedFirstName}&last_name=${encodedLastName}`
+        urlParams.append('first_name', first_name);
+        urlParams.append('last_name', last_name);
     } else {
-        const encodedEmail = encodeURIComponent(searchValue);
-        url = `${API_URL}/api/users/search/?email=${encodedEmail}`
+        urlParams.append('email', email);
     }
+    const url = `${settings.MONGO_API_URL}/search/Users?${urlParams.toString()}`;
     AsyncStorage.getItem('MyAccessToken').then(accessToken => {
         axios.get(url, {
-        headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${accessToken}`
-                }
-            }).then(response => {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${accessToken}`
+            }
+        }).then(response => {
             setSearchResults(response.data);
         })
         .catch(error => {
@@ -37,6 +40,37 @@ const InviteMembers = () => {
         });
     });
   };
+
+    {/* Handle invitation logic */}
+    {/* TODO: Pass the user id and team id to the server to create an invitation */}
+    {/* TODO: Display a success message if the invitation is successful */}
+    {/* TODO: Display an error message if the invitation fails */}
+    {/* TODO: Clear the search results after invitation is sent */}
+    {/* TODO: Clear the search inputs */}
+
+    {/* Helper function to handle invitation */}
+    const handleInvite = async (user) => {
+    try {
+        const invitation_id = uuidv4();
+        const accessToken = await AsyncStorage.getItem('MyAccessToken');
+        const teamId = route?.route?.params?.team_id;
+        const response = await axios.post(`${settings.MONGO_API_URL}/Teams/${teamId}/invitations/${user.id}`, {
+            invitation_id: invitation_id
+        }, {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${accessToken}`
+        }
+        });
+        console.log(response.data);
+        setSearchResults([]);
+        setFirstName('');
+        setLastName('');
+        setEmail('');
+    } catch (error) {
+        console.log(error);
+    }
+    }
 
   const handleSearchTermChange = (selectedItem) => {
     setSearchTerm(selectedItem);
@@ -54,22 +88,22 @@ const InviteMembers = () => {
       {searchTerm === 'name' ? (
         <View>
           <TextInput
-            value={searchValue}
-            onChangeText={setSearchValue}
+            value={first_name}
+            onChangeText={setFirstName}
             placeholder="First Name"
             style={styles.inputLogin}
           />
           <TextInput
-            value={searchValue}
-            onChangeText={setSearchValue2}
+            value={last_name}
+            onChangeText={setLastName}
             placeholder="Last Name"
             style={styles.inputLogin}
           />
         </View>
       ) : (
         <TextInput
-          value={searchValue}
-          onChangeText={setSearchValue}
+          value={email}
+          onChangeText={setEmail}
           placeholder="Email"
           style={styles.inputLogin}
         />
@@ -77,7 +111,12 @@ const InviteMembers = () => {
       <Button title="Search" onPress={handleSearch} />
       <Text style={styles.loginLabel}>Search Results:</Text>
       {searchResults.map(result => (
-        <Text key={result.id}>{result.email}, {result.first_name} {result.last_name}</Text>
+        <View key={result.id} style={{flexDirection: 'row', alignItems: 'center'}}>
+          <Text>{result.email} - {result.first_name} {result.last_name}</Text>
+          <TouchableOpacity onPress={() => handleInvite(result)} style={{marginLeft: 10}} color="blue">
+            <Text style={{color: 'blue'}}>Invite</Text>
+          </TouchableOpacity>
+        </View>
       ))}
       <Button title="Back to team page" onPress={() => navigation.goBack()} />
     </View>

@@ -31,7 +31,7 @@ export const TeamForm = ({ team, onSubmit, onCancel }) => {
         onChangeText={value => team=({...team, name: value})}
       />
       <TeamInput label="Motto" defaultValue={team.motto} onChangeText={value => team=({...team, motto: value})} />
-      <Button title="Invite New Team Members!" style={{fontSize: 20}} color="blue" onPress={() => navigation.navigate('inviteMembers')}></Button>
+      <Button title="Invite New Team Members!" style={{fontSize: 20}} color="blue" onPress={() => navigation.navigate('inviteMembers', { team_id: team.id })}></Button>
       <Button title="Save Team" onPress={() => onSubmit(team, navigation)} color="blue"/>
       <Button title="Cancel" onPress={() => onCancel(navigation)} color="red"/>
     </View>

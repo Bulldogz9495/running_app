@@ -61,19 +61,14 @@ async def search_users(
     email: Optional[str] = None,
     token: str = Depends(oauth2_scheme)
 ):
-    print(first_name, last_name, email)
     logger.info(f"Searching Users: {first_name}, {last_name}, {email}")
     query = {"$and": []}
     if first_name is not None:
-        logger.info(first_name)
         query["$and"].append({"first_name": {"$regex": first_name, "$options": 'i'}})
     if last_name is not None:
-        logger.info(last_name)
         query["$and"].append({"last_name": {"$regex": last_name, "$options": 'i'}})
     if email is not None:
-        logger.info(email)
         query["$and"].append({"email": {"$regex": email, "$options": 'i'}})
-    logger.info(query)
     users = []
     async for user in db_service.db.users.find(query):
         user.pop('_id')
@@ -218,7 +213,7 @@ async def get_all_teams(token: str = Depends(oauth2_scheme)):
 
 # Add Invitation Using team id and user id
 @router.post("/Teams/{team_id}/invitations/{user_id}")
-async def add_invitation(team_id: str, user_id: str):
+async def add_invitation(team_id: str, user_id: str, invitation_id: Optional[str] = None):
     team = await db_service.db.teams.find_one({"id": team_id})
     if not team:
         raise HTTPException(status_code=404, detail="Team not found")
@@ -230,7 +225,7 @@ async def add_invitation(team_id: str, user_id: str):
     team['invitations'].append(Invitation(
         user_id=user_id,
         team_id=team_id,
-        id = str(uuid.uuid4()),
+        id = invitation_id if invitation_id else str(uuid.uuid4()),
         date_created = datetime.now(),
         pending = True,
         date_accepted = None
