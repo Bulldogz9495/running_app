@@ -4,7 +4,7 @@ import time
 import boto3
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.routes.api import router as api_router
+from app.routes import router as api_router
 from app.services.mongodb_seed import initialize_database
 from app.models import data_models
 from app.settings import logger

@@ -43,8 +43,8 @@ Invite others to team
 
 
 ## Tasks
-Create deep linking for invitations to new users and existing users via text and email
 Create a messaging setup for internal user communication.
+Create deep linking for invitations to new users and existing users via text and email
 Fix apple maps
 Fix saving of runs.
 Create a challenges schema that will allow users to join a challenge.

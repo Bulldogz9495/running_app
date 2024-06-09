@@ -25,7 +25,26 @@ class User(BaseModel):
     created: datetime = Field(default_factory=datetime.now)
     updated: datetime = Field(default_factory=datetime.now)
     paid: Optional[bool] = False
+    messages: Optional[list[str]]
     
+class Message(BaseModel):
+    id: str
+    created_by: str
+    message: str
+    created: datetime
+    updated: datetime
+    read: bool
+
+
+message_schema = {
+    'id': {"type": "uuid", "required": True, "unique": True},
+    "created_by": {"type": "uuid", "required": True},
+    "message": {"type": "string", "required": True},
+    "created": {"type": "datetime", "required": True},
+    "updated": {"type": "datetime", "required": True},
+    "read": {"type": "bool", "required": True}
+}
+
 
 user_schema = {
     "id": {"type": "uuid", "required": True, "unique": True},
@@ -44,6 +63,26 @@ user_schema = {
     "paid": {"type": "bool", "required": True}
 }
 
+
+sample_messages = [
+    {
+        'id': "99443ade-f889-415a-a2cb-65f3bbab032b",
+        'created_by': str("933d1bba-aa0b-485f-8e10-95697fb86bd2"),
+        'message': "Hello World!",
+        'created': datetime.now(),
+        'updated': datetime.now(),
+        'read': False
+    },
+    {
+        'id': "933d1bba-aa0b-485f-8e10-95697fb86bd2",
+        'created_by': str("933d1bba-aa0b-485f-8e10-95697fb86bd2"),
+        'message': "How are you?",
+        'created': datetime.now(),
+        'updated': datetime.now(),
+        'read': True
+    }
+]
+
 sample_users = [
     {
         'id': str("933d1bba-aa0b-485f-8e10-95697fb86bd2"),
@@ -60,7 +99,8 @@ sample_users = [
         'weight_ounces': 8,
         'created': datetime.now(),
         'updated': datetime.now(),
-        'paid': True
+        'paid': True,
+        'messages': sample_messages
     },
     {
         'id': "99443ade-f889-415a-a2cb-65f3bbab032b",
@@ -77,24 +117,8 @@ sample_users = [
         'weight_ounces': 8,
         'created': datetime.now(),
         'updated': datetime.now(),
-        'paid': False
+        'paid': False,
+        'messages': []
     }
 ]
 
-'''
-from mongoengine import Document, StringField, IntField, UUIDField, FloatField, DateField, DateTimeField
-class User(Document):
-    _id = UUIDField(required=True, unique=True, primary_key=True)
-    email = StringField(required=True, unique=True)
-    first_name = StringField(required=False)
-    last_name = StringField(required=False)
-    middle_name = StringField(required=False)
-    motto = StringField(required=False)
-    height_inches = FloatField(required=False)
-    height_feet = FloatField(required=False)
-    birthday = DateField(required=False)
-    weight_lbs = FloatField(required=False)
-    weight_ounces = FloatField(required=False)
-    created = DateTimeField(required=True)
-    updated = DateTimeField(required=True)
-    '''

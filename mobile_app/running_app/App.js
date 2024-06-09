@@ -4,7 +4,7 @@ import { createStackNavigator } from '@react-navigation/stack'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { settings } from './utils/settings';
 import { styles } from './styles';
-import { View, Text } from 'react-native';
+import { View, Text, Button } from 'react-native';
 import * as Linking from 'expo-linking'
 
 import LoginScreen from './screens/LoginScreen';
@@ -12,7 +12,8 @@ import PaymentScreen from './screens/PaymentScreen';
 import TabNavigation from './navigation/TabNavigation';
 import LoadingScreen from './screens/LoadingScreen';
 import InvitationScreen from './screens/InvitationScreen';
-import InviteMembers from './screens/InviteMembers';
+import InviteMembersScreen from './screens/InviteMembersScreen';
+import MessageScreen from './screens/MessageScreen';
 import { ActivityIndicator } from 'react-native';
 
 const Stack = createStackNavigator();
@@ -88,7 +89,8 @@ export default function App() {
         <Stack.Screen name="payment" component={PaymentScreen}/>
         <Stack.Screen name="loading" component={LoadingScreen}/>
         <Stack.Screen name="invitation" component={InvitationScreen}/>
-        <Stack.Screen name="inviteMembers" component={InviteMembers}/>
+        <Stack.Screen name="inviteMembers" component={InviteMembersScreen}/>
+        <Stack.Screen name="messages" component={MessageScreen}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

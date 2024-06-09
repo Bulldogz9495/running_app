@@ -32,7 +32,7 @@ def create_database():
     except ServerSelectionTimeoutError as e:
         logger.error(f"Error: Connection to MongoDB server timed out. \n{e}")
         client.close()
-
+ 
 def wait_for_server():
     connection = False
     while not connection:
