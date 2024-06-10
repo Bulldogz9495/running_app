@@ -34,6 +34,8 @@ class Message(BaseModel):
     created: datetime
     updated: datetime
     read: bool
+    message_type: str
+    metadata: dict
 
 
 message_schema = {
@@ -42,7 +44,9 @@ message_schema = {
     "message": {"type": "string", "required": True},
     "created": {"type": "datetime", "required": True},
     "updated": {"type": "datetime", "required": True},
-    "read": {"type": "bool", "required": True}
+    "read": {"type": "bool", "required": True},
+    "message_type": {"type": "string", "required": True},
+    "metadata": {"type": "dict", "required": False}
 }
 
 
@@ -71,7 +75,9 @@ sample_messages = [
         'message': "Hello World!",
         'created': datetime.now(),
         'updated': datetime.now(),
-        'read': False
+        'read': False,
+        'message_type': 'text',
+        'metadata': {}
     },
     {
         'id': "933d1bba-aa0b-485f-8e10-95697fb86bd2",
@@ -79,7 +85,13 @@ sample_messages = [
         'message': "How are you?",
         'created': datetime.now(),
         'updated': datetime.now(),
-        'read': True
+        'read': True,
+        'message_type': 'invitation',
+        'metadata': {
+            "team_id": "6eaf4c12-8aa0-42d5-8447-e0b598c03bb2", 
+            "user_id": "933d1bba-aa0b-485f-8e10-95697fb86bd2", 
+            "invitation_id": "f8f3335c-9c7a-403e-a004-d07e47cdb82f"
+            }
     }
 ]
 
