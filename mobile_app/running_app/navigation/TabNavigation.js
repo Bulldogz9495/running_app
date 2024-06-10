@@ -33,6 +33,9 @@ export default function TabNavigation() {
             const response = await axios({
               method: 'get',
               url: `${settings.MONGO_API_URL}/Users/${encodeURIComponent(userInfo?.data.id)}/messages/count`,
+              params: {
+                read: false
+              },
               headers: {
                 'Authorization': `Bearer ${accessToken}`
               }

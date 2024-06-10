@@ -172,3 +172,13 @@ async def delete_invitation(team_id: str, invitation_id: str):
                 team['invitations'].remove(invitation)
     await db_service.db.teams.update_one({"id": team_id}, {'$set': team})
     return {"message": "Invitation deleted"}
+
+
+async def _get_member_info(member_id):
+    member_info = await db_service.db.users.find_one({"id": member_id})
+    return {
+        'id': member_info['id'],
+        'email': member_info['email'],
+        'last_name': member_info['last_name'],
+        'first_name': member_info['first_name']
+    }

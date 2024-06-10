@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, ActivityIndicator } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { useRoute, useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getUserDataFromAsyncStorage } from '../utils/AsyncStorageUtils';
+import { settings } from '../utils/settings';
 
 const MessageScreen = () => {
   const route = useRoute();
@@ -11,17 +13,20 @@ const MessageScreen = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const userId = route.params.userId;
 
-  useEffect(() => {
+  useEffect(async () => {
+    const userInfo = await getUserDataFromAsyncStorage();
     const fetchMessages = async () => {
       try {
         const accessToken = await AsyncStorage.getItem('MyAccessToken');
-        const response = await axios.get(`${settings.MONGO_API_URL}/Messages/user_id/${userId}`, {
+        const response = await fetch(`${settings.MONGO_API_URL}/user_id/${userInfo.data.id}/messages`, {
+          method: 'GET',
           headers: {
+            'Content-Type': 'application/json',
             'Authorization': `Bearer ${accessToken}`
           }
         });
+        response = await response.json();
         setMessages(response.data);
         setLoading(false);
       } catch (error) {
@@ -31,7 +36,7 @@ const MessageScreen = () => {
       }
     };
     fetchMessages();
-  }, [userId]);
+  }, []);
 
   const renderMessage = ({ item }) => (
     <View style={styles.message}>
@@ -66,6 +71,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 10,
+    paddingTop: 20,
   },
   loadingContainer: {
     flex: 1,

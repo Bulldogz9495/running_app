@@ -129,16 +129,6 @@ async def get_all_users(token: str = Depends(oauth2_scheme)):
     return users
 
 
-async def _get_member_info(member_id):
-    member_info = await db_service.db.users.find_one({"id": member_id})
-    return {
-        'id': member_info['id'],
-        'email': member_info['email'],
-        'last_name': member_info['last_name'],
-        'first_name': member_info['first_name']
-    }
-
-
 @user_router.get("/Users/{user_id}/messages", response_model=List[Message])
 async def get_user_messages(user_id: str, skip: int = 0, limit: int = 10):
     try:
