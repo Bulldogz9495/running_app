@@ -1,30 +1,38 @@
 import React, { useEffect } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { MaterialIcons } from '@expo/vector-icons'; // Import MaterialIcons from expo vector icons
+import { useNavigation } from '@react-navigation/native';
 
 import ChallengeRunScreen from '../screens/ChallengeRunScreen';
 import MyActivityScreen from '../screens/MyActivityScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 
-import { View } from 'react-native';
+import { View, TouchableOpacity } from 'react-native';
 import { Badge } from 'react-native-elements';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faInbox } from '@fortawesome/free-solid-svg-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getUserDataFromAsyncStorage } from '../utils/AsyncStorageUtils';
 
 const Tab = createBottomTabNavigator();
 
 export default function TabNavigation() {
   const [messageCount, setMessageCount] = React.useState(0);
+  const [userData, setUserData] = React.useState(null);
+
+  const navigation = useNavigation();
 
   useEffect(() => {
     const getMessageCount = async () => {
       try {
+        const userInfo = await getUserDataFromAsyncStorage();
+        setUserData(userInfo.data);
         const accessToken = await AsyncStorage.getItem('MyAccessToken');
         if (accessToken !== null) {
           try {
             const response = await axios({
               method: 'get',
-              url: `${settings.MONGO_API_URL}/Users/messages/count`,
+              url: `${settings.MONGO_API_URL}/Users/${encodeURIComponent(userInfo?.data.id)}/messages/count`,
               headers: {
                 'Authorization': `Bearer ${accessToken}`
               }
@@ -32,7 +40,7 @@ export default function TabNavigation() {
             setMessageCount(response.data.count);
           } catch (error) {
             if (error.response.status === 401) {
-              NavigationActions.navigate("Login");
+              navigation.navigate("Login");
             } else {
               throw error;
             }
@@ -47,16 +55,18 @@ export default function TabNavigation() {
 
   return (
     <>
-      <View style={{position: 'absolute', top: 50, right: 10, zIndex: 1}}>
-          <FontAwesomeIcon icon={faInbox} size={36} color="blue" onPress={() => NavigationActions.navigate("messages")}/>
+      <TouchableOpacity 
+        style={{position: 'absolute', top: 50, right: 10, zIndex: 1}} 
+        onPress={() => {console.log("Navigating to messages"); navigation.navigate("messages")}}
+      >
+          <FontAwesomeIcon icon={faInbox} size={36} color="blue" />
           {messageCount > 0 && <Badge value={messageCount} containerStyle={{position: 'absolute', top: 0, right: 0, zIndex: 1}}/>}
-        </View>
+      </TouchableOpacity>
       <Tab.Navigator
         initialRouteName="ChallengeRunScreen"
         screenOptions={({ route }) => ({
           tabBarIcon: ({ focused, color, size }) => {
             let iconName;
-
             if (route.name === 'Challenge Run') {
               iconName = focused ? 'directions-run' : 'directions-run';
             } else if (route.name === 'My Activity') {

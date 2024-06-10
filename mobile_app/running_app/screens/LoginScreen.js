@@ -63,6 +63,7 @@ const LoginScreen = ({ navigation }) => {
                 method: 'get',
                 url: `${settings.MONGO_API_URL}/Users/${encodeURIComponent(username)}`,
                 headers: {
+                    'Content-Type': 'application/json',
                     'Authorization': `Bearer ${accessToken}`
                 }
             });

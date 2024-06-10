@@ -159,6 +159,26 @@ async def get_user_messages(user_id: str, skip: int = 0, limit: int = 10):
         return messages
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to get message: {str(e)}")
+    
+
+
+@user_router.get("/Users/{user_id}/messages/count")
+async def get_user_message_count(user_id: str, read: bool = False):
+    try:
+        pipeline = [
+            {"$match": {"id": user_id}},
+            {"$unwind": "$messages"},
+            {"$count": "count"}
+        ]
+        if not read:
+            print("Not read")
+            pipeline.insert(2, {"$match": {"messages.read": read}})
+        result = await db_service.db.users.aggregate(pipeline).to_list(None)
+        print(result)
+        return result[0]
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to get message count: {str(e)}")
+
 
 
 @user_router.post("/Users/{user_id}/messages", response_model=dict)
