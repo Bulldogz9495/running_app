@@ -3,6 +3,9 @@ from app.services.mongodb_service import MongoDBService
 from fastapi.security import OAuth2PasswordBearer
 from fastapi import APIRouter, HTTPException, Depends
 from app.models.run import Run
+from app.settings import logger
+
+
 run_router = APIRouter()
 
 db_service = MongoDBService()

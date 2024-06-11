@@ -4,6 +4,7 @@ from app.models.team import Team, Invitation
 from app.models.user import Token
 from app.services.mongodb_service import MongoDBService
 from fastapi.security import OAuth2PasswordBearer
+from app.settings import logger
 
 db_service = MongoDBService()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/token")

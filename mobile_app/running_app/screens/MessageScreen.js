@@ -14,29 +14,34 @@ const MessageScreen = () => {
   const [error, setError] = useState(null);
 
 
-  useEffect(async () => {
-    const userInfo = await getUserDataFromAsyncStorage();
-    const fetchMessages = async () => {
-      try {
-        const accessToken = await AsyncStorage.getItem('MyAccessToken');
-        const response = await fetch(`${settings.MONGO_API_URL}/user_id/${userInfo.data.id}/messages`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${accessToken}`
-          }
-        });
-        response = await response.json();
-        setMessages(response.data);
-        setLoading(false);
-      } catch (error) {
-        setError('Error fetching messages');
-        setLoading(false);
-        console.error(error);
-      }
-    };
-    fetchMessages();
-  }, []);
+  useEffect(() => {
+    async () => {
+      const userInfo = await getUserDataFromAsyncStorage();
+      const fetchMessages = async () => {
+        try {
+          console.log("Messages 1")
+          const accessToken = await AsyncStorage.getItem('MyAccessToken');
+          console.log("Messages 2")
+          const response = await fetch(`${settings.MONGO_API_URL}/Users/${userInfo.data.id}/messages`, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${accessToken}`
+            }
+          });
+          console.log("Messages 3")
+          const responseData = await response.json();
+          console.log("Messages 4")
+          setMessages(responseData.data);
+          setLoading(false);
+        } catch (error) {
+          setError('Error fetching messages');
+          setLoading(false);
+          console.error(error);
+        }
+      };
+      fetchMessages();
+  }}, []);
 
   const renderMessage = ({ item }) => (
     <View style={styles.message}>
