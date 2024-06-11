@@ -18,6 +18,7 @@ const MyActivityScreen = () => {
   const [totalScore, setTotalScore] = useState(0);
   const [currentPace, setCurrentPace] = useState(0);
   const [showModal, setShowModal] = useState(false);
+  const [totalTimeSeconds, setTotalTimeSeconds] = useState(0);
 
 
   const stopRecording = () => {
@@ -90,9 +91,12 @@ const MyActivityScreen = () => {
       var pace2 =  5 / 60 / (distance); // minutes / miles - from distance
       var score = distance * Math.pow(2,((1500-(pace2*60))/140));
       // var score = Math.round((distance * Math.pow(2,((1500-(locations[locations.length - 1].pace*60))/140)))*10)/10);  // Uses gps speed instead of calculated distance
+      const startDateTime = new Date(locations[0].datetime);
+      const endDateTime = new Date(locations[locations.length - 1].datetime);
+      setTotalTimeSeconds((endDateTime.getTime() - startDateTime.getTime()) / 1000);
       setCurrentPace(pace2);
       setTotalDistanceMiles(totalDistanceMiles + (Math.round((distance) * 100000) / 100000.0));
-      setAveragePacePmin((locations[locations.length - 1].datetime - locations[0].datetime) / (totalDistanceMiles) / 1000 / 60);
+      setAveragePacePmin(totalTimeSeconds / (totalDistanceMiles) / 1000 / 60);
       setTotalScore(state => state + score);
     }
   }, [locations]);
@@ -160,6 +164,7 @@ const MyActivityScreen = () => {
         totalScore={totalScore}
         averagePacePmin={averagePacePmin}
         currentPace={currentPace}
+        totalTimeSeconds={totalTimeSeconds}
       />
       : 
       <RunComponent/>}

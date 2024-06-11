@@ -6,7 +6,6 @@ from bson import Binary, UuidRepresentation
 from uuid import UUID
 import uuid
 import json
-from pymongo.results import InsertOneResult
 import pymongo
 from app.settings import logger, JWT_EXPIRATION_TIME_MINUTES
 from app.utils.security import authenticate_user, create_access_token, get_password_hash

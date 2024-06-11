@@ -3,9 +3,8 @@ import MapView, { Polyline } from 'react-native-maps';
 import { View, Text } from 'react-native';
 import styles from '../styles';
 
-const MapComponent = ({locations, recording, totalDistanceMiles, totalScore, averagePacePmin, currentPace}) => {
+const MapComponent = ({locations, recording, totalDistanceMiles, totalScore, averagePacePmin, currentPace, totalTimeSeconds}) => {
   const [polylines, setPolylines] = useState([]);
-
 
   return (
     <>
@@ -41,23 +40,39 @@ const MapComponent = ({locations, recording, totalDistanceMiles, totalScore, ave
       <View style={{
         zIndex: 1,
         position: 'absolute',
-        top: '10%',
+        top: '7%',
+        left: '2%',
         alignItems: 'center',
         justifyContent: 'center',
       }}>
         <View style={styles.greenCircle}>
+          <Text style={styles.mapScoreStyle}>{totalScore.toFixed(2)}</Text>
           <Text style={styles.mapTextStyle}>Score</Text>
-          <Text style={styles.mapTextStyle}>{totalScore.toFixed(2)}</Text>
         </View>
         <View style={styles.greenCircle}>
-          <Text style={styles.mapTextStyle}>Distance</Text>
-          <Text style={styles.mapTextStyle}>{totalDistanceMiles.toFixed(2)} </Text>
-          <Text style={styles.mapTextStyle}>miles</Text>
+          <Text style={styles.mapScoreStyle}>{totalDistanceMiles.toFixed(2)} </Text>
+          <Text style={styles.mapTextStyle}>Distance (miles)</Text>
         </View>
         <View style={styles.greenCircle}>
-          <Text style={styles.mapTextStyle}>Pace</Text>
-          <Text style={styles.mapTextStyle}>{currentPace.toFixed(1)}</Text>
-          <Text style={styles.mapTextStyle}>min/mile</Text>
+          <Text style={styles.mapScoreStyle}>{Math.floor(totalTimeSeconds / 60)}:{(totalTimeSeconds % 60).toFixed(0).toString().padStart(2, '0')}</Text>
+          <Text style={styles.mapTextStyle}>Time</Text>
+        </View>
+      </View>
+      <View style={{
+        zIndex: 1,
+        position: 'absolute',
+        top: '7%',
+        alignItems: 'center',
+        justifyContent: 'center',
+        right: '2%',
+      }}>
+        <View style={styles.greenCircle}>
+          <Text style={styles.mapScoreStyle}>{currentPace.toFixed(1)}</Text>
+          <Text style={styles.mapTextStyle}> Pace (min/mile)</Text>
+        </View>
+        <View style={styles.greenCircle}>
+          <Text style={styles.mapScoreStyle}>{averagePacePmin.toFixed(1)}</Text>
+          <Text style={styles.mapTextStyle}>Avg Pace (min/mile)</Text>
         </View>
       </View>
     </>

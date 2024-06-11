@@ -3,14 +3,20 @@ import { StyleSheet } from 'react-native';
 export default styles = StyleSheet.create({
     greenCircle: {
       backgroundColor: 'rgba(0, 200, 0, 0.55)',
-      borderRadius: 100,
+      borderRadius: 0,
+      marginBottom: 5,
       height: 100,
       width: 100,
       alignItems: 'center',
       justifyContent: 'center'
     },
+    mapScoreStyle: {
+      fontSize: 30,
+      fontWeight: 'bold'
+    },
     mapTextStyle: {
-      fontSize: 18
+      fontSize: 12,
+      textAlign: 'center',
     },
     loginContainer: {
         flex: 1,
