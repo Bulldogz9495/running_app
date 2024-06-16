@@ -23,6 +23,7 @@
       },
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "Allow the app to access your location",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "Allow the app to access your location",
         "NSCameraUsageDescription": "Allow the app to take photos with your camera",
         "NSAppTransportSecurity": {
           "NSAllowsArbitraryLoads": true

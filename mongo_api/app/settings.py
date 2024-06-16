@@ -67,7 +67,8 @@ else:
     DATABASE_URL = f"""mongodb+srv://{DATABASE_USER}:{DATABASE_PASSWORD}@serverlessinstance0-pe-1.ytovzs1.mongodb.net/?retryWrites=true&w=majority&appName=ServerlessInstance0"""
     logger.info(f"{DATABASE_URL}")
 DATABASE_NAME = "running_data"
-JWT_EXPIRATION_TIME_MINUTES = 5
+JWT_EXPIRATION_TIME_MINUTES = 0
+JWT_EXPIRATION_TIME_HOURS = 24
 JWT_ALGORITHM = "HS256"
 TOKEN_REFRESH_TIME = 30 * 60
 

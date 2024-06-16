@@ -50,8 +50,15 @@ Fix saving of runs.
 Create a challenges schema that will allow users to join a challenge.
 Add geographic challenges that will automatically allow track all users that meet the challenge in their area.
 Create a development build with expo eas and introduce react-native-purchases using revenue-cat
+Make scroll areas refresh when pulled down (runs, teams)
+Handle empty states on scrolls
 
 
 
 ## Nice to have tasks
 Invitations can expire
+Map has polyline of current runs route
+Total Run Time updates 10 times a second
+Make map follow current travel direction while exercising
+Runs can have comments (chat)
+Save screenshots of maps with route

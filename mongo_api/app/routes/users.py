@@ -7,7 +7,7 @@ from uuid import UUID
 import uuid
 import json
 import pymongo
-from app.settings import logger, JWT_EXPIRATION_TIME_MINUTES
+from app.settings import logger, JWT_EXPIRATION_TIME_MINUTES, JWT_EXPIRATION_TIME_HOURS
 from app.utils.security import authenticate_user, create_access_token, get_password_hash
 from datetime import timedelta
 from datetime import datetime
@@ -26,7 +26,7 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
         raise HTTPException(status=404, detail="User Email not found")
     if not authenticate_user(form_data.username, form_data.password, user['password']):
         raise HTTPException(status_code=401, detail="Invalid username or password")
-    access_token_expires = timedelta(minutes=JWT_EXPIRATION_TIME_MINUTES)
+    access_token_expires = timedelta(hours=JWT_EXPIRATION_TIME_HOURS, minutes=JWT_EXPIRATION_TIME_MINUTES)
     access_token = create_access_token(
         data={"sub": user['email']}, expires_delta=access_token_expires
     )

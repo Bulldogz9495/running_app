@@ -52,11 +52,11 @@ export default RunComponent = () => {
             {runs.map(run => (
                 <View key={run.id} style={{ flexDirection: 'column', marginBottom: 10, padding: 10, borderWidth: 2, borderColor: 'blue' }}>
                     <Text style={{ fontSize: 20 }}>Date: {new Date(run.start_datetime).toLocaleDateString()}</Text>
-                    <Text style={{ fontSize: 20 }}>Score: {run.score}</Text>
+                    <Text style={{ fontSize: 20 }}>Score: {run.score.toFixed(1)}</Text>
                     <Text style={{ fontSize: 20 }}>Duration: {Math.round(run.duration / 60)} min
-                        {run.duration > 0 && <Text> (Pace: {Math.round(run.distance)} miles at {run.pace} min/mile)</Text>}
+                        {run.duration > 0 && <Text> (Pace: {Math.round(run.distance)} miles at {run.pace.toFixed(1)} min/mile)</Text>}
                     </Text>
-                    <Text style={{ fontSize: 20 }}>Distance: {Math.round(100*run.distance, 2)/100} miles</Text>
+                    <Text style={{ fontSize: 20 }}>Distance: {run.distance.toFixed(2)} miles</Text>
                 </View>
             ))}
         </ScrollView>
