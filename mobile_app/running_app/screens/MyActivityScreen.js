@@ -96,7 +96,7 @@ const MyActivityScreen = () => {
       setTotalTimeSeconds((endDateTime.getTime() - startDateTime.getTime()) / 1000);
       setCurrentPace(pace2);
       setTotalDistanceMiles(totalDistanceMiles + (Math.round((distance) * 100000) / 100000.0));
-      setAveragePacePmin(totalTimeSeconds / (totalDistanceMiles) / 1000 / 60);
+      setAveragePacePmin(totalTimeSeconds / (totalDistanceMiles) / 60);
       setTotalScore(state => state + score);
     }
   }, [locations]);

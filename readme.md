@@ -52,6 +52,7 @@ Add geographic challenges that will automatically allow track all users that mee
 Create a development build with expo eas and introduce react-native-purchases using revenue-cat
 Make scroll areas refresh when pulled down (runs, teams)
 Handle empty states on scrolls
+Save Login info so user doesn't have to type it in each time
 
 
 

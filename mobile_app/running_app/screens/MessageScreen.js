@@ -15,13 +15,10 @@ const MessageScreen = () => {
 
 
   useEffect(() => {
-    async () => {
-      const userInfo = await getUserDataFromAsyncStorage();
       const fetchMessages = async () => {
         try {
-          console.log("Messages 1")
+          const userInfo = await getUserDataFromAsyncStorage();
           const accessToken = await AsyncStorage.getItem('MyAccessToken');
-          console.log("Messages 2")
           const response = await fetch(`${settings.MONGO_API_URL}/Users/${userInfo.data.id}/messages`, {
             method: 'GET',
             headers: {
@@ -29,9 +26,7 @@ const MessageScreen = () => {
               'Authorization': `Bearer ${accessToken}`
             }
           });
-          console.log("Messages 3")
           const responseData = await response.json();
-          console.log("Messages 4")
           setMessages(responseData.data);
           setLoading(false);
         } catch (error) {
@@ -41,7 +36,7 @@ const MessageScreen = () => {
         }
       };
       fetchMessages();
-  }}, []);
+    }, []);
 
   const renderMessage = ({ item }) => (
     <View style={styles.message}>
