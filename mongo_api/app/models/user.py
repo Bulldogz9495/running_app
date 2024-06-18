@@ -8,7 +8,17 @@ from app.utils.security import get_password_hash
 class Token(BaseModel):
     access_token: str
     token_type: str
-
+    
+class Message(BaseModel):
+    id: str
+    created_by: str
+    message: str
+    created: datetime
+    updated: datetime
+    read: bool
+    message_type: str
+    metadata: dict
+    
 class User(BaseModel):
     id: str # UUID
     password: str
@@ -25,17 +35,7 @@ class User(BaseModel):
     created: datetime = Field(default_factory=datetime.now)
     updated: datetime = Field(default_factory=datetime.now)
     paid: Optional[bool] = False
-    messages: Optional[list[str]]
-    
-class Message(BaseModel):
-    id: str
-    created_by: str
-    message: str
-    created: datetime
-    updated: datetime
-    read: bool
-    message_type: str
-    metadata: dict
+    messages: Optional[list[Message]]
 
 
 message_schema = {

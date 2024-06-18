@@ -8,6 +8,7 @@ import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
 import { settings } from '../utils/settings';
 import { getUserDataFromAsyncStorage } from '../utils/AsyncStorageUtils';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import styles from '../styles';
 
 const MyActivityScreen = () => {
@@ -43,8 +44,14 @@ const MyActivityScreen = () => {
         geopoints: locations,
       }
       console.log("RunData: ", runData);
-      axios.post(`${settings.MONGO_API_URL}/Runs`, runData).then((response) => {
-        console.log(response.data);
+      const accessToken = await AsyncStorage.getItem('MyAccessToken');
+      axios.post(`${settings.MONGO_API_URL}/Runs`, runData, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${accessToken}`
+        }
+      }).then((response) => {
+        console.log("RUN RESPONSE: ", response);
       })
       .catch((error) => {
         // resetState(); // Only use when deving and trying to always remove running data
