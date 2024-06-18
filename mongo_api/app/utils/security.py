@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 import jwt
 from passlib.context import CryptContext
-from app.settings import JWT_EXPIRATION_TIME_MINUTES, JWT_SECRET_KEY, JWT_ALGORITHM
+from app.settings import JWT_EXPIRATION_TIME_MINUTES, JWT_EXPIRATION_TIME_HOURS, JWT_SECRET_KEY, JWT_ALGORITHM
 
 
 # Hashing password
@@ -12,7 +12,7 @@ def get_password_hash(password: str):
     return hashed_password
     
 # Function to create access token
-def create_access_token(data: dict, expires_delta: timedelta=JWT_EXPIRATION_TIME_MINUTES):
+def create_access_token(data: dict, expires_delta: timedelta=timedelta(hours=JWT_EXPIRATION_TIME_HOURS, minutes=JWT_EXPIRATION_TIME_MINUTES)):
     to_encode = data.copy()
     expire = datetime.now() + expires_delta
     to_encode.update({"exp": expire})

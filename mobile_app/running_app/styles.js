@@ -78,5 +78,37 @@ export default styles = StyleSheet.create({
     },
     userText: {
         fontSize: 20
-    }
+    },
+    pressableArea: {
+        backgroundColor: 'green',
+        padding: 10,
+        borderRadius: 5,
+        borderWidth: 1,
+        borderColor: 'black',
+        color: 'lightyellow',
+        fontSize: 32,
+        borderColor: 'blue',
+        borderWidth: 1,
+    },
+    pressableText: {
+        color: 'lightyellow',
+        fontSize: 18
+    },
+    container: {
+        flex: 1,
+        padding: 10,
+        paddingTop: 60,
+        backgroundColor: 'lightgreen',
+    },
+    loadingContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    message: {
+        marginVertical: 10,
+        padding: 10,
+        borderBottomWidth: 1,
+        borderBottomColor: 'gray',
+    },
   });

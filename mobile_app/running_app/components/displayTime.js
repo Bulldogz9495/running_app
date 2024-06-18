@@ -7,7 +7,7 @@ export const DisplayTime = ({ totalTimeSeconds }) => {
   const seconds = (totalTimeSeconds % 60).toFixed(0).toString().padStart(2, '0');
   let displayMinutes = minutes.toString();
   if (minutes > 99) {
-    display = '< 99';
+    display = '99+';
   } else {
     display = `${displayMinutes}:${seconds}`
   }

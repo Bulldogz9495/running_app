@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, FlatList, ActivityIndicator, Pressable } from 'react-native';
 import axios from 'axios';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getUserDataFromAsyncStorage } from '../utils/AsyncStorageUtils';
 import { settings } from '../utils/settings';
+import styles from '../styles';
 
 const MessageScreen = () => {
   const route = useRoute();
@@ -27,7 +28,7 @@ const MessageScreen = () => {
             }
           });
           const responseData = await response.json();
-          setMessages(responseData.data);
+          setMessages(responseData);
           setLoading(false);
         } catch (error) {
           setError('Error fetching messages');
@@ -38,11 +39,16 @@ const MessageScreen = () => {
       fetchMessages();
     }, []);
 
-  const renderMessage = ({ item }) => (
-    <View style={styles.message}>
-      <Text>{item.text}</Text>
-    </View>
-  );
+  const renderMessage = ({ item }) => {
+    const date = new Date(item.updated);
+    const formattedDate = `${date.getDate()} ${date.toLocaleString('default', { month: 'long' })} ${date.getFullYear()} @ ${date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} ${date.getHours() >= 12 ? 'PM' : 'AM'}`;
+    return (
+      <View style={styles.message}>
+        <Text>{item.message}</Text>
+        <Text>Sent: {formattedDate}</Text>
+      </View>
+    );
+  };
 
   if (loading) {
     return (
@@ -58,6 +64,11 @@ const MessageScreen = () => {
 
   return (
     <View style={styles.container}>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+        <Pressable style={styles.pressableArea} onPress={() => navigation.goBack()}>
+          <Text style={styles.pressableText}>Go Back</Text>
+        </Pressable>
+      </View>
       <FlatList
         data={messages}
         renderItem={renderMessage}
@@ -66,24 +77,5 @@ const MessageScreen = () => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 10,
-    paddingTop: 20,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  message: {
-    marginVertical: 10,
-    padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: 'gray',
-  },
-});
 
 export default MessageScreen;

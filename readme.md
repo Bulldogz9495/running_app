@@ -45,9 +45,9 @@ Invite others to team
 ## Tasks
 Create a messaging setup for internal user communication.
 Create deep linking for invitations to new users and existing users via text and email
-Fix apple maps
 Fix saving of runs.
 Create a challenges schema that will allow users to join a challenge.
+Message users regaurding challenge status and performance
 Add geographic challenges that will automatically allow track all users that meet the challenge in their area.
 Create a development build with expo eas and introduce react-native-purchases using revenue-cat
 Make scroll areas refresh when pulled down (runs, teams)
@@ -57,9 +57,12 @@ Save Login info so user doesn't have to type it in each time
 
 
 ## Nice to have tasks
+Users can be notified when team members complete a run
+Weekly messages regaurding team performance
 Invitations can expire
 Map has polyline of current runs route
 Total Run Time updates 10 times a second
 Make map follow current travel direction while exercising
 Runs can have comments (chat)
 Save screenshots of maps with route
+Initial loading screen uses runner icon
