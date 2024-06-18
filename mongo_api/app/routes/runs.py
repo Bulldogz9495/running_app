@@ -67,7 +67,7 @@ async def read_runs_for_user(team_id: str,
 
 
 @run_router.post("/Runs", response_model=Run)
-async def create_run(run_data: Run):
+async def create_run(run_data: Run, token: str = Depends(oauth2_scheme)):
     result = await db_service.db.runs.insert_one(run_data.model_dump())
     inserted_run = await db_service.db.runs.find_one({"id": result.inserted_id})
     if isinstance(result, InsertOneResult) and result.acknowledged:
