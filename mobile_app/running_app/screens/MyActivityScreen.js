@@ -5,7 +5,6 @@ import { View, Image, Button, Modal, Text } from 'react-native';
 import * as Location from 'expo-location';
 import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
-import axios from 'axios';
 import { settings } from '../utils/settings';
 import { getUserDataFromAsyncStorage } from '../utils/AsyncStorageUtils';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -45,19 +44,28 @@ const MyActivityScreen = () => {
       }
       console.log("RunData: ", runData);
       const accessToken = await AsyncStorage.getItem('MyAccessToken');
-      axios.post(`${settings.MONGO_API_URL}/Runs`, runData, {
+      fetch(`${settings.MONGO_API_URL}/Runs`, {
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${accessToken}`
-        }
+        },
+        body: JSON.stringify(runData)
       }).then((response) => {
-        console.log("RUN RESPONSE: ", response);
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error('Network response was not ok');
+        }
+      })
+      .then((responseData) => {
+        console.log("RUN RESPONSE: ", responseData);
       })
       .catch((error) => {
         // resetState(); // Only use when deving and trying to always remove running data
         console.error(error);
       });
-    })();
+    });
     // Reset state and hide modal
     resetState();
     setShowModal(false);

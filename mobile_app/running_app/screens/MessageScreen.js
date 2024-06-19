@@ -42,12 +42,23 @@ const MessageScreen = () => {
   const renderMessage = ({ item }) => {
     const date = new Date(item.updated);
     const formattedDate = `${date.getDate()} ${date.toLocaleString('default', { month: 'long' })} ${date.getFullYear()} @ ${date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} ${date.getHours() >= 12 ? 'PM' : 'AM'}`;
-    return (
-      <View style={styles.message}>
-        <Text>{item.message}</Text>
-        <Text>Sent: {formattedDate}</Text>
-      </View>
-    );
+    if (item.message_type === "invitation") {
+      return (
+        <View style={styles.message}>
+          <Text>Invitation from {item.sender_name}</Text>
+          <Text>Join {item.group_name}</Text>
+          <Button title="Accept Invitation" onPress={() => acceptInvitation(item)} />
+          <Text>Sent: {formattedDate}</Text>
+        </View>
+      );
+    } else {
+      return (
+        <View style={styles.message}>
+          <Text>{item.message}</Text>
+          <Text>Sent: {formattedDate}</Text>
+        </View>
+      );
+    };
   };
 
   if (loading) {
