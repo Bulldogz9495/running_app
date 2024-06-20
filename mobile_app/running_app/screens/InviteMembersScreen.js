@@ -6,6 +6,7 @@ import { settings } from '../utils/settings';
 import styles from '../styles';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getUserDataFromAsyncStorage } from '../utils/AsyncStorageUtils';
 import { v4 as uuidv4 } from 'uuid';
 
 
@@ -53,15 +54,41 @@ const InviteMembersScreen = ( route ) => {
     try {
         const invitation_id = uuidv4();
         const accessToken = await AsyncStorage.getItem('MyAccessToken');
+        const userInfo = await getUserDataFromAsyncStorage();
         const teamId = route?.route?.params?.team_id;
         const encodedInvitationId = encodeURIComponent(invitation_id);
-        const response = await axios.post(`${settings.MONGO_API_URL}/Teams/${teamId}/invitations/${user.id}?invitation_id=${encodedInvitationId}`, {
+        const response1 = await axios.post(`${settings.MONGO_API_URL}/Teams/${teamId}/invitations/${user.id}?invitation_id=${encodedInvitationId}`, {
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${accessToken}`
-        }
+          }
         });
-        console.log(response.data);
+        console.log(response1.data);
+        const userIdent = (userInfo.data?.last_name !== undefined) ? (userInfo.data?.first_name + " " + userInfo.data?.last_name) : (userInfo.data?.email);
+        const response2 = await axios.post(`${settings.MONGO_API_URL}/Users/${user.id}/messages`,  {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${accessToken}`
+            },
+            data: JSON.stringify({
+                "id": uuidv4(),
+                "created_by": userInfo.data.id,
+                "message": "You are invited to join team " + route?.route?.params?.team_name + " by " + userIdent,
+                "created": new Date().toISOString(),
+                "updated": new Date().toISOString(),
+                "read": true,
+                "message_type": "invitation",
+                "metadata": {
+                  "team_id": route?.route?.params?.team_id, 
+                  "team_name": route?.route?.params?.team_name,
+                  "user_id": userInfo.data?.id, 
+                  "user_email": userInfo.data?.id,
+                  "user_name": userIdent,
+                  "invitation_id": invitation_id
+                }
+            })
+        })
+        console.log(response2.data);
         setSearchResults([]);
         setFirstName('');
         setLastName('');

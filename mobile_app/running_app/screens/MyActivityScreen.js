@@ -1,7 +1,8 @@
 import React, { useRef, useEffect, useState } from 'react';
 import MapComponent from '../components/MapComponent';
 import RunComponent from '../components/RunComponent';
-import { View, Image, Button, Modal, Text } from 'react-native';
+import { View, Image, Button, Modal, Text, Pressable } from 'react-native';
+import axios from 'axios';
 import * as Location from 'expo-location';
 import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
@@ -25,10 +26,10 @@ const MyActivityScreen = () => {
     setShowModal(true);
   }
 
-  const handleConfirm = () => {
-    (async () => {
+  const handleConfirm = async () => {
+    try {
+      console.log("Saving Run Data");
       const userData = await getUserDataFromAsyncStorage();
-      // console.log("locations: ", locations);
       runData = {
         id: uuidv4(),
         user_id: userData.data.id,
@@ -44,14 +45,13 @@ const MyActivityScreen = () => {
       }
       console.log("RunData: ", runData);
       const accessToken = await AsyncStorage.getItem('MyAccessToken');
-      fetch(`${settings.MONGO_API_URL}/Runs`, {
-        method: 'POST',
+      axios.post(`${settings.MONGO_API_URL}/Runs`, runData, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${accessToken}`
-        },
-        body: JSON.stringify(runData)
-      }).then((response) => {
+        }
+      })
+      .then((response) => {
         if (response.ok) {
           return response.json();
         } else {
@@ -65,7 +65,9 @@ const MyActivityScreen = () => {
         // resetState(); // Only use when deving and trying to always remove running data
         console.error(error);
       });
-    });
+    } catch (error) {
+      console.error(error);
+    }
     // Reset state and hide modal
     resetState();
     setShowModal(false);
@@ -190,9 +192,15 @@ const MyActivityScreen = () => {
             <Text style={styles.userText}>Total Score: {totalScore.toFixed(2)}</Text>
             <Text style={styles.userText}>Average Pace: {averagePacePmin} minutes per mile</Text>
             <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
-              <Button title="Save Run" onPress={handleConfirm} color={'blue'} />
-              <Button title="Resume Run" onPress={handleCancel} color={'darkgreen'}/>
-              <Button title="Delete Run" onPress={handleDelete} color={'red'}/>
+              <Pressable style={styles.pressableArea} onPress={handleConfirm}>
+                <Text style={styles.pressableText}>Save Run</Text>
+              </Pressable>
+              <Pressable style={styles.pressableArea} onPress={handleCancel}>
+                <Text style={styles.pressableText}>Resume Run</Text>
+              </Pressable>
+              <Pressable style={styles.pressableArea} onPress={handleDelete}>
+                <Text style={styles.pressableText}>Delete Run</Text>
+              </Pressable>
             </View>
           </View>
         </View>

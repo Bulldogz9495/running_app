@@ -33,6 +33,8 @@ async def read_runs_for_user(user_id: str,
     async for run_data in db_service.db.runs.find({"user_id": user_id}).sort("start_datetime", sort_datetime).skip(skip).limit(limit):
         if not include_geopoints:
             run_data['geopoints'] = []
+        run_data['start_datetime'] = run_data['start_datetime'].astimezone()
+        run_data['end_datetime'] = run_data['end_datetime'].astimezone()
         runs.append(run_data)
     logger.info(f"Get Runs for user: {user_id} - Sort Order: {sort_datetime}")
     return runs

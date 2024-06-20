@@ -45,8 +45,6 @@ Invite others to team
 ## Tasks
 Create a messaging setup for internal user communication.
 Create deep linking for invitations to new users and existing users via text and email
-Fix saving of runs.
-Create a challenges schema that will allow users to join a challenge.
 Message users regaurding challenge status and performance
 Add geographic challenges that will automatically allow track all users that meet the challenge in their area.
 Create a development build with expo eas and introduce react-native-purchases using revenue-cat
@@ -66,3 +64,10 @@ Make map follow current travel direction while exercising
 Runs can have comments (chat)
 Save screenshots of maps with route
 Initial loading screen uses runner icon
+Create a challenges schema that will allow users to join a challenge.
+Include Biometric ID
+
+
+
+## Completed Tasks
+Fix saving of runs

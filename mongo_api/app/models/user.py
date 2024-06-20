@@ -89,7 +89,10 @@ sample_messages = [
         'message_type': 'invitation',
         'metadata': {
             "team_id": "6eaf4c12-8aa0-42d5-8447-e0b598c03bb2", 
-            "user_id": "933d1bba-aa0b-485f-8e10-95697fb86bd2", 
+            "team_name": "Team 1",
+            "inviter_id": "933d1bba-aa0b-485f-8e10-95697fb86bd2", 
+            "inviter_email": "user1@example.com",
+            "inviter_name": "John Doe",
             "invitation_id": "f8f3335c-9c7a-403e-a004-d07e47cdb82f"
             }
     }
