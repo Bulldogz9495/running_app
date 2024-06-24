@@ -89,6 +89,7 @@ export default styles = StyleSheet.create({
         fontSize: 32,
         borderColor: 'blue',
         borderWidth: 1,
+        margin: 10
     },
     pressableText: {
         color: 'lightyellow',

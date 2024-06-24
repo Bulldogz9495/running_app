@@ -171,7 +171,7 @@ async def get_user_message_count(user_id: str, read: bool = False):
 
 
 @user_router.post("/Users/{user_id}/messages", response_model=dict)
-async def post_user_message(user_id: str, message: Message, token: str = Depends(oauth2_scheme)):
+async def post_user_message(user_id: str, message: Message):
     try:
         existing_message = await db_service.db.users.find_one({"id": user_id, "messages.id": message.id})
         if existing_message is not None:

@@ -26,6 +26,7 @@ const LoginScreen = ({ navigation }) => {
                 data: JSON.stringify({
                     email: username,
                     password: password,
+                    messages: [],
                     id: uuidv4(),
                 }),
                 validateStatus: () => true

@@ -54,7 +54,7 @@ export default RunComponent = () => {
             <Text style={{ fontSize: 25 }}>Run History</Text>
             {runs.map(run => (
                 <View key={run.id} style={{ flexDirection: 'column', marginBottom: 10, padding: 10, borderWidth: 2, borderColor: 'blue' }}>
-                    <Text style={{ fontSize: 20 }}>Date: {moment(run.start_datetime).format('l')} --- {run.start_datetime}</Text>
+                    <Text style={{ fontSize: 20 }}>Date: {moment(run.start_datetime).format('l')}</Text>
                     <Text style={{ fontSize: 20 }}>Score: {run.score.toFixed(1)}</Text>
                     <Text style={{ fontSize: 20 }}>Duration: {Math.round(run.duration / 60)} min
                         {run.duration > 0 && <Text> (Pace: {Math.round(run.distance)} miles at {run.pace.toFixed(1)} min/mile)</Text>}

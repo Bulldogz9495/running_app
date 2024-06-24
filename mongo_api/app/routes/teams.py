@@ -7,6 +7,7 @@ from fastapi.security import OAuth2PasswordBearer
 from app.settings import logger
 from datetime import timedelta
 from datetime import datetime
+from pymongo.results import InsertOneResult
 
 db_service = MongoDBService()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/token")

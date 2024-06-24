@@ -51,13 +51,6 @@ const MyActivityScreen = () => {
           'Authorization': `Bearer ${accessToken}`
         }
       })
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        } else {
-          throw new Error('Network response was not ok');
-        }
-      })
       .then((responseData) => {
         console.log("RUN RESPONSE: ", responseData);
       })
@@ -92,6 +85,10 @@ const MyActivityScreen = () => {
     setTotalDistanceMiles(0);
     setAveragePacePmin(0);
     setTotalScore(0);
+    setCurrentPace(0);
+    setTotalTimeSeconds(0);
+    setLocations([]);
+    // Get new runs array 
   }
 
   useEffect(() => {

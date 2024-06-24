@@ -51,6 +51,7 @@ Create a development build with expo eas and introduce react-native-purchases us
 Make scroll areas refresh when pulled down (runs, teams)
 Handle empty states on scrolls
 Save Login info so user doesn't have to type it in each time
+Logout Button on profile screen - Needs to remove token from async storage
 
 
 

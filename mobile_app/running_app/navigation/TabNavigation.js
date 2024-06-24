@@ -59,10 +59,10 @@ export default function TabNavigation() {
   return (
     <>
       <TouchableOpacity 
-        style={{position: 'absolute', top: 50, right: 10, zIndex: 1}} 
+        style={{position: 'absolute', top: 50, right: 10, zIndex: 1, backgroundColor: 'lightgreen', padding: 5, borderRadius: 15}} 
         onPress={() => {console.log("Navigating to messages"); navigation.navigate("messages")}}
       >
-          <FontAwesomeIcon icon={faInbox} size={36} color="blue" />
+          <FontAwesomeIcon icon={faInbox} size={32} color="blue" />
           {messageCount > 0 && <Badge value={messageCount} containerStyle={{position: 'absolute', top: 0, right: 0, zIndex: 1}}/>}
       </TouchableOpacity>
       <Tab.Navigator

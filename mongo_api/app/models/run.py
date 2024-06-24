@@ -39,12 +39,12 @@ run_schema = {
     "user_id": {"type": "uuid", "required": True, "unique":False},
     "start_location": {"type": "point", "required": True},
     "end_location": {"type": "point", "required": True},
-    "distance": {"type": "int", "required": True, "min_value": 0},
+    "distance": {"type": "int", "required": True, "min_value": 0, "nullable": False},
     "notes": {"type": "string", "required": False},
     "cadence": {"type": "int", "required": False, "min_value": 0},
-    "pace": {"type": "float", "required": False, "min_value": 0},
-    "duration": {"type": "float", "required": True, "min_value": 0},
-    "score": {"type": "float", "required": False, "min_value": 0, "max_value": 1500}
+    "pace": {"type": "float", "required": False, "min_value": 0, "nullable": False},
+    "duration": {"type": "float", "required": True, "min_value": 0, "nullable": False},
+    "score": {"type": "float", "required": False, "min_value": 0, "max_value": 1500, "nullable": False}
 }
 
 
