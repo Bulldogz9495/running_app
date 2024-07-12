@@ -39,6 +39,14 @@ export default function TabNavigation() {
     setMessageCount(response.data.count);
   }
 
+  // Fetch message count every 60 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      getMessageCount();
+    }, 60000);
+    return () => clearInterval(interval);
+  }, []);
+
   useEffect(() => {
     getMessageCount();
   }, []);
@@ -64,7 +72,6 @@ export default function TabNavigation() {
             } else if (route.name === 'Profile') {
               iconName = focused ? 'person' : 'person';
             }
-
             // Return the appropriate icon component
             return <MaterialIcons name={iconName} size={size} color={color} />;
           },

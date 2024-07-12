@@ -163,7 +163,7 @@ async def get_user_message_count(user_id: str, read: bool = False):
             logger.info("Not read")
             pipeline.insert(2, {"$match": {"messages.read": read}})
         result = await db_service.db.users.aggregate(pipeline).to_list(None)
-        logger.info("Message count: ", result)
+        logger.info(f"Message count: {result}")
         if len(result) == 0:
             return 0
         return result[0]

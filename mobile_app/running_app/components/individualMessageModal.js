@@ -8,10 +8,10 @@ const IndividualMessageModal = ({ selectedMessage, individualMessageModalShow, s
         return (
           <Modal visible={individualMessageModalShow} animationType="slide" styles={styles.container}>
             <View style={styles.message}>
-                <Text>Invitation from {item.metadata.user_name}</Text>
-                <Text>Join {item.metadata.team_name}</Text>
-                <Button title="Accept Invitation" onPress={() => acceptInvitation(item, true)} />
-                <Button title="Deny Invitation" onPress={() => acceptInvitation(item, false)} />
+                <Text>Invitation from {selectedMessage.metadata.user_name}</Text>
+                <Text>Join {selectedMessage.metadata.team_name}</Text>
+                <Button title="Accept Invitation" onPress={() => acceptInvitation(selectedMessage, true)} />
+                <Button title="Deny Invitation" onPress={() => acceptInvitation(selectedMessage, false)} />
                 <Text>Sent: {formattedDate}</Text>
             </View>
             <View style = {styles.container}>
