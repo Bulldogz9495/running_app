@@ -1,13 +1,15 @@
 import React from 'react';
 import { useRef } from 'react';
 import { View, Text, Pressable, FlatList, Button, TextInput } from 'react-native';
-import { getUserDataFromAsyncStorage } from '../utils/AsyncStorageUtils';
+import { useContext } from 'react';
+import { UserContext } from '../utils/createContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { settings } from '../utils/settings';
 import styles from '../styles';
 import { sampleData } from '../utils/sample_data';
 import { v4 as uuidv4 } from 'uuid';
 import { TeamForm } from '../components/TeamForm';
+import { useFocusEffect } from '@react-navigation/native';
 
 
 const ChallengeRunScreen = (navigation) => {
@@ -16,32 +18,41 @@ const ChallengeRunScreen = (navigation) => {
   const [expandedTeam, setExpandedTeam] = React.useState(null);
   const [createTeam, setCreateTeam] = React.useState(false);
   const [editTeam, setEditTeam] = React.useState(false);
-  const [userData, setUserData] = React.useState(null);
+  const { user, setUser } = useContext(UserContext);
+
+
+  const fetchTeams = async () => {
+    try {
+      console.log("User Info from ChallengeRunScreen: ", user);
+      const userInfo = user;
+      console.log("USERINFO: ", userInfo);
+      const accessToken = await AsyncStorage.getItem('MyAccessToken');
+      const url = `${settings.MONGO_API_URL}/Teams/user_id/${encodeURIComponent(userInfo.id)}`;
+      const response = await fetch(url,
+        {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${accessToken}`
+          }
+        }
+      );
+      const data = await response.json();
+      console.log("Teams Data: ", data);
+      setTeams(data);
+    } catch (error) {
+      console.error(error);
+      setTeams(sampleData.teams);
+    }
+  };
+  
+  useFocusEffect(
+    React.useCallback(() => {
+      // Rerender the page when it comes into focus
+      fetchTeams(); // or any other action you want to perform
+    }, [])
+  );
 
   React.useEffect(() => {
-    const fetchTeams = async () => {
-      try {
-        const userInfo = await getUserDataFromAsyncStorage();
-        setUserData(userInfo.data);
-        console.log("USERINFO: ", userInfo);
-        const accessToken = await AsyncStorage.getItem('MyAccessToken');
-        const url = `${settings.MONGO_API_URL}/Teams/user_id/${encodeURIComponent(userInfo?.data.id)}`;
-        const response = await fetch(url,
-          {
-            method: 'GET',
-            headers: {
-              'Authorization': `Bearer ${accessToken}`
-            }
-          }
-        );
-        const data = await response.json();
-        console.log("Teams Data: ", data);
-        setTeams(data);
-      } catch (error) {
-        console.error(error);
-        setTeams(sampleData.teams);
-      }
-    };
     fetchTeams();
   }, []);
 
@@ -67,9 +78,11 @@ const ChallengeRunScreen = (navigation) => {
               <Text>Team Size: {item.size}</Text>
             </View>
           </Pressable>
-          <Pressable onPress={() => {console.log("ITEM: ", item); setNewTeam(item); setEditTeam(true)}}>
-            <Text>Edit Team</Text>
-          </Pressable>
+          {user.id === item.owner && (
+            <Pressable onPress={() => {console.log("ITEM: ", item); setNewTeam(item); setEditTeam(true)}}>
+              <Text>Edit Team</Text>
+            </Pressable>
+          )}
         </View>
         {isExpanded && (
           <FlatList
@@ -89,9 +102,9 @@ const ChallengeRunScreen = (navigation) => {
 
   const createTeams = async (team) => {
     console.log("CREATING TEAM");
-    const userInfo = await getUserDataFromAsyncStorage();
-    team.members = [userInfo.data.id];
-    team.owner = userInfo.data.id
+    const userInfo = user;
+    team.members = [userInfo.id];
+    team.owner = userInfo.id
     team.id = uuidv4();
     team.size = team.members.length;
     console.log("NEW TEAM: ", team);

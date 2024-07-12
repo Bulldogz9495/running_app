@@ -7,11 +7,13 @@ import * as Location from 'expo-location';
 import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
 import { settings } from '../utils/settings';
-import { getUserDataFromAsyncStorage } from '../utils/AsyncStorageUtils';
+import { useContext } from 'react';
+import { UserContext } from '../utils/createContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import styles from '../styles';
 
 const MyActivityScreen = () => {
+  const { user, setUser } = useContext(UserContext);
   const [locations, setLocations] = useState([]);
   const [recording, setRecording] = useState(false);
   const [totalDistanceMiles, setTotalDistanceMiles] = useState(0);
@@ -29,10 +31,9 @@ const MyActivityScreen = () => {
   const handleConfirm = async () => {
     try {
       console.log("Saving Run Data");
-      const userData = await getUserDataFromAsyncStorage();
       runData = {
         id: uuidv4(),
-        user_id: userData.data.id,
+        user_id: user.id,
         start_location: {"latitude": locations[0].location.latitude, "longitude": locations[0].location.longitude},
         end_location: {"latitude": locations[locations.length - 1].location.latitude, "longitude": locations[locations.length - 1].location.longitude},
         start_datetime: locations[0].datetime,

@@ -15,6 +15,7 @@ import InvitationScreen from './screens/InvitationScreen';
 import InviteMembersScreen from './screens/InviteMembersScreen';
 import MessageScreen from './screens/MessageScreen';
 import { ActivityIndicator } from 'react-native';
+import { UserProvider } from './utils/createContext';
 
 const Stack = createStackNavigator();
 
@@ -74,25 +75,27 @@ export default function App() {
   }
 
   return (
-    <NavigationContainer linking={linking} fallback={<Text>Loading...</Text>}>
-      <Stack.Navigator 
-        screenOptions={{ 
-          headerShown: false,
-          headerTintColor: 'black', 
-          headerStyle: { backgroundColor: 'darkgreen' } 
-        }}
-        initialRouteName={initialRoute} 
-        styles={{styles}}
-      >
-        <Stack.Screen name="Login" component={LoginScreen}/>
-        <Stack.Screen name="main" component={TabNavigation}/>
-        <Stack.Screen name="payment" component={PaymentScreen}/>
-        <Stack.Screen name="loading" component={LoadingScreen}/>
-        <Stack.Screen name="invitation" component={InvitationScreen}/>
-        <Stack.Screen name="inviteMembers" component={InviteMembersScreen}/>
-        <Stack.Screen name="messages" component={MessageScreen}/>
-      </Stack.Navigator>
-    </NavigationContainer>
+    <UserProvider>
+      <NavigationContainer linking={linking} fallback={<Text>Loading...</Text>}>
+        <Stack.Navigator 
+          screenOptions={{ 
+            headerShown: false,
+            headerTintColor: 'black', 
+            headerStyle: { backgroundColor: 'darkgreen' } 
+          }}
+          initialRouteName={initialRoute} 
+          styles={{styles}}
+        >
+          <Stack.Screen name="Login" component={LoginScreen}/>
+          <Stack.Screen name="main" component={TabNavigation}/>
+          <Stack.Screen name="payment" component={PaymentScreen}/>
+          <Stack.Screen name="loading" component={LoadingScreen}/>
+          <Stack.Screen name="invitation" component={InvitationScreen}/>
+          <Stack.Screen name="inviteMembers" component={InviteMembersScreen}/>
+          <Stack.Screen name="messages" component={MessageScreen}/>
+        </Stack.Navigator>
+      </NavigationContainer>
+    </UserProvider>
   );
 }
 

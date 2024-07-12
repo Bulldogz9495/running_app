@@ -1,22 +1,32 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, ActivityIndicator, ScrollView } from 'react-native';
 import { settings } from '../utils/settings';
-import { getUserDataFromAsyncStorage } from '../utils/AsyncStorageUtils';
+import { useContext } from 'react';
+import { UserContext } from '../utils/createContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { sampleData } from '../utils/sample_data';
 import moment from 'moment';
+import { useFocusEffect } from '@react-navigation/native';
 
 
-export default RunComponent = () => {
+export default RunComponent = (navigation) => {
     const [runs, setRuns] = useState([]);
     const [loading, setLoading] = useState(true);
+    const { user, setUser } = useContext(UserContext);
 
-    useEffect(() => {
-        (async () => {
-            const userData = await getUserDataFromAsyncStorage();
-            const accessToken = await AsyncStorage.getItem('MyAccessToken');
-            url = `${settings.MONGO_API_URL}/Runs/user_id/` + encodeURIComponent(userData?.data.id);
+    useFocusEffect(
+        React.useCallback(() => {
+          // Rerender the page when it comes into focus
+          fetchRuns(); // or any other action you want to perform
+        }, [])
+      );
+
+    const fetchRuns = async () => {
+        const userData = user;
+        const accessToken = await AsyncStorage.getItem('MyAccessToken');
+        url = `${settings.MONGO_API_URL}/Runs/user_id/` + encodeURIComponent(userData.id);
+        try {
             const response = await axios.get(
                 url=url,
                 {
@@ -33,12 +43,16 @@ export default RunComponent = () => {
             );
             console.log("Runs Data: ", response.data);
             setRuns(response.data);
-            setLoading(false);
-        })().catch(error => {
+        } catch (error) {
             console.log(error);
-            setLoading(false);
             setRuns(sampleData.runs);
-        });
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    useEffect(() => {
+        fetchRuns();
     }, []);
 
     if (loading) {

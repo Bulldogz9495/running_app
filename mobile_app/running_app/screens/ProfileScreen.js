@@ -3,24 +3,25 @@ import { View, Text, TextInput, Button, StyleSheet, ScrollView } from 'react-nat
 import axios from 'axios';
 import CalendarPicker from "react-native-calendar-picker";
 import { settings } from '../utils/settings';
-import { getUserDataFromAsyncStorage } from '../utils/AsyncStorageUtils';
+import { useContext } from 'react';
+import { UserContext } from '../utils/createContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const ProfileScreen = ({navigation}) => {
   const [editMode, setEditMode] = useState(false);
   const [editedData, setEditedData] = useState(null);
-  const [userData, setUserData] = useState(null);
+  const { user, setUser } = useContext(UserContext);
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const userInfo = await getUserDataFromAsyncStorage();
+        const userInfo = user;
         if (!userInfo) {
           navigation.navigate('login');
           throw new Error('User not logged in');
         }
-        setUserData(userInfo);
+        setUser(userInfo);
         setEditedData(userInfo);
       } catch (error) {
         console.error('Error fetching user data:', error);
@@ -31,14 +32,14 @@ const ProfileScreen = ({navigation}) => {
 
   const handleEdit = () => {
     setEditMode(true);
-    setEditedData( userData ); // Initialize editedData with the current userData
+    setEditedData( user ); // Initialize editedData with the current userData
   };
 
   const handleSave = async () => {
     try {
       const accessToken = await AsyncStorage.getItem('MyAccessToken');
-      await axios.patch(`${settings.MONGO_API_URL}/Users/username/${encodeURIComponent(editedData?.data.email)}`, 
-      data=editedData.data,
+      await axios.patch(`${settings.MONGO_API_URL}/Users/username/${encodeURIComponent(editedData?.email)}`, 
+      data=editedData,
       {
         headers: {
           'accept': 'application/json',
@@ -46,7 +47,7 @@ const ProfileScreen = ({navigation}) => {
           'Content-Type': 'application/json'
         }
       });
-      setUserData(editedData); // Update userData with editedData
+      setUser(editedData); // Update userData with editedData
       setEditMode(false); // Exit edit mode
     } catch (error) {
       console.error('Error updating user data:', error);
@@ -54,14 +55,14 @@ const ProfileScreen = ({navigation}) => {
   };
 
   const handleCancel = () => {
-    setEditedData(userData); // Revert editedData to originalData
+    setEditedData(user); // Revert editedData to originalData
     setEditMode(false); // Exit edit mode
   };
 
   const handleChange = (field, value) => {
     setEditedData((editedData) => {
       const newEditedData = editedData;
-      newEditedData.data[field] = value;
+      newEditedData[field] = value;
       return newEditedData;
     });
   };
@@ -86,60 +87,60 @@ const ProfileScreen = ({navigation}) => {
           <Text style={styles.userText}>Email: </Text>{editMode ? // Set to False until new email can be done
           ( <TextInput
               placeholder="Enter new Email"
-              defaultValue={editedData?.data?.email}
+              defaultValue={editedData?.email}
               value={Text}
               onChangeText={(text) => handleChange('email', text)}
               style={styles.userInput}
             />
           ) : (
-            <Text>{editedData?.data?.email}</Text>
+            <Text>{editedData?.email}</Text>
           )}
         </>
         <><Text style={styles.userText}>Name: </Text>{editMode ? 
           ( <>
               <TextInput
                 placeholder="Enter new First Name"
-                defaultValue={editedData?.data?.first_name}
+                defaultValue={editedData?.first_name}
                 value={Text}
                 onChangeText={(text) => handleChange('first_name', text)}
                 style={styles.userInput}
               />
               <TextInput
                 placeholder="Enter new Middle Name"
-                defaultValue={editedData?.data?.middle_name}
+                defaultValue={editedData?.middle_name}
                 value={Text}
                 onChangeText={(text) => handleChange('middle_name', text)}
                 style={styles.userInput}
               />
               <TextInput
                 placeholder="Enter new Last Name"
-                defaultValue={editedData?.data?.last_name}
+                defaultValue={editedData?.last_name}
                 value={Text}
                 onChangeText={(text) => handleChange('last_name', text)}
                 style={styles.userInput}
               />
             </>
           ) : (
-            <Text>{editedData?.data?.first_name} {editedData?.data?.middle_name} {editedData?.data?.last_name}</Text>
+            <Text>{editedData?.first_name} {editedData?.middle_name} {editedData?.last_name}</Text>
           )}
         </>
         <><Text style={styles.userText}>Motto: </Text>{editMode ? 
           ( <TextInput
               placeholder="Enter new motto"
-              defaultValue={editedData?.data?.motto}
+              defaultValue={editedData?.motto}
               value={Text}
               onChangeText={(text) => handleChange('motto', text)}
               style={styles.userInput}
             />
           ) : (
-            <Text>{editedData?.data?.motto}</Text>
+            <Text>{editedData?.motto}</Text>
           )}
         </>
         <><Text style={styles.userText}>Height: </Text>{editMode ? 
           ( <>
               <TextInput
                 placeholder="Enter new Height"
-                defaultValue={editedData?.data?.height_feet.toString()}
+                defaultValue={editedData?.height_feet ? editedData.height_feet.toString() : ''}
                 value={Text}
                 onChangeText={(text) => handleChange('height_feet', text)}
                 style={styles.userInput}
@@ -147,20 +148,20 @@ const ProfileScreen = ({navigation}) => {
               <Text>'</Text>
               <TextInput
                 placeholder="Enter new Height"
-                defaultValue={editedData?.data?.height_inches.toString()}
+                defaultValue={editedData?.height_inches ? editedData.height_inches.toString() : ''}
                 value={Text}
                 onChangeText={(text) => handleChange('height_inches', text)}
                 style={styles.userInput}
               /><Text>"</Text>
             </>
           ) : (
-            <Text>{`${editedData?.data?.height_feet}' ${editedData?.data?.height_inches}"`}</Text>
+            <Text>{`${editedData?.height_feet}' ${editedData?.height_inches}"`}</Text>
           )}
         </>
         <><Text style={styles.userText}>Birthday: </Text>{editMode ?
           (
             <CalendarPicker 
-            defaultValue={editedData?.data?.birthday}
+            defaultValue={editedData?.birthday}
             value={Text}
             onDateChange={(date) => {
               year = date.getFullYear();
@@ -173,7 +174,7 @@ const ProfileScreen = ({navigation}) => {
             width={375}
             ></CalendarPicker>
           ) : (
-            <Text>{editedData?.data?.birthday.split('T')[0]}</Text>
+            <Text>{editedData?.birthday === null ? '' : editedData?.birthday.split('T')[0]}</Text>
           )
         }
         </>
@@ -182,7 +183,7 @@ const ProfileScreen = ({navigation}) => {
           ( <>
               <TextInput
                 placeholder="Enter new Weight"
-                defaultValue={editedData?.data?.weight_lbs.toString()}
+                defaultValue={editedData?.weight_lbs ? editedData.weight_lbs.toString() : ''}
                 value={Text}
                 onChangeText={(text) => handleChange('weight_lbs', text)}
                 style={styles.userInput}
@@ -190,14 +191,14 @@ const ProfileScreen = ({navigation}) => {
               <Text style={styles.userText}>lbs</Text>
               <TextInput
                 placeholder="Enter new Weight"
-                defaultValue={editedData?.data?.weight_ounces.toString()}
+                defaultValue={editedData?.weight_ounces ? editedData.weight_ounces.toString() : ''}
                 value={Text}
                 onChangeText={(text) => handleChange('weight_ounces', text)}
                 style={styles.userInput}
               /><Text style={styles.userText}>oz</Text>
             </>
           ) : (
-            <Text>{`${editedData?.data?.weight_lbs} lbs ${editedData?.data?.weight_ounces} oz`}</Text>
+            <Text>{`${editedData?.weight_lbs} lbs ${editedData?.weight_ounces} oz`}</Text>
           )}
         </>
       </ScrollView>

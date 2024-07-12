@@ -160,10 +160,12 @@ async def get_user_message_count(user_id: str, read: bool = False):
             {"$count": "count"}
         ]
         if not read:
-            print("Not read")
+            logger.info("Not read")
             pipeline.insert(2, {"$match": {"messages.read": read}})
         result = await db_service.db.users.aggregate(pipeline).to_list(None)
-        print(result)
+        logger.info("Message count: ", result)
+        if len(result) == 0:
+            return 0
         return result[0]
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to get message count: {str(e)}")
@@ -188,8 +190,8 @@ async def post_user_message(user_id: str, message: Message):
     return {'success': True}
 
 
-@user_router.patch("/Users/{user_id}/messages/{message_index}", response_model=dict)
-async def patch_user_message(user_id: str, message_index: str, message: str = None, read: bool = False, token: str = Depends(oauth2_scheme)):
+@user_router.patch("/Users/{user_id}/messages/{message_id}", response_model=dict)
+async def patch_user_message(user_id: str, message_id: str, message: str = None, read: bool = False, token: str = Depends(oauth2_scheme)):
     now = datetime.now()
     sort = {'$set': {'messages.$[element].updated': now}}
     if message is not None:
@@ -197,9 +199,9 @@ async def patch_user_message(user_id: str, message_index: str, message: str = No
     if read is not None:
         sort['$set']['messages.$[element].read'] = read
     user_data = await db_service.db.users.find_one_and_update(
-        {"id": user_id, 'messages.id': message_index},
+        {"id": user_id, 'messages.id': message_id},
         sort,
-        array_filters=[{'element.id': message_index}],
+        array_filters=[{'element.id': message_id}],
     )
     print(user_data)
     if user_data is None:

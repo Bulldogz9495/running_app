@@ -12,47 +12,34 @@ import { Badge } from 'react-native-elements';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faInbox } from '@fortawesome/free-solid-svg-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { getUserDataFromAsyncStorage } from '../utils/AsyncStorageUtils';
+import { useContext } from 'react';
+import { UserContext } from '../utils/createContext';
+import { settings } from '../utils/settings';
+
+import axios from 'axios';
 
 const Tab = createBottomTabNavigator();
 
 export default function TabNavigation() {
   const [messageCount, setMessageCount] = React.useState(0);
-  const [userData, setUserData] = React.useState(null);
+  const { user, setUser } = useContext(UserContext);
 
   const navigation = useNavigation();
 
-  useEffect(() => {
-    const getMessageCount = async () => {
-      try {
-        const userInfo = await getUserDataFromAsyncStorage();
-        setUserData(userInfo.data);
-        const accessToken = await AsyncStorage.getItem('MyAccessToken');
-        if (accessToken !== null) {
-          try {
-            const response = await axios({
-              method: 'get',
-              url: `${settings.MONGO_API_URL}/Users/${encodeURIComponent(userInfo?.data.id)}/messages/count`,
-              params: {
-                read: false
-              },
-              headers: {
-                'Authorization': `Bearer ${accessToken}`
-              }
-            });
-            setMessageCount(response.data.count);
-          } catch (error) {
-            if (error.response.status === 401) {
-              navigation.navigate("Login");
-            } else {
-              throw error;
-            }
-          }
-        }
-      } catch (e) {
-        // error reading value
+  const getMessageCount = async () => {
+    const accessToken = await AsyncStorage.getItem('MyAccessToken');
+    const response = await axios({
+      method: 'get',
+      url: `${settings.MONGO_API_URL}/Users/${encodeURIComponent(user.id)}/messages/count?read=false`,
+      headers: {
+        'Authorization': `Bearer ${accessToken}`
       }
-    }
+    });
+    console.log("Message Count: ", response);
+    setMessageCount(response.data.count);
+  }
+
+  useEffect(() => {
     getMessageCount();
   }, []);
 

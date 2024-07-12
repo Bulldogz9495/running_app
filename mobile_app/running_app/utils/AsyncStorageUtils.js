@@ -3,7 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 export const setUserDataInAsyncStorage = async (userData) => {
     try {
         await AsyncStorage.multiSet([
-            ['birthday', userData.data.birthday ? userData.data.birthday.toString() : ''],
+            ['birthday', userData.data.birthday ? userData.data.birthday.toString() : None],
             ['created', userData.data.created ? userData.data.created.toString() : ''],
             ['email', userData.data.email ? userData.data.email.toString() : ''],
             ['first_name', userData.data.first_name ? userData.data.first_name.toString() : ''],
@@ -18,7 +18,7 @@ export const setUserDataInAsyncStorage = async (userData) => {
             ['weight_ounces', userData.data.weight_ounces ? userData.data.weight_ounces.toString() : ''],
             ['paid', userData.data.paid ? userData.data.paid.toString() : ''],
           ]);
-        console.log('Successfully set user data in AsyncStorage');
+        console.log('Successfully set user data in AsyncStorage', userData);
         // console.log(userData);
     } catch (error) {
         console.error(error);
@@ -80,7 +80,7 @@ export const getUserDataFromAsyncStorage = async () => {
             userData.data.paid = true;
         }
 
-        console.log('Successfully retrieved user data from AsyncStorage');
+        console.log('Successfully retrieved user data from AsyncStorage', userData);
         // console.log(userData);
         return userData;
 

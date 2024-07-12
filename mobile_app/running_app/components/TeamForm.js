@@ -1,11 +1,6 @@
 import { ScrollView, View, Text, Pressable, FlatList, Button, TextInput, KeyboardAvoidingView } from 'react-native';
 import React, { useState } from 'react';
-import { Picker } from '@react-native-picker/picker';
-import { settings } from '../utils/settings';
 import styles from '../styles';
-import { sampleData } from '../utils/sample_data';
-import { v4 as uuidv4 } from 'uuid';
-import { getUserDataFromAsyncStorage } from '../utils/AsyncStorageUtils';
 import { useNavigation } from '@react-navigation/native';
 
 const TeamInput = ({ label, defaultValue, onChangeText}) => (

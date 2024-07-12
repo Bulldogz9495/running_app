@@ -3,13 +3,14 @@ import { View, Text, Button, FlatList } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import axios from 'axios';
 import { settings } from '../utils/settings';
-import { getUserDataFromAsyncStorage } from '../utils/AsyncStorageUtils';
+import { useContext } from 'react';
+import { UserContext } from '../utils/createContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Linking  from 'expo-linking';
 
 export default function InvitationScreen({ navigation }) {
     const [team, setTeam] = useState([]);
-    const [userInfo, setUserInfo] = useState(null);
+    const [user, setUser] = useContext(UserContext);
 
   function splitUrlParams(url) {
     parts = url.replace(/:/g, '').split('/');
@@ -26,8 +27,7 @@ export default function InvitationScreen({ navigation }) {
         console.log("url: ", url);
         const params = Linking.parse(url);
         const { inviter_id, team_id } = splitUrlParams(params.path);
-        const userInfo = await getUserDataFromAsyncStorage();
-        setUserInfo(userInfo);
+        const userInfo = user;
         console.log("USERINFO: ", userInfo);
         const accessToken = await AsyncStorage.getItem('MyAccessToken');
         const response = await axios.get(`${settings.MONGO_API_URL}/Teams/${team_id}`, {
@@ -56,7 +56,7 @@ export default function InvitationScreen({ navigation }) {
       await axios.patch(
         `${settings.MONGO_API_URL}/Teams/${team_id}/invitations/${invitation_id}`,
         {
-          "user_id": userInfo.data.id,
+          "user_id": userInfo.id,
           "accepted": true
         },
         {

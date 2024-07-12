@@ -1,15 +1,17 @@
 // src/LoginScreen.js
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import axios from 'axios';
 import { settings } from '../utils/settings';
-import { setUserDataInAsyncStorage } from '../utils/AsyncStorageUtils';
+import { useContext } from 'react';
+import { UserContext } from '../utils/createContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import sampleData from '../utils/sample_data';
 import { v4 as uuidv4 } from 'uuid';
 import styles from '../styles';
 
 const LoginScreen = ({ navigation }) => {
+    const { user, setUser } = useContext(UserContext);
     const [error, setError] = useState('');
     const [username, setUsername] = useState('user1@example.com');
     const [password, setPassword] = useState('test password');
@@ -52,7 +54,7 @@ const LoginScreen = ({ navigation }) => {
                     'Accept': 'application/json, text/plain, */*',
                     'Content-Type': 'application/x-www-form-urlencoded'
                 },
-                data: `grant_type=password&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`,
+                data: `grant_type=password&username=${encodeURIComponent(username.toLowerCase())}&password=${encodeURIComponent(password)}`,
                 validateStatus: () => true,
             });
             const accessToken = response.data.access_token;
@@ -62,32 +64,38 @@ const LoginScreen = ({ navigation }) => {
                 .catch(error => console.log("Error saving access token to AsyncStorage: ", error));
             const userData = await axios({
                 method: 'get',
-                url: `${settings.MONGO_API_URL}/Users/${encodeURIComponent(username)}`,
+                url: `${settings.MONGO_API_URL}/Users/${encodeURIComponent(username.toLowerCase())}`,
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${accessToken}`
                 }
             });
-            console.log("userData ", userData.data, " data retrieved")
-            // console.log(userData.data)
-            await setUserDataInAsyncStorage(userData);
-            navigation.navigate('main'); // Navigate to Challenge Run screen after successful login
+            const userDataTrimmed = userData.data;
+            console.log("userData ", userDataTrimmed, " data retrieved")
+            await setUser(userDataTrimmed);
         } catch (error) {
             if (error.response.status >= 500) {
                 console.log(error);
                 if (settings.disable_auth) {
                     console.log("Auth is disabled. Logging in user automatically.")
-                    await setUserDataInAsyncStorage({"data": {"id": "1234567890", "email": "test@example.com", "first_name": "Test", "last_name": "User", "password": "test_password"}});
+                    setUser({"data": {"id": "1234567890", "email": "test@example.com", "first_name": "Test", "last_name": "User", "password": "test_password"}});
                     navigation.navigate('main'); // Navigate to Challenge Run screen after successful login
                     return;
                 }
             } else {
                 setError('Invalid username or password');
                 console.error(error);
-                await setUserDataInAsyncStorage({"data": sampleData.user})
+                await setUser({"data": sampleData.user})
             }
         }
     };
+
+    useEffect(() => {
+        if (Object.keys(user).length > 0) {
+            console.log("User data retrieved: ", user)
+            navigation.navigate('main'); // Navigate to Challenge Run screen after successful login
+        }
+    }, [user]);
 
     return (
         <View style={styles.loginContainer}>

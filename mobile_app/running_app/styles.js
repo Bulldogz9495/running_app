@@ -111,5 +111,5 @@ export default styles = StyleSheet.create({
         padding: 10,
         borderBottomWidth: 1,
         borderBottomColor: 'gray',
-    },
+    }
   });
