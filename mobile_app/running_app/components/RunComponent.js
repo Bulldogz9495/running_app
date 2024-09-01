@@ -8,6 +8,7 @@ import axios from 'axios';
 import { sampleData } from '../utils/sample_data';
 import moment from 'moment';
 import { useFocusEffect } from '@react-navigation/native';
+import { DisplayTime } from './displayTime';
 
 
 export default RunComponent = (navigation) => {
@@ -71,13 +72,11 @@ export default RunComponent = (navigation) => {
                     <Text style={{ fontSize: 20 }}>Date: {moment(run.start_datetime).format('l')}</Text>
                     <Text style={{ fontSize: 20 }}>Score: {run.score.toFixed(1)}</Text>
                     <Text style={{ fontSize: 20 }}>Duration: {Math.round(run.duration / 60)} min
-                        {run.duration > 0 && <Text> (Pace: {Math.round(run.distance)} miles at {run.pace.toFixed(1)} min/mile)</Text>}
+                        {run.duration > 0 && <Text> ({Math.round(run.distance)} miles at {<DisplayTime totalTimeSeconds={run.pace*60} additionalStyles={{fontSize: 20, fontWeight: 'normal'}}/>} min/mile)</Text>}
                     </Text>
-                    <Text style={{ fontSize: 20 }}>Distance: {run.distance.toFixed(2)} miles</Text>
+                    <Text style={{ fontSize: 20 }}>Distance: {run.distance.toFixed(1)} miles</Text>
                 </View>
             ))}
         </ScrollView>
     );
 };
-
-

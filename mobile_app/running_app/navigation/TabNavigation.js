@@ -35,7 +35,7 @@ export default function TabNavigation() {
         'Authorization': `Bearer ${accessToken}`
       }
     });
-    console.log("Message Count: ", response);
+    console.log("Message Count: ", response.data.count);
     setMessageCount(response.data.count);
   }
 

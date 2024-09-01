@@ -6,6 +6,7 @@ import { settings } from '../utils/settings';
 import { useContext } from 'react';
 import { UserContext } from '../utils/createContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import styles from '../styles';
 
 
 const ProfileScreen = ({navigation}) => {
@@ -68,7 +69,7 @@ const ProfileScreen = ({navigation}) => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={styles.profileContainer}>
       <View style={styles.editButton}>
         {!editMode ? (
           <View style={{flexDirection: 'row', justifyContent: 'space-between', width: '100%'}}>
@@ -93,7 +94,7 @@ const ProfileScreen = ({navigation}) => {
               style={styles.userInput}
             />
           ) : (
-            <Text>{editedData?.email}</Text>
+            <Text style={styles.userProfileInfo}>{editedData?.email}</Text>
           )}
         </>
         <><Text style={styles.userText}>Name: </Text>{editMode ? 
@@ -121,7 +122,7 @@ const ProfileScreen = ({navigation}) => {
               />
             </>
           ) : (
-            <Text>{editedData?.first_name} {editedData?.middle_name} {editedData?.last_name}</Text>
+            <Text style={styles.userProfileInfo}>{editedData?.first_name} {editedData?.middle_name} {editedData?.last_name}</Text>
           )}
         </>
         <><Text style={styles.userText}>Motto: </Text>{editMode ? 
@@ -133,7 +134,7 @@ const ProfileScreen = ({navigation}) => {
               style={styles.userInput}
             />
           ) : (
-            <Text>{editedData?.motto}</Text>
+            <Text style={styles.userProfileInfo}>{editedData?.motto}</Text>
           )}
         </>
         <><Text style={styles.userText}>Height: </Text>{editMode ? 
@@ -155,7 +156,7 @@ const ProfileScreen = ({navigation}) => {
               /><Text>"</Text>
             </>
           ) : (
-            <Text>{`${editedData?.height_feet}' ${editedData?.height_inches}"`}</Text>
+            <Text style={styles.userProfileInfo}>{`${editedData?.height_feet}' ${editedData?.height_inches}"`}</Text>
           )}
         </>
         <><Text style={styles.userText}>Birthday: </Text>{editMode ?
@@ -174,7 +175,7 @@ const ProfileScreen = ({navigation}) => {
             width={375}
             ></CalendarPicker>
           ) : (
-            <Text>{editedData?.birthday === null ? '' : editedData?.birthday.split('T')[0]}</Text>
+            <Text style={styles.userProfileInfo}>{editedData?.birthday === null ? '' : editedData?.birthday.split('T')[0]}</Text>
           )
         }
         </>
@@ -198,7 +199,7 @@ const ProfileScreen = ({navigation}) => {
               /><Text style={styles.userText}>oz</Text>
             </>
           ) : (
-            <Text>{`${editedData?.weight_lbs} lbs ${editedData?.weight_ounces} oz`}</Text>
+            <Text style={styles.userProfileInfo}>{`${editedData?.weight_lbs} lbs ${editedData?.weight_ounces} oz`}</Text>
           )}
         </>
       </ScrollView>
@@ -206,35 +207,35 @@ const ProfileScreen = ({navigation}) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'flex-start',
-    alignItems: 'flex-start',
-    padding: 20,
-    backgroundColor: 'lightgreen',
-  },
-  editButton: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 10,
-    color: 'blue',
-  },
-  userDataContainer: {
-    alignSelf: 'flex-start',
-  },
-  userText: {
-    fontSize: 20
-  },
-  userInput: {
-    borderColor: 'blue',
-    borderWidth: 2,
-    borderRadius: 25,
-    margin: 5,
-    padding: 15,
-    color: 'black',
-    width: '80%'
-  }
-});
+// const styles = StyleSheet.create({
+//   profileContainer: {
+//     flex: 1,
+//     justifyContent: 'flex-start',
+//     alignItems: 'flex-start',
+//     padding: 20,
+//     backgroundColor: 'lightgreen',
+//   },
+//   editButton: {
+//     flexDirection: 'row',
+//     justifyContent: 'space-between',
+//     marginBottom: 10,
+//     color: 'blue',
+//   },
+//   userDataContainer: {
+//     alignSelf: 'flex-start',
+//   },
+//   userText: {
+//     fontSize: 20
+//   },
+//   userInput: {
+//     borderColor: 'blue',
+//     borderWidth: 2,
+//     borderRadius: 25,
+//     margin: 5,
+//     padding: 15,
+//     color: 'black',
+//     width: '80%'
+//   }
+// });
 
 export default ProfileScreen;

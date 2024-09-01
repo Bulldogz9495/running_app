@@ -61,7 +61,7 @@ const MapComponent = ({locations, recording, totalDistanceMiles, totalScore, ave
         justifyContent: 'center',
       }}>
         <View style={styles.greenCircle}>
-          <Text style={styles.mapScoreStyle}>{totalScore.toFixed(2)}</Text>
+          <Text style={styles.mapScoreStyle}>{totalScore.toFixed(1)}</Text>
           <Text style={styles.mapTextStyle}>Score</Text>
         </View>
         <View style={styles.greenCircle}>

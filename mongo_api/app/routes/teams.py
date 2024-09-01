@@ -14,6 +14,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/token")
 
 team_router = APIRouter()
 
+# Get Team
 @team_router.get("/Teams/{item_id}", response_model=dict)
 async def read_team(item_id: str):
     team_data = await db_service.db.teams.find_one({"id": item_id})
@@ -25,7 +26,7 @@ async def read_team(item_id: str):
     logger.info(f"Get Team: {item_id}")
     return team_data
 
-
+# Get all Teams
 @team_router.get("/Teams/user_id/{user_id}", response_model=List[dict])
 async def read_teams_for_user(
     user_id: str,
@@ -40,6 +41,7 @@ async def read_teams_for_user(
     logger.info(f"Get Teams for user: {user_id}")
     return teams
 
+# Create Team
 @team_router.post("/Teams", response_model=Team)
 async def create_team(team_data: Team):
     existing_id = await db_service.db.users.find_one({'id': team_data.id})
@@ -52,7 +54,7 @@ async def create_team(team_data: Team):
     else:
         return HTTPException(status_code=422, detail="Team failed to create")
 
-
+# Update Team Data
 @team_router.patch("/Teams/id/{team_id}", response_model=Team)
 async def update_team_by_id(team_data: dict, team_id: str):
     existing_team = await db_service.db.teams.find_one({"id": team_id})
@@ -68,7 +70,7 @@ async def update_team_by_id(team_data: dict, team_id: str):
     logger.info(f"Team {team_id} patched with data {team_data}")
     return updated_team
 
-
+# Get All Teams
 @team_router.get("/Teams", response_model=List[Team])
 async def get_all_teams(token: str = Depends(oauth2_scheme)):
     teams = []
@@ -176,6 +178,19 @@ async def delete_invitation(team_id: str, invitation_id: str):
                 team['invitations'].remove(invitation)
     await db_service.db.teams.update_one({"id": team_id}, {'$set': team})
     return {"message": "Invitation deleted"}
+
+# Remove Team Member
+@team_router.delete("/Teams/{team_id}/members/{user_id}")
+async def delete_team_member(team_id: str, user_id: str):
+    team = await db_service.db.teams.find_one({"id": team_id})
+    if not team:
+        raise HTTPException(status_code=404, detail="Team not found")
+    if user_id not in team['members']:
+        raise HTTPException(status_code=400, detail="User is not a member of the team")
+    team['members'].remove(user_id)
+    team['size'] = len(team['members'])
+    await db_service.db.teams.update_one({"id": team_id}, {'$set': team})
+    return {"message": "User removed from team"}
 
 
 async def _get_member_info(member_id):

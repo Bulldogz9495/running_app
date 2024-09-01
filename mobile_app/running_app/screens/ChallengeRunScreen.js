@@ -78,11 +78,9 @@ const ChallengeRunScreen = (navigation) => {
               <Text>Team Size: {item.size}</Text>
             </View>
           </Pressable>
-          {user.id === item.owner && (
-            <Pressable onPress={() => {console.log("ITEM: ", item); setNewTeam(item); setEditTeam(true)}}>
-              <Text>Edit Team</Text>
-            </Pressable>
-          )}
+          <Pressable onPress={() => {console.log("ITEM: ", item); setNewTeam(item); setEditTeam(true)}}>
+            <Text>View Team</Text>
+          </Pressable>
         </View>
         {isExpanded && (
           <FlatList

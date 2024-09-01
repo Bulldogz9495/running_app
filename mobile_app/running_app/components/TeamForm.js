@@ -2,6 +2,8 @@ import { ScrollView, View, Text, Pressable, FlatList, Button, TextInput, Keyboar
 import React, { useState } from 'react';
 import styles from '../styles';
 import { useNavigation } from '@react-navigation/native';
+import { useContext } from 'react';
+import { UserContext } from '../utils/createContext';
 
 const TeamInput = ({ label, defaultValue, onChangeText}) => (
     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -14,21 +16,51 @@ const TeamInput = ({ label, defaultValue, onChangeText}) => (
     </View>
   );
 
+const leaveTeam = async (team_id, user_id) => {
+  const response = await fetch(`${settings.MONGO_API_URL}/Users/${userInfo.id}/messages`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ team_id, user_id }),
+  });
+  const data = await response.json();
+  console.log("Leave Team response: ", data);
+};
+
 export const TeamForm = ({ team, onSubmit, onCancel }) => {
   const [selectedSearch, setSelectedSearch] = useState('Email');
   const navigation = useNavigation();
+  const { user, setUser } = useContext(UserContext);
+  const owned = user.id === team.owner;
 
   return (
-    <View>
-      <TeamInput
-        label="Team Name"
-        defaultValue={team.name}
-        onChangeText={value => team=({...team, name: value})}
-      />
-      <TeamInput label="Motto" defaultValue={team.motto} onChangeText={value => team=({...team, motto: value})} />
-      <Button title="Invite New Team Members!" style={{fontSize: 20}} color="blue" onPress={() => navigation.navigate('inviteMembers', { team_id: team.id, team_name: team.name })}></Button>
-      <Button title="Save Team" onPress={() => onSubmit(team, navigation)} color="blue"/>
-      <Button title="Cancel" onPress={() => onCancel(navigation)} color="red"/>
-    </View>
+    <>
+      {owned ? (
+          <View>
+            <TeamInput
+              label="Team Name"
+              defaultValue={team.name}
+              onChangeText={value => team=({...team, name: value})}
+            />
+            <TeamInput label="Motto" defaultValue={team.motto} onChangeText={value => team=({...team, motto: value})} />
+            <Button title="Invite New Team Members!" style={{fontSize: 20}} color="blue" onPress={() => navigation.navigate('inviteMembers', { team_id: team.id, team_name: team.name })}></Button>
+            <Button title="Save Team" onPress={() => onSubmit(team, navigation)} color="blue"/>
+            <Button title="Cancel" onPress={() => onCancel(navigation)} color="red"/>
+          </View>
+        ) : (
+          <View>
+            <Pressable style={styles.pressableArea} onPress={() => onCancel(navigation)}>
+              <Text style={styles.pressableText}>Go Back</Text>
+            </Pressable>
+            <Text style={styles.userProfileInfo}>Team: {team.name}</Text>
+            <Text style={styles.userProfileInfo}>Motto: {team.motto}</Text>
+            <Pressable style={styles.pressableArea} onPress={() => leaveTeam(team.id, user.id)}>
+              <Text style={styles.pressableText}>Leave Team</Text>
+            </Pressable>
+          </View>
+        )
+      }
+    </>
   );
 };

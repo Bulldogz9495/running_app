@@ -8,6 +8,8 @@ import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useContext } from 'react';
 import { UserContext } from '../utils/createContext';
+import { Linking } from 'react-native';
+import SmsListener from 'react-native-sms-listener';
 import { v4 as uuidv4 } from 'uuid';
 
 
@@ -44,14 +46,6 @@ const InviteMembersScreen = ( route ) => {
     });
   };
 
-    {/* Handle invitation logic */}
-    {/* TODO: Pass the user id and team id to the server to create an invitation */}
-    {/* TODO: Display a success message if the invitation is successful */}
-    {/* TODO: Display an error message if the invitation fails */}
-    {/* TODO: Clear the search results after invitation is sent */}
-    {/* TODO: Clear the search inputs */}
-
-    {/* Helper function to handle invitation */}
     const handleInvite = async (user) => {
     try {
         const invitation_id = uuidv4();
@@ -91,18 +85,40 @@ const InviteMembersScreen = ( route ) => {
             }
            }
         )
-        console.log("Message Invitatio post: ", response2.data);
+        console.log("Message Invitation post: ", response2.data);
         setSearchResults([]);
         setFirstName('');
         setLastName('');
         setEmail('');
-    } catch (error) {
-        console.error(error);
-    }
-    }
+      } catch (error) {
+          console.error(error);
+      }
+    };
 
   const handleSearchTermChange = (selectedItem) => {
     setSearchTerm(selectedItem);
+    if (selectedItem === 'contact') {
+      const userIdent = (user?.last_name !== undefined) ? (user?.first_name + " " + user?.last_name) : (user?.email);
+      const invitation_id = uuidv4();
+      const encodedInvitationId = encodeURIComponent(invitation_id);
+      const message = `
+        You are invited to join team ${route?.route?.params?.team_name} by ${userIdent}
+        For existing challenge run users: challenge-run://invitation/${encodedInvitationId}
+        For new challenge run users please download the free app here: ${settings.app_store_url}, then follow the first link.
+      `;
+      const url = `sms:&body=${encodeURIComponent(message)}`;
+      Linking.openURL(url);
+      SmsListener.addEventListener('messageSent', (event) => {
+        const teamId = route?.route?.params?.team_id;
+        const encodedInvitationId = encodeURIComponent(invitation_id);
+        const response1 = axios.post(`${settings.MONGO_API_URL}/Teams/${teamId}/invitations/${user.id}?invitation_id=${encodedInvitationId}`, {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${accessToken}`
+          }
+        });
+      });
+    }
   };
 
   return (
@@ -113,6 +129,7 @@ const InviteMembersScreen = ( route ) => {
       >
         <Picker.Item label="Email" value="email" />
         <Picker.Item label="Name" value="name" />
+        <Picker.Item label="Contact" value="contact" />
       </Picker>
       {searchTerm === 'name' ? (
         <View>

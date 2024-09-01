@@ -11,6 +11,9 @@ import { useContext } from 'react';
 import { UserContext } from '../utils/createContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import styles from '../styles';
+import { DisplayTime } from '../components/displayTime';
+
+let intervalId;
 
 const MyActivityScreen = () => {
   const { user, setUser } = useContext(UserContext);
@@ -26,7 +29,47 @@ const MyActivityScreen = () => {
 
   const stopRecording = () => {
     setShowModal(true);
+    setRecording(false);
+    clearInterval(intervalId);
   }
+
+  const startRecording = async () => {
+    try {
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        console.log('Permission to access location was denied');
+        return;
+      }
+      const intervalMilliSeconds = 5000;
+      intervalId = setInterval(() => {
+        Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Highest })
+          .then((location) => {
+            var pace = 1609.34 / location.coords.speed / 60; // gps locations param
+            var newLocation = {
+              "location": 
+              {
+                "latitude": location.coords.latitude, 
+                "longitude": location.coords.longitude
+              },
+              "accuracy": location.coords.accuracy,
+              "altitude": location.coords.altitude,
+              "altitudeAccuracy": location.coords.altitudeAccuracy,
+              "heading": location.coords.heading,
+              "speed": location.coords.speed,
+              "pace": pace,  // convert meters per second to minutes in 1 mile pace = 1609.34 (m/mile) / speed (m/s) / 60 (s/min)
+              "datetime": new Date().toISOString()
+            }
+            setLocations((state) => [...state, newLocation]);
+          })
+          .catch((error) => {
+            console.error('Error getting location:', error);
+          });
+      }, intervalMilliSeconds);
+      setRecording(true);
+    } catch (error) {
+      console.error('Error starting recording:', error);
+    }
+  };
 
   const handleConfirm = async () => {
     try {
@@ -68,7 +111,7 @@ const MyActivityScreen = () => {
     setRecording(false);
   };
 
-  const handleCancel = () => {
+  const handleResume = () => {
     // Hide modal without resetting state
     setShowModal(false);
     setRecording(true);
@@ -88,12 +131,12 @@ const MyActivityScreen = () => {
     setTotalScore(0);
     setCurrentPace(0);
     setTotalTimeSeconds(0);
-    setLocations([]);
     // Get new runs array 
   }
 
   useEffect(() => {
     if (locations.length > 1) {
+      console.log("Locations Updated");
       var R = 6371; // Radius of the earth in km
       var dLat = (locations[locations.length - 1].location.latitude - locations[locations.length - 2].location.latitude) * Math.PI / 180;
       var dLon = (locations[locations.length - 1].location.longitude - locations[locations.length - 2].location.longitude) * Math.PI / 180;
@@ -103,7 +146,8 @@ const MyActivityScreen = () => {
       var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
       var d = R * c;
       var distance = d * 0.621371; // convert km to miles
-      var pace2 =  5 / 60 / (distance); // minutes / miles - from distance
+      timeDelta = (new Date(locations[locations.length - 1].datetime) - new Date(locations[locations.length - 2].datetime));
+      var pace2 = timeDelta / 1000 / 60 / (distance); // minutes / miles - from distance
       var score = distance * Math.pow(2,((1500-(pace2*60))/140));
       // var score = Math.round((distance * Math.pow(2,((1500-(locations[locations.length - 1].pace*60))/140)))*10)/10);  // Uses gps speed instead of calculated distance
       const startDateTime = new Date(locations[0].datetime);
@@ -118,44 +162,6 @@ const MyActivityScreen = () => {
 
 
   useEffect(() => {
-    const startRecording = async () => {
-      try {
-        const { status } = await Location.requestForegroundPermissionsAsync();
-        if (status !== 'granted') {
-          console.log('Permission to access location was denied');
-          return;
-        }
-        const intervalMilliSeconds = 5000;
-        intervalId = setInterval(() => {
-          Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Highest })
-            .then((location) => {
-              var pace = 1609.34 / location.coords.speed / 60; // gps locations param
-              var newLocation = {
-                "location": 
-                {
-                  "latitude": location.coords.latitude, 
-                  "longitude": location.coords.longitude
-                },
-                "accuracy": location.coords.accuracy,
-                "altitude": location.coords.altitude,
-                "altitudeAccuracy": location.coords.altitudeAccuracy,
-                "heading": location.coords.heading,
-                "speed": location.coords.speed,
-                "pace": pace,  // convert meters per second to minutes in 1 mile pace = 1609.34 (m/mile) / speed (m/s) / 60 (s/min)
-                "datetime": new Date().toISOString()
-              }
-              setLocations((state) => [...state, newLocation]);
-            })
-            .catch((error) => {
-              console.error('Error getting location:', error);
-            });
-        }, intervalMilliSeconds);
-        setRecording(true);
-      } catch (error) {
-        console.error('Error starting recording:', error);
-      }
-    };
-
     if (recording) {
       startRecording();
     } else if (!recording && locations.length > 0) {
@@ -188,12 +194,12 @@ const MyActivityScreen = () => {
           <View style={{alignItems: 'center'}}>
             <Text style={styles.userText}>Total Distance: {totalDistanceMiles.toFixed(2)} miles</Text>
             <Text style={styles.userText}>Total Score: {totalScore.toFixed(2)}</Text>
-            <Text style={styles.userText}>Average Pace: {averagePacePmin} minutes per mile</Text>
+            <Text style={styles.userText}>Average Pace: {<DisplayTime totalTimeSeconds={averagePacePmin*60}/>} minutes per mile</Text>
             <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
               <Pressable style={styles.pressableArea} onPress={handleConfirm}>
                 <Text style={styles.pressableText}>Save Run</Text>
               </Pressable>
-              <Pressable style={styles.pressableArea} onPress={handleCancel}>
+              <Pressable style={styles.pressableArea} onPress={handleResume}>
                 <Text style={styles.pressableText}>Resume Run</Text>
               </Pressable>
               <Pressable style={styles.pressableArea} onPress={handleDelete}>

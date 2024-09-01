@@ -2,7 +2,7 @@ import { Text } from 'react-native';
 import styles from '../styles';
 
 
-export const DisplayTime = ({ totalTimeSeconds }) => {
+export const DisplayTime = ({ totalTimeSeconds, additionalStyles}) => {
   const minutes = Math.floor(totalTimeSeconds / 60);
   const seconds = (totalTimeSeconds % 60).toFixed(0).toString().padStart(2, '0');
   let displayMinutes = minutes.toString();
@@ -12,7 +12,7 @@ export const DisplayTime = ({ totalTimeSeconds }) => {
     display = `${displayMinutes}:${seconds}`
   }
   return (
-    <Text style={styles.mapScoreStyle}>{display}</Text>
+    <Text style={[styles.mapScoreStyle, additionalStyles]}>{display}</Text>
   );
 };
 

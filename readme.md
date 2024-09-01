@@ -47,13 +47,13 @@ Create a messaging setup for internal user communication.
 Create deep linking for invitations to new users and existing users via text and email
 Message users regaurding challenge status and performance
 Add geographic challenges that will automatically allow track all users that meet the challenge in their area.
-Create a development build with expo eas and introduce react-native-purchases using revenue-cat
+Introduce react-native-purchases using revenue-cat
 Make scroll areas refresh when pulled down (runs, teams)
 Handle empty states on scrolls
 Save Login info so user doesn't have to type it in each time
 Logout Button on profile screen - Needs to remove token from async storage
 
-
+Once deployed - Check URL in mobile app settings that it correctly links to challenge run app in app store
 
 ## Nice to have tasks
 Users can be notified when team members complete a run

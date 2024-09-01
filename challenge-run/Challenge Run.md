@@ -1,0 +1,1 @@
+Challenge run is an exercise app that allows users to score points, form teams, and participate in challenges. It consists of a front end [[Mobile App]] coded in react-native for ios and a backend restful api coded in python using fast-api and hosted on aws ecs. Deployments are done using github actions. 
