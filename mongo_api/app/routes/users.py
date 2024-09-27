@@ -16,6 +16,7 @@ from app.services.mongodb_service import MongoDBService
 
 user_router = APIRouter()
 
+
 db_service = MongoDBService()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/token")
 
