@@ -8,14 +8,13 @@ import uuid
 import json
 import pymongo
 from app.settings import logger, JWT_EXPIRATION_TIME_MINUTES, JWT_EXPIRATION_TIME_HOURS
-from app.utils.security import authenticate_user, create_access_token, get_password_hash
+from app.utils.security import authenticate_user, create_access_token, get_password_hash, verify_token
 from datetime import timedelta
 from datetime import datetime
 from pydantic import BaseModel
 from app.services.mongodb_service import MongoDBService
 
 user_router = APIRouter()
-
 
 db_service = MongoDBService()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/token")
@@ -41,6 +40,7 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
 
 @user_router.get("/Users/{email}", response_model=User)
 async def read_item(email: str, token: str = Security(oauth2_scheme)):
+    verify_token(token)
     user_data = await db_service.db.users.find_one({"email": email})
     if user_data is None:
         raise HTTPException(status_code=404, detail="User {email} not found")

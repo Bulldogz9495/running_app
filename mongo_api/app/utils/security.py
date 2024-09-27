@@ -27,3 +27,21 @@ def authenticate_user(username: str, password: str, hashed_password: str):
     if not verify_password(password, hashed_password):
         return False
     return True
+
+def verify_token(token: str):
+    try:
+        payload = jwt.decode(token, JWT_SECRET_KEY, algorithms=[JWT_ALGORITHM])
+        return payload
+    except JWTError:
+        raise GetTokenError
+
+
+Invoke-WebRequest -UseBasicParsing -Uri "http://challenge-run-load-balancer-14265435.us-east-1.elb.amazonaws.com/Users/user1%40example.com" `
+ -WebSession $session `
+ -Headers @{
+ "Accept-Encoding"="gzip, deflate"
+   "Accept-Language"="en-US,en;q=0.9"
+   "Referer"="http://challenge-run-load-balancer-14265435.us-east-1.elb.amazonaws.com/docs"
+   "accept"="application/json"
+   "AUTHORIZATION"="Bearer abc"
+ }
