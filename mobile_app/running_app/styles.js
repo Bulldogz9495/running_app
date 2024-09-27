@@ -106,7 +106,7 @@ export default styles = StyleSheet.create({
         marginBottom: 10,
     },
     userText: {
-        fontSize: 20,
+        fontSize: 20
     },
     pressableArea: {
         backgroundColor: 'green',

@@ -4,6 +4,7 @@ import styles from '../styles';
 import { useNavigation } from '@react-navigation/native';
 import { useContext } from 'react';
 import { UserContext } from '../utils/createContext';
+import { settings } from '../utils/settings';
 
 const TeamInput = ({ label, defaultValue, onChangeText}) => (
     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -17,15 +18,15 @@ const TeamInput = ({ label, defaultValue, onChangeText}) => (
   );
 
 const leaveTeam = async (team_id, user_id) => {
-  const response = await fetch(`${settings.MONGO_API_URL}/Users/${userInfo.id}/messages`, {
-    method: 'POST',
+  const response = await fetch(`${settings.MONGO_API_URL}/Teams/${team_id}/members/${user_id}`, {
+    method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ team_id, user_id }),
+    }
   });
   const data = await response.json();
-  console.log("Leave Team response: ", data);
+  console.log(data);
+  navigation.goBack();
 };
 
 export const TeamForm = ({ team, onSubmit, onCancel }) => {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, ScrollView, Pressable } from 'react-native';
 import axios from 'axios';
 import CalendarPicker from "react-native-calendar-picker";
 import { settings } from '../utils/settings';
@@ -202,40 +202,21 @@ const ProfileScreen = ({navigation}) => {
             <Text style={styles.userProfileInfo}>{`${editedData?.weight_lbs} lbs ${editedData?.weight_ounces} oz`}</Text>
           )}
         </>
+        <Pressable style={styles.pressableArea} onPress={async () => {
+          try {
+            console.log("Logout")
+            await AsyncStorage.removeItem('MyAccessToken');
+            navigation.navigate('login');
+          } catch (error) {
+            console.error('Error removing token:', error);
+          }
+        }}>
+          <Text style={styles.pressableText}>Logout</Text>
+        </Pressable>
+        
       </ScrollView>
     </View>
   );
 };
-
-// const styles = StyleSheet.create({
-//   profileContainer: {
-//     flex: 1,
-//     justifyContent: 'flex-start',
-//     alignItems: 'flex-start',
-//     padding: 20,
-//     backgroundColor: 'lightgreen',
-//   },
-//   editButton: {
-//     flexDirection: 'row',
-//     justifyContent: 'space-between',
-//     marginBottom: 10,
-//     color: 'blue',
-//   },
-//   userDataContainer: {
-//     alignSelf: 'flex-start',
-//   },
-//   userText: {
-//     fontSize: 20
-//   },
-//   userInput: {
-//     borderColor: 'blue',
-//     borderWidth: 2,
-//     borderRadius: 25,
-//     margin: 5,
-//     padding: 15,
-//     color: 'black',
-//     width: '80%'
-//   }
-// });
 
 export default ProfileScreen;

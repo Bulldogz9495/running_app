@@ -12,7 +12,7 @@ def get_password_hash(password: str):
     return hashed_password
     
 # Function to create access token
-def create_access_token(data: dict, expires_delta: timedelta=timedelta(hours=JWT_EXPIRATION_TIME_HOURS, minutes=JWT_EXPIRATION_TIME_MINUTES)):
+def create_access_token(data: dict, expires_delta: timedelta=timedelta(hours=JWT_EXPIRATION_TIME_HOURS)):
     to_encode = data.copy()
     expire = datetime.now() + expires_delta
     to_encode.update({"exp": expire})
@@ -24,7 +24,6 @@ def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)
 
 def authenticate_user(username: str, password: str, hashed_password: str):
-    
     if not verify_password(password, hashed_password):
         return False
     return True

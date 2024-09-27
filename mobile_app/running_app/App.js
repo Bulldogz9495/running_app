@@ -27,7 +27,7 @@ export default function App() {
   const linking = {
     prefixes: [prefix],
     config: {
-      initialRouteName: 'Login',
+      initialRouteName: 'login',
       screens: {
         invitation: {
           path: 'invitation/:inviterid/:teamid',
@@ -51,7 +51,7 @@ export default function App() {
             });
           } catch (error) {
             if (error.response.status === 401) {
-              setInitialRoute('Login');
+              setInitialRoute('login');
             } else {
               throw error;
             }
@@ -61,7 +61,7 @@ export default function App() {
       } catch (e) {
         // error reading value
       }
-      setInitialRoute('Login');
+      setInitialRoute('login');
     }
     getInitialRoute();
   }, []);
@@ -86,7 +86,7 @@ export default function App() {
           initialRouteName={initialRoute} 
           styles={{styles}}
         >
-          <Stack.Screen name="Login" component={LoginScreen}/>
+          <Stack.Screen name="login" component={LoginScreen}/>
           <Stack.Screen name="main" component={TabNavigation}/>
           <Stack.Screen name="payment" component={PaymentScreen}/>
           <Stack.Screen name="loading" component={LoadingScreen}/>

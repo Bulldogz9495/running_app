@@ -53,6 +53,7 @@ Set a version number (app.json) and build numnber (app.json ios.buildnumber) Thi
 ```npx eas submit --platform ios ```
 This will push build to app store
 
+Then bump the build number in app.json up one (or handle versioning)
 
 maps api key AIzaSyCFpCDhy_BA2M0WD54M1tAFlm2rDAvoPXE
 
