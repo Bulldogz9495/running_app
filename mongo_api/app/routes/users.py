@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, Security
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from app.models.user import User, Token, Message
 from typing import List, Annotated, Optional
@@ -8,6 +8,7 @@ import uuid
 import json
 import pymongo
 from app.settings import logger, JWT_EXPIRATION_TIME_MINUTES, JWT_EXPIRATION_TIME_HOURS
+from app.utils.security import authenticate_user, create_access_token, get_password_hash
 from datetime import timedelta
 from datetime import datetime
 from pydantic import BaseModel
@@ -22,8 +23,10 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/token")
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
     user = await db_service.db.users.find_one({"email": form_data.username})
     if not user:
+        logger.info("Login Failed: User Email not found: %s", form_data.username)
         raise HTTPException(status=404, detail="User Email not found")
     if not authenticate_user(form_data.username, form_data.password, user['password']):
+        logger.info("Login Failed:Invalid username or password: %s", form_data.username)
         raise HTTPException(status_code=401, detail="Invalid username or password")
     access_token_expires = timedelta(hours=JWT_EXPIRATION_TIME_HOURS, minutes=JWT_EXPIRATION_TIME_MINUTES)
     access_token = create_access_token(
@@ -36,7 +39,7 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     }
 
 @user_router.get("/Users/{email}", response_model=User)
-async def read_item(email: str, token: str = Depends(oauth2_scheme)):
+async def read_item(email: str, token: str = Security(oauth2_scheme)):
     user_data = await db_service.db.users.find_one({"email": email})
     if user_data is None:
         raise HTTPException(status_code=404, detail="User {email} not found")
@@ -49,7 +52,7 @@ async def search_users(
     first_name: Optional[str] = None, 
     last_name: Optional[str] = None, 
     email: Optional[str] = None,
-    token: str = Depends(oauth2_scheme)
+    token: str = Security(oauth2_scheme)
 ):
     logger.info(f"Searching Users: {first_name}, {last_name}, {email}")
     query = {"$and": []}
@@ -86,7 +89,7 @@ async def create_user(user_data: User):
 
 
 @user_router.patch("/Users/id/{item_id}", response_model=User)
-async def update_user_by_id(user_data: dict, item_id: str, token: str = Depends(oauth2_scheme)):
+async def update_user_by_id(user_data: dict, item_id: str, token: str = Security(oauth2_scheme)):
     existing_data = await db_service.db.users.find_one({"id": item_id})
     if existing_data is None:
         raise HTTPException(status_code=404, detail="User could not be found")
@@ -103,7 +106,7 @@ async def update_user_by_id(user_data: dict, item_id: str, token: str = Depends(
 
 
 @user_router.patch("/Users/username/{username}", response_model=User)
-async def update_user_by_(user_data: dict, username: str, token: str = Depends(oauth2_scheme)):
+async def update_user_by_(user_data: dict, username: str, token: str = Security(oauth2_scheme)):
     existing_data = await db_service.db.users.find_one({"email": username})
     if existing_data is None:
         raise HTTPException(status_code=404, detail="User could not be found")
@@ -119,7 +122,7 @@ async def update_user_by_(user_data: dict, username: str, token: str = Depends(o
 
 
 @user_router.get("/Users", response_model=List[User])
-async def get_all_users(token: str = Depends(oauth2_scheme)):
+async def get_all_users(token: str = Security(oauth2_scheme)):
     users = []
     async for user_data in db_service.db.users.find():
         users.append(user_data)
@@ -190,7 +193,7 @@ async def post_user_message(user_id: str, message: Message):
 
 
 @user_router.patch("/Users/{user_id}/messages/{message_id}", response_model=dict)
-async def patch_user_message(user_id: str, message_id: str, message: str = None, read: bool = False, token: str = Depends(oauth2_scheme)):
+async def patch_user_message(user_id: str, message_id: str, message: str = None, read: bool = False, token: str = Security(oauth2_scheme)):
     now = datetime.now()
     sort = {'$set': {'messages.$[element].updated': now}}
     if message is not None:
@@ -209,7 +212,7 @@ async def patch_user_message(user_id: str, message_id: str, message: str = None,
 
 
 @user_router.delete("/Users/{user_id}/messages/{message_index}", response_model=str)
-async def delete_user_message(user_id: str, message_index: str, token: str = Depends(oauth2_scheme)):
+async def delete_user_message(user_id: str, message_index: str, token: str = Security(oauth2_scheme)):
     try:
         user_data = await db_service.db.users.find_one_and_update(
             {"id": user_id},
@@ -222,35 +225,3 @@ async def delete_user_message(user_id: str, message_index: str, token: str = Dep
         raise HTTPException(status_code=404, detail="User or message not found")
     return "Message deleted"
 
-
-
-
-from datetime import datetime, timedelta
-import jwt
-from passlib.context import CryptContext
-from app.settings import JWT_EXPIRATION_TIME_MINUTES, JWT_EXPIRATION_TIME_HOURS, JWT_SECRET_KEY, JWT_ALGORITHM
-
-
-# Hashing password
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
-def get_password_hash(password: str):
-    hashed_password = pwd_context.hash(password)
-    return hashed_password
-    
-# Function to create access token
-def create_access_token(data: dict, expires_delta: timedelta=timedelta(hours=JWT_EXPIRATION_TIME_HOURS)):
-    to_encode = data.copy()
-    expire = datetime.now() + expires_delta
-    to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, str(JWT_SECRET_KEY), algorithm=JWT_ALGORITHM)
-    return encoded_jwt
-
-# Function to verify password
-def verify_password(plain_password, hashed_password):
-    return pwd_context.verify(plain_password, hashed_password)
-
-def authenticate_user(username: str, password: str, hashed_password: str):
-    if not verify_password(password, hashed_password):
-        return False
-    return True

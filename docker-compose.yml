@@ -21,6 +21,7 @@ services:
       - ./datastore/data/:/data/db
     networks:
       - running_network
+    command: ["--tls-allow-invalid-hostnames"]
 
   mongo-api:
     build:
