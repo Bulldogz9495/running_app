@@ -8,7 +8,7 @@ pymongo-schema
 fastapi
 uvicorn
 mongoengine
-motor
+motor==3.6
 python-jose[cryptography]
 passlib
 python-dotenv
