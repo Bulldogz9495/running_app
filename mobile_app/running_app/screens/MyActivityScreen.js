@@ -172,11 +172,9 @@ const MyActivityScreen = () => {
 
   return (
     <View style={{ flex: 1, backgroundColor: 'lightgreen'}}>
-      <Button
-          title={recording ? 'Pause Run' : 'Start A Run'}
-          onPress={() => setRecording((prevState) => !prevState)}
-          color={recording ? 'red' : 'blue'}
-      />
+      <Pressable style={styles.pressableArea} onPress={() => setRecording((prevState) => !prevState)}>
+        <Text style={styles.pressableText}>{recording ? 'Pause Run' : 'Start A Run'}</Text>
+      </Pressable>
       {recording ? 
       <MapComponent 
         locations={locations}

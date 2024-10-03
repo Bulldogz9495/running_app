@@ -3,10 +3,8 @@ from typing import Optional, List
 from uuid import UUID
 from datetime import datetime
 
+from .utility_models import Location
 
-class Location(BaseModel):
-    latitude: float
-    longitude: float
 
 class GeoPoint(BaseModel):
     location: Location

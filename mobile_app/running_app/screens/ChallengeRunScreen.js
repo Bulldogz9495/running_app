@@ -57,11 +57,11 @@ const ChallengeRunScreen = (navigation) => {
   }, []);
 
   const renderTeam = ({ item, index }) => {
-    const isExpanded = item.id === expandedTeam;
+    const isExpanded = item?.id === expandedTeam?.id;
     return (
       <View key={index} style={{ borderWidth: 1, padding: 10, borderWidth: 2.0, borderColor: 'blue'  }}>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Pressable onPress={() => setExpandedTeam(isExpanded ? null : item.id)}>
+          <Pressable onPress={() => setExpandedTeam(item)}>
             <Text style={{ fontSize: 24, fontWeight: 'bold' }}>
               {item.name}
             </Text>
@@ -88,6 +88,7 @@ const ChallengeRunScreen = (navigation) => {
             keyExtractor={(item, index) => index.toString()}
             renderItem={({ item, index }) => (
               <Text key={index}>
+                {expandedTeam.owner === item.id && <Text style={{fontWeight: 'bold'}}>Team Leader: </Text>}
                 {item.first_name} {item.last_name}
               </Text>
             )}
@@ -172,7 +173,7 @@ const editTeams = async (team) => {
       ) : ( !editTeam ? 
         <TeamForm team={newTeam} onSubmit={createTeams} onCancel={handleCancelCreateTeam} navigation={navigation}/>
       : 
-        <TeamForm team={newTeam} onSubmit={editTeams} onCancel={handleCancelCreateTeam} navigation={navigation} /> )
+        <TeamForm team={newTeam} onSubmit={editTeams} onCancel={handleCancelCreateTeam} navigation={navigation} setEditTeam={setEditTeam} teams={teams} setTeams={setTeams}/> )
       }
     </View>
   );

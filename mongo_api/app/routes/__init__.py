@@ -14,3 +14,6 @@ router.include_router(server_router)
 
 from app.routes.runs import run_router
 router.include_router(run_router)
+
+from app.routes.challenges import challenge_router
+router.include_router(challenge_router)

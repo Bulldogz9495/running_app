@@ -1,5 +1,5 @@
 The challenge screen is where users can see their teams and team scores. It is a navigable screen within the [[Mobile App]]. This screen is devoted to challenges, scores, and teams. It allows a user to view other users activity. This screen contains:
-* A list of teams that the user is a member of and displays the team scores - Each team is expandable by clicking to see the team rooster. The team components display Name, Motto, Last Challenge Score, Last Challenge Date, Team Size
+* A list of teams that the user is a member of and displays the team scores - Each team is expandable by clicking to see the team roster. The team components display Name, Motto, Last Challenge Score, Last Challenge Date, Team Size
 * Create new team button that accesses the [[InviteMembersScreen]].
 * If the team is owned by the user then an edit team button is available that accesses the [[InviteMembersScreen]].
 

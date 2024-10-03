@@ -1,42 +1,107 @@
 from pydantic import BaseModel, Field
 from typing import Optional, List
 from uuid import UUID
-from datetime import datetime
+from datetime import datetime, timedelta
 
-class Location(BaseModel):
-    latitude: float
-    longitude: float
+from .utility_models import Location
+
+### Challenges will store competitive data between users, teams, geographies, etc. The total Challenge score will be saved along with run uuids.
 
 class Challenge(BaseModel):
     id: str # UUID
-    users: List[str] # UUID
     start_datetime: datetime
     end_datetime: datetime
     notes: Optional[str] = None
-    score: Optional[float]
-    geography: Optional[bool] = False
-    location: Optional[Location]
+    scoring_method: Optional[str]
+    challenge_type: str # Team, Geographic
+    creator: str
 
+class TeamChallenge(Challenge):
+    teams: List[str]
+
+class GeographicChallenge(Challenge):
+    geography: str
+    runs: List[str]
+
+class UserChallenge(Challenge):
+    users: List[str]
+    
+challenge_schema = {
+    "id": {"type": "uuid", "required": True, "unique": True},
+    "start_datetime": {"type": "datetime", "required": True},
+    "end_datetime": {"type": "datetime", "required": True},
+    "notes": {"type": "string", "required": False},
+    "scoring_method": {"type": "string", "required": True},
+    "challenge_type": {"type": "string", "required": True},
+    "creator": {"type": "uuid", "required": True}
+}
+
+team_challenge_schema = {
+    **challenge_schema,
+    "teams": {"type": "List[uuid]", "required": True}
+}
+
+geographic_challenge_schema = {
+    **challenge_schema,
+    "geography": {"type": "string", "required": True},
+    "runs": {"type": "List[uuid]", "required": True}
+}
+
+user_challenge_schema = {
+    **challenge_schema,
+    "users": {"type": "List[uuid]", "required": True}
+}
 
 # Sample data for seeding
 sample_challenges = [
     {
         'id': "914a7fa8-5c92-44e8-b961-96c7aeca40cd",
-        'users': ['933d1bba-aa0b-485f-8e10-95697fb86bd2', '99443ade-f889-415a-a2cb-65f3bbab032b'],
-        'start_location': {"latitude": 40.7128, "longitude": -74.0060},
-        'end_location': {"latitude": 34.7128, "longitude": -118.0060},
-        'notes': 'Sample challenge 1',
-        'score': 0,
-        'geography': False
-    },
+        'start_datetime': datetime.now(),
+        'end_datetime': datetime.now() + timedelta(days=1),
+        'notes': 'Sample personal challenge 1',
+        'scoring_method': "highest_score",
+        'challenge_type': 'personal',
+        'creator': '933d1bba-aa0b-485f-8e10-95697fb86bd2'
+    }
+]
+
+sample_team_challenges = [
     {
-        'id': "914a7fa8-5c92-44e8-b961-96c7aeca40cd",
-        'users': ['933d1bba-aa0b-485f-8e10-95697fb86bd2'],
-        'start_location': {"latitude": 40.7128, "longitude": -74.0060},
-        'end_location': {"latitude": 34.7128, "longitude": -118.0060},
-        'notes': 'Sample challenge 2',
-        'score': 0,
-        'geography': False
+        'id': "933d1bba-aa0b-485f-8e10-95697fb86bd2",
+        'start_datetime': datetime.now(),
+        'end_datetime': datetime.now() + timedelta(days=1),
+        'notes': 'Sample team challenge 1',
+        'scoring_method': "highest_score",
+        'challenge_type': 'team',
+        'creator': '933d1bba-aa0b-485f-8e10-95697fb86bd2',
+        'teams': ['6eaf4c12-8aa0-42d5-8447-e0b598c03bb2']
+    }
+]
+
+sample_geographic_challenges = [
+    {
+        'id': "933d1bba-aa0b-485f-8e10-95697fb86bd2",
+        'start_datetime': datetime.now(),
+        'end_datetime': datetime.now() + timedelta(days=1),
+        'notes': 'Sample geographic challenge 1',
+        'scoring_method': "highest_score",
+        'challenge_type': 'geographic',
+        'creator': '933d1bba-aa0b-485f-8e10-95697fb86bd2',
+        'geography': 'michigan',
+        'runs': ['914a7fa8-5c92-44e8-b961-96c7aeca40cd']
+    }
+]
+
+sample_user_challenges = [
+    {
+        'id': "933d1bba-aa0b-485f-8e10-95697fb86bd2",
+        'start_datetime': datetime.now(),
+        'end_datetime': datetime.now() + timedelta(days=1),
+        'notes': 'Sample user challenge 1',
+        'scoring_method': "highest_score",
+        'challenge_type': 'user',
+        'creator': '933d1bba-aa0b-485f-8e10-95697fb86bd2',
+        'users': ['933d1bba-aa0b-485f-8e10-95697fb86bd2']
     }
 ]
 

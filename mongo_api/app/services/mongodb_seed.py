@@ -59,4 +59,3 @@ def seed_collection(db, collection, data):
             db[collection].insert_one(d)
         except Exception as e:
             logger.error(f"Error seeding data: {e}")
-    logger.info("Seeding Database Complete")

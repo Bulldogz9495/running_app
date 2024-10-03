@@ -73,8 +73,12 @@ const ProfileScreen = ({navigation}) => {
       <View style={styles.editButton}>
         {!editMode ? (
           <View style={{flexDirection: 'row', justifyContent: 'space-between', width: '100%'}}>
-            <Button title="Edit" onPress={handleEdit} color="blue" />
-            <Button title="Subscribe" onPress={() => navigation.navigate('Payment')} style={{}} color="blue"/>
+            <Pressable style={styles.pressableArea} onPress={handleEdit}>
+              <Text style={styles.pressableText}>Edit</Text>
+            </Pressable>
+            <Pressable style={styles.pressableArea} onPress={() => navigation.navigate('Payment')}>
+              <Text style={styles.pressableText}>Subscribe</Text>
+            </Pressable>
           </View>
         ) : (
           <>

@@ -27,6 +27,7 @@ services:
       context: ./mongo_api/
     ports:
       - "80:80"
+      - "443:443"
     volumes:
       - ./mongo_api:/usr/src  # Mount the app directory into the container
     working_dir: /usr/src
@@ -37,3 +38,4 @@ services:
 networks:
   running_network:
     driver: bridge
+    name: running_network
