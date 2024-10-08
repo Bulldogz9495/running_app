@@ -19,6 +19,13 @@ def create_access_token(data: dict, expires_delta: timedelta=timedelta(hours=JWT
     encoded_jwt = jwt.encode(to_encode, str(JWT_SECRET_KEY), algorithm=JWT_ALGORITHM)
     return encoded_jwt
 
+def decode_access_token(token: str):
+    try:
+        return jwt.decode(token, str(JWT_SECRET_KEY), algorithms=[JWT_ALGORITHM])
+    except Exception as e:
+        return e
+
+
 # Function to verify password
 def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)

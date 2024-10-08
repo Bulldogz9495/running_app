@@ -9,12 +9,16 @@ from .utility_models import Location
 
 class Challenge(BaseModel):
     id: str # UUID
+    title: str
+    description: Optional[str] = None
     start_datetime: datetime
     end_datetime: datetime
     notes: Optional[str] = None
     scoring_method: Optional[str]
-    challenge_type: str # Team, Geographic
+    challenge_type: str # Team, Geographic, user, personal
     creator: str
+    repeat: bool = False
+    active: bool = True
 
 class TeamChallenge(Challenge):
     teams: List[str]
@@ -28,12 +32,16 @@ class UserChallenge(Challenge):
     
 challenge_schema = {
     "id": {"type": "uuid", "required": True, "unique": True},
+    "title": {"type": "string", "required": True},
+    "description": {"type": "string", "required": False},
     "start_datetime": {"type": "datetime", "required": True},
     "end_datetime": {"type": "datetime", "required": True},
     "notes": {"type": "string", "required": False},
     "scoring_method": {"type": "string", "required": True},
     "challenge_type": {"type": "string", "required": True},
-    "creator": {"type": "uuid", "required": True}
+    "creator": {"type": "uuid", "required": True},
+    "repeat": {"type": "bool", "required": True},
+    "active": {"type": "bool", "required": True}
 }
 
 team_challenge_schema = {
@@ -56,31 +64,41 @@ user_challenge_schema = {
 sample_challenges = [
     {
         'id': "914a7fa8-5c92-44e8-b961-96c7aeca40cd",
+        'title': 'Sample Challenge 1',
+        'description': 'Sample Description 1',
         'start_datetime': datetime.now(),
         'end_datetime': datetime.now() + timedelta(days=1),
         'notes': 'Sample personal challenge 1',
         'scoring_method': "highest_score",
         'challenge_type': 'personal',
-        'creator': '933d1bba-aa0b-485f-8e10-95697fb86bd2'
+        'creator': '933d1bba-aa0b-485f-8e10-95697fb86bd2',
+        'repeat': False,
+        'active': True
     }
 ]
 
 sample_team_challenges = [
     {
         'id': "933d1bba-aa0b-485f-8e10-95697fb86bd2",
+        'title': 'Sample Team Challenge 1',
+        'description': 'Sample Description 1',
         'start_datetime': datetime.now(),
         'end_datetime': datetime.now() + timedelta(days=1),
         'notes': 'Sample team challenge 1',
         'scoring_method': "highest_score",
         'challenge_type': 'team',
         'creator': '933d1bba-aa0b-485f-8e10-95697fb86bd2',
-        'teams': ['6eaf4c12-8aa0-42d5-8447-e0b598c03bb2']
+        'teams': ['6eaf4c12-8aa0-42d5-8447-e0b598c03bb2'],
+        'repeat': False,
+        'active': True
     }
 ]
 
 sample_geographic_challenges = [
     {
         'id': "933d1bba-aa0b-485f-8e10-95697fb86bd2",
+        'title': 'Sample Geographic Challenge 1',
+        'description': 'Sample Description 1',
         'start_datetime': datetime.now(),
         'end_datetime': datetime.now() + timedelta(days=1),
         'notes': 'Sample geographic challenge 1',
@@ -88,20 +106,26 @@ sample_geographic_challenges = [
         'challenge_type': 'geographic',
         'creator': '933d1bba-aa0b-485f-8e10-95697fb86bd2',
         'geography': 'michigan',
-        'runs': ['914a7fa8-5c92-44e8-b961-96c7aeca40cd']
+        'runs': ['914a7fa8-5c92-44e8-b961-96c7aeca40cd'],
+        'repeat': False,
+        'active': True
     }
 ]
 
 sample_user_challenges = [
     {
         'id': "933d1bba-aa0b-485f-8e10-95697fb86bd2",
+        'title': 'Sample User Challenge 1',
+        'description': 'Sample Description 1',
         'start_datetime': datetime.now(),
         'end_datetime': datetime.now() + timedelta(days=1),
         'notes': 'Sample user challenge 1',
         'scoring_method': "highest_score",
         'challenge_type': 'user',
         'creator': '933d1bba-aa0b-485f-8e10-95697fb86bd2',
-        'users': ['933d1bba-aa0b-485f-8e10-95697fb86bd2']
+        'users': ['933d1bba-aa0b-485f-8e10-95697fb86bd2'],
+        'repeat': False,
+        'active': True
     }
 ]
 

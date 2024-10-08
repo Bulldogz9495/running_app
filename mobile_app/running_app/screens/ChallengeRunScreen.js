@@ -1,26 +1,27 @@
 import React from 'react';
-import { useRef } from 'react';
-import { View, Text, Pressable, FlatList, Button, TextInput } from 'react-native';
+import { useEffect } from 'react';
+import { View, Text, Pressable, FlatList, RefreshControl, Modal } from 'react-native';
 import { useContext } from 'react';
 import { UserContext } from '../utils/createContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { settings } from '../utils/settings';
 import styles from '../styles';
 import { sampleData } from '../utils/sample_data';
-import { v4 as uuidv4 } from 'uuid';
-import { TeamForm } from '../components/TeamForm';
-import { useFocusEffect } from '@react-navigation/native';
+import { TeamScreen } from './TeamScreen';
+import { CreateTeamScreen } from '../screens/CreateTeamScreen';
 
 
 const ChallengeRunScreen = (navigation) => {
   const [teams, setTeams] = React.useState([]);
   const [newTeam, setNewTeam] = React.useState({});
   const [expandedTeam, setExpandedTeam] = React.useState(null);
-  const [createTeam, setCreateTeam] = React.useState(false);
-  const [editTeam, setEditTeam] = React.useState(false);
   const { user, setUser } = useContext(UserContext);
+  const [refreshing, setRefreshing] = React.useState(false);
+  const [createModalVisible, setCreateModalVisible] = React.useState(false);
+  const [editModalVisible, setEditModalVisible] = React.useState(false);
 
 
+  
   const fetchTeams = async () => {
     try {
       console.log("User Info from ChallengeRunScreen: ", user);
@@ -44,14 +45,12 @@ const ChallengeRunScreen = (navigation) => {
       setTeams(sampleData.teams);
     }
   };
-  
-  useFocusEffect(
-    React.useCallback(() => {
-      // Rerender the page when it comes into focus
-      fetchTeams(); // or any other action you want to perform
-    }, [])
-  );
 
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    fetchTeams().then(() => setRefreshing(false));
+  }, [fetchTeams]);
+  
   React.useEffect(() => {
     fetchTeams();
   }, []);
@@ -78,7 +77,7 @@ const ChallengeRunScreen = (navigation) => {
               <Text>Team Size: {item.size}</Text>
             </View>
           </Pressable>
-          <Pressable onPress={() => {console.log("ITEM: ", item); setNewTeam(item); setEditTeam(true)}}>
+          <Pressable onPress={() => {console.log("ITEM: ", item); setNewTeam(item); setEditModalVisible(true)}}>
             <Text>View Team</Text>
           </Pressable>
         </View>
@@ -98,34 +97,6 @@ const ChallengeRunScreen = (navigation) => {
     );
   };
 
-
-  const createTeams = async (team) => {
-    console.log("CREATING TEAM");
-    const userInfo = user;
-    team.members = [userInfo.id];
-    team.owner = userInfo.id
-    team.id = uuidv4();
-    team.size = team.members.length;
-    console.log("NEW TEAM: ", team);
-    const accessToken = await AsyncStorage.getItem('MyAccessToken');
-    try {
-        const res = await fetch(`${settings.MONGO_API_URL}/Teams`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${accessToken}`
-        },
-        body: JSON.stringify(team)
-        });
-        const data = await res.json();
-        console.log(data);
-        setTeams([...teams, data]);
-    } catch (error) {
-        console.error(error);
-    }
-    setCreateTeam(false);
-};
-
 const editTeams = async (team) => {
     console.log("Editing TEAM");
     console.log("NEW TEAM: ", team);
@@ -144,37 +115,58 @@ const editTeams = async (team) => {
         console.log(data);
         const newTeams = teams.map(t => t.id === data.id ? data : t);
         setTeams(newTeams);
-        handleCancelCreateTeam();
+        setEditModalVisible(false);
     } catch (error) {
         console.error(error);
     }
     setCreateTeam(false);
   };
 
-  const handleCancelCreateTeam = () => {
-    setCreateTeam(false);
-    setEditTeam(false);
-    setNewTeam({});
-  };
-
-  return (
-    <View style={{ flex: 1 , backgroundColor: 'lightgreen'}}>
-      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-        <Text style={{ margin: 10, fontSize: 20 }}>Your teams</Text>
-        <Button title={createTeam ? "View Teams" : "Create New Team"} onPress={() => setCreateTeam(prev => !prev)} color="blue"/>
-      </View>
-      {!createTeam && !editTeam ? (
+  const TeamsComponent = ({ teams }) => {
+    return (
+      <View style={{ flex: 1 }}>
+        <Pressable style={styles.pressableArea} onPress={() => setCreateModalVisible(true)}>
+            <Text style={styles.pressableText}>Create New Team</Text>
+        </Pressable>
         <FlatList
           data={teams}
           keyExtractor={(item, index) => index.toString()}
           renderItem={renderTeam}
           style={{ flex: 1 }}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
         />
-      ) : ( !editTeam ? 
-        <TeamForm team={newTeam} onSubmit={createTeams} onCancel={handleCancelCreateTeam} navigation={navigation}/>
-      : 
-        <TeamForm team={newTeam} onSubmit={editTeams} onCancel={handleCancelCreateTeam} navigation={navigation} setEditTeam={setEditTeam} teams={teams} setTeams={setTeams}/> )
-      }
+      </View>
+    );
+  };
+  
+  return (
+    <View style={{ flex: 1 , backgroundColor: 'lightgreen'}}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+        <Text style={{ margin: 10, fontSize: 20 }}>Your teams</Text>
+      </View>
+      <View style={{ flex: 1 }}>
+          <TeamsComponent teams={teams} />
+      </View>
+      <Modal visible={createModalVisible} animationType="slide" styles={styles.modal} >
+        <View style={styles.modal}>
+          <CreateTeamScreen 
+            team={newTeam}
+            teams={teams}
+            onHideModal={() => setCreateModalVisible(false)}
+          />
+        </View>
+      </Modal>
+      <Modal visible={editModalVisible} animationType="slide" styles={styles.modal}>
+        <View style={styles.modal}>
+          <TeamScreen 
+            team={newTeam} 
+            onSubmit={editTeams} 
+            onCancel={() =>setEditModalVisible(false)} 
+          />
+        </View>
+      </Modal>
     </View>
   );
 };

@@ -28,6 +28,12 @@ export default styles = StyleSheet.create({
         paddingTop: 60,
         backgroundColor: 'lightgreen',
     },
+    modal: {
+        flex: 1,
+        padding: 10,
+        paddingTop: 60,
+        backgroundColor: 'lightgreen',
+    },
     loadingContainer: {
         flex: 1,
         justifyContent: 'center',

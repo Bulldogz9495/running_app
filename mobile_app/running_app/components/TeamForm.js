@@ -4,31 +4,10 @@ import styles from '../styles';
 import { useNavigation } from '@react-navigation/native';
 import { useContext } from 'react';
 import { UserContext } from '../utils/createContext';
-import { settings } from '../utils/settings';
+import { leaveTeam } from '../utils/api';
+import { TeamInfoInput, TeamInfo } from './teamComponent';
 
-const TeamInput = ({ label, defaultValue, onChangeText}) => (
-    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-      <Text style={{ marginRight: 10 }}>{label}</Text>
-      <TextInput
-        style={styles.teamInput}
-        onChangeText={onChangeText}
-        defaultValue={defaultValue}
-      />
-    </View>
-  );
 
-const leaveTeam = async (team_id, user_id, setEditTeam, teams, setTeams) => {
-  const response = await fetch(`${settings.MONGO_API_URL}/Teams/${team_id}/members/${user_id}`, {
-    method: 'DELETE',
-    headers: {
-      'Content-Type': 'application/json',
-    }
-  });
-  const data = await response.json();
-  setTeams(teams.filter(team => team.id !== team_id));
-  // console.log(data);
-  setEditTeam(false);
-};
 
 export const TeamForm = ({ team, onSubmit, onCancel, setEditTeam, teams, setTeams }) => {
   const [selectedSearch, setSelectedSearch] = useState('Email');
@@ -43,12 +22,7 @@ export const TeamForm = ({ team, onSubmit, onCancel, setEditTeam, teams, setTeam
             <Pressable style={styles.pressableArea} onPress={() => onCancel(navigation)}>
               <Text style={styles.pressableText}>Go Back</Text>
             </Pressable>
-            <TeamInput
-              label="Team Name"
-              defaultValue={team.name}
-              onChangeText={value => team=({...team, name: value})}
-            />
-            <TeamInput label="Motto" defaultValue={team.motto} onChangeText={value => team=({...team, motto: value})} />
+            <TeamInfoInput team={team} onChangeName={value => team=({...team, name: value})} onChangeMotto={value => team=({...team, motto: value})} />
             <Pressable style={styles.pressableArea} onPress={() => navigation.navigate('inviteMembers', { team_id: team.id, team_name: team.name })}>
               <Text style={styles.pressableText}>Invite New Team Members!</Text>
             </Pressable>
@@ -61,9 +35,8 @@ export const TeamForm = ({ team, onSubmit, onCancel, setEditTeam, teams, setTeam
             <Pressable style={styles.pressableArea} onPress={() => onCancel(navigation)}>
               <Text style={styles.pressableText}>Go Back</Text>
             </Pressable>
-            <Text style={styles.userProfileInfo}>Team: {team.name}</Text>
-            <Text style={styles.userProfileInfo}>Motto: {team.motto}</Text>
-            <Pressable style={styles.pressableArea} onPress={() => leaveTeam(team.id, user.id, setEditTeam, teams, setTeams)}>
+            <TeamInfo team={team} />
+            <Pressable style={styles.pressableArea} onPress={() => userLeavesTeam(team.id, user.id, setEditTeam, teams, setTeams)}>
               <Text style={styles.pressableText}>Leave Team</Text>
             </Pressable>
           </View>

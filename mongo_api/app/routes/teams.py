@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, Security, Request
 from typing import List, Annotated, Optional
 from app.models.team import Team, Invitation
 from app.models.user import Token
@@ -8,6 +8,7 @@ from app.settings import logger
 from datetime import timedelta
 from datetime import datetime
 from pymongo.results import InsertOneResult
+from app.utils.security import authenticate_user, create_access_token, get_password_hash, verify_token, decode_access_token
 
 db_service = MongoDBService()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/token")
@@ -47,6 +48,9 @@ async def create_team(team_data: Team):
     existing_id = await db_service.db.users.find_one({'id': team_data.id})
     if existing_id:
         raise HTTPException(status_code=409, detail="id Already Exists")
+    owner = await db_service.db.users.find_one({'id': team_data.owner})
+    if not owner:
+        raise HTTPException(status_code=404, detail="Owner not found")
     result = await db_service.db.teams.insert_one(team_data.model_dump())
     if isinstance(result, InsertOneResult) and result.acknowledged:
         logger.info(f"Team Created: {team_data}")
@@ -192,6 +196,20 @@ async def delete_team_member(team_id: str, user_id: str):
     await db_service.db.teams.update_one({"id": team_id}, {'$set': team})
     return {"message": "User removed from team"}
 
+
+# Delete a team
+@team_router.delete("/Teams/{team_id}")
+async def delete_team(request: Request, team_id: str, token: str = Depends(oauth2_scheme)):
+    logger.info(f"Deleting team {team_id}")
+    user_email = decode_access_token(request.headers.get('Authorization').split(' ')[1])['sub']
+    user = await db_service.db.users.find_one({"email": user_email})
+    team = await db_service.db.teams.find_one({"id": team_id})
+    if not team:
+        raise HTTPException(status_code=404, detail="Team not found")
+    if team['owner'] != user['id']:
+        raise HTTPException(status_code=403, detail="Only team owner can delete team")
+    await db_service.db.teams.delete_one({"id": team_id})
+    return {"message": "Team deleted"}
 
 async def _get_member_info(member_id):
     member_info = await db_service.db.users.find_one({"id": member_id})
