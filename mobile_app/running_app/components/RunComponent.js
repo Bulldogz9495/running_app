@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, ActivityIndicator, ScrollView } from 'react-native';
+import { View, Text, ActivityIndicator, ScrollView, RefreshControl } from 'react-native';
 import { settings } from '../utils/settings';
 import { useContext } from 'react';
 import { UserContext } from '../utils/createContext';
@@ -14,14 +14,13 @@ import { DisplayTime } from './displayTime';
 export default RunComponent = (navigation) => {
     const [runs, setRuns] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [refreshing, setRefreshing] = React.useState(false);
     const { user, setUser } = useContext(UserContext);
 
-    useFocusEffect(
-        React.useCallback(() => {
-          // Rerender the page when it comes into focus
-          fetchRuns(); // or any other action you want to perform
-        }, [])
-      );
+    const onRefresh = React.useCallback(() => {
+        setRefreshing(true);
+        fetchRuns().then(() => setRefreshing(false));
+    }, [fetchRuns]);
 
     const fetchRuns = async () => {
         const userData = user;
@@ -65,7 +64,12 @@ export default RunComponent = (navigation) => {
     }
 
     return (
-        <ScrollView style={{ flex: 1, flexDirection: 'column' }}>
+        <ScrollView 
+        style={{ flex: 1, flexDirection: 'column' }}
+        refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+        >
             <Text style={{ fontSize: 25 }}>Run History</Text>
             {runs.map(run => (
                 <View key={run.id} style={{ flexDirection: 'column', marginBottom: 10, padding: 10, borderWidth: 2, borderColor: 'blue' }}>

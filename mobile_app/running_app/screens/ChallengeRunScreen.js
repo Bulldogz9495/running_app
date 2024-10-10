@@ -20,7 +20,6 @@ const ChallengeRunScreen = (navigation) => {
   const [createModalVisible, setCreateModalVisible] = React.useState(false);
   const [editModalVisible, setEditModalVisible] = React.useState(false);
 
-
   
   const fetchTeams = async () => {
     try {
@@ -54,6 +53,10 @@ const ChallengeRunScreen = (navigation) => {
   React.useEffect(() => {
     fetchTeams();
   }, []);
+
+  const onLeaving = (team_id) => {
+    setTeams(teams.filter(team => team.id !== team_id))
+  }
 
   const renderTeam = ({ item, index }) => {
     const isExpanded = item?.id === expandedTeam?.id;
@@ -144,7 +147,7 @@ const editTeams = async (team) => {
   return (
     <View style={{ flex: 1 , backgroundColor: 'lightgreen'}}>
       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-        <Text style={{ margin: 10, fontSize: 20 }}>Your teams</Text>
+        <Text style={{ margin: 10, fontSize: 20 }}>My teams</Text>
       </View>
       <View style={{ flex: 1 }}>
           <TeamsComponent teams={teams} />
@@ -154,7 +157,7 @@ const editTeams = async (team) => {
           <CreateTeamScreen 
             team={newTeam}
             teams={teams}
-            onHideModal={() => setCreateModalVisible(false)}
+            onHideModal={() => {setCreateModalVisible(false); setTimeout(() => {fetchTeams();}, 500)}} 
           />
         </View>
       </Modal>
@@ -163,7 +166,8 @@ const editTeams = async (team) => {
           <TeamScreen 
             team={newTeam} 
             onSubmit={editTeams} 
-            onCancel={() =>setEditModalVisible(false)} 
+            onCancel={() =>{setEditModalVisible(false); setTimeout(() => {fetchTeams();}, 500)}}
+            onLeaving={() => {onLeaving()}}
           />
         </View>
       </Modal>

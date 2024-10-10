@@ -1,4 +1,4 @@
-import { View, Text, Pressable } from 'react-native';
+import { View, Text, Pressable, Alert } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import styles from '../styles';
 import { useContext } from 'react';
@@ -26,7 +26,27 @@ const TeamAsOwnerScreen = ({ team, onSubmit, onCancel}) => {
             </View>
             <View style={{ flex: 1 }}/>
             <View style={{bottom: 40}}>
-                <Pressable style={styles.pressableArea} onPress={() => deleteTeam(team.id)}>
+                <Pressable style={styles.pressableAreaScary} onPress={() => {
+                        Alert.alert(
+                            'Confirm Delete',
+                            'Are you sure you want to delete this team?',
+                            [
+                              {
+                                text: 'Cancel',
+                                style: 'cancel',
+                              },
+                              {
+                                text: 'Delete',
+                                style: 'destructive',
+                                onPress: () => {
+                                  deleteTeam(team.id);
+                                  onCancel(navigation);
+                                },
+                              },
+                            ],
+                          );
+                    }
+                    }>
                     <Text style={styles.pressableText}>Delete Team</Text>
                 </Pressable>
             </View>
@@ -34,26 +54,25 @@ const TeamAsOwnerScreen = ({ team, onSubmit, onCancel}) => {
     )
 }
 
-const userLeavesTeam = async (team_id, user_id, teams, setTeams) => {
+const userLeavesTeam = async (team_id, user_id) => {
     await leaveTeam(team_id, user_id);
-    setTeams(teams.filter(team => team.id !== team_id));
   };
 
-const TeamAsMemberScreen = ({ team, onCancel}) => {
+const TeamAsMemberScreen = ({ team, user, onCancel, onLeaving}) => {
     return (
         <View>
-            <Pressable style={styles.pressableArea} onPress={() => onCancel(navigation)}>
+            <Pressable style={styles.pressableArea} onPress={() => onCancel()}>
                 <Text style={styles.pressableText}>Go Back</Text>
             </Pressable>
             <TeamInfo team={team} />
-            <Pressable style={styles.pressableArea} onPress={() => userLeavesTeam(team.id, user.id, teams, setTeams)}>
+            <Pressable style={styles.pressableArea} onPress={() => {userLeavesTeam(team.id, user.id); onLeaving(team.id); onCancel()}}>
                 <Text style={styles.pressableText}>Leave Team</Text>
             </Pressable>
         </View>
     )
 }
 
-export const TeamScreen = ({ team, onSubmit, onCancel}) => {
+export const TeamScreen = ({ team, onSubmit, onCancel, onLeaving}) => {
     const [owned, setOwned] = useState(false);
     const { user, setUser } = useContext(UserContext);
 
@@ -67,7 +86,7 @@ export const TeamScreen = ({ team, onSubmit, onCancel}) => {
                 owned ? (
                     TeamAsOwnerScreen({ team, onSubmit, onCancel })
                 ) : (
-                    TeamAsMemberScreen({ team, onCancel })
+                    TeamAsMemberScreen({ team, user, onCancel, onLeaving })
                 )
             }
         </>

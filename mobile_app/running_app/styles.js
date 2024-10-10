@@ -127,6 +127,17 @@ export default styles = StyleSheet.create({
         margin: 10,
         alignItems: "center"
     },
+    pressableAreaScary: {
+        backgroundColor: 'darkred',
+        padding: 10,
+        borderRadius: 5,
+        borderWidth: 1,
+        borderColor: 'black',
+        color: 'lightyellow',
+        fontSize: 32,
+        margin: 10,
+        alignItems: "center"
+    },
     pressableText: {
         color: 'lightyellow',
         fontSize: 18

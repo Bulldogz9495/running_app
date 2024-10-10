@@ -1,4 +1,3 @@
-import pymongo
 from typing import List, Annotated, Optional
 from app.services.mongodb_service import MongoDBService
 from fastapi.security import OAuth2PasswordBearer
