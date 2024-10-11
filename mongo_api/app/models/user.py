@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field
 from uuid import UUID
-from typing import Optional
+from typing import Optional, List
 from bson.binary import Binary
 from datetime import datetime
 from app.utils.security import get_password_hash
@@ -35,7 +35,7 @@ class User(BaseModel):
     created: datetime = Field(default_factory=datetime.now)
     updated: datetime = Field(default_factory=datetime.now)
     paid: Optional[bool] = False
-    messages: Optional[list[Message]]
+    messages: Optional[List[Message]]
 
 
 message_schema = {

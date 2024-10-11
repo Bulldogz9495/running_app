@@ -15,7 +15,7 @@ async def finish_Create_challenges():
     # collection.update_one({"key": "value"}, {"$set": {"field": "new value"}})
     logger.info(f"Finish and Recreate Challenges Task: Finishing {datetime.now()}")
     
-    
+
 async def finish_create_personal_challenges():
     db_service = MongoDBService()
     challenges = db_service.db.challenges.find({"active": True})
@@ -27,7 +27,7 @@ async def finish_create_personal_challenges():
                 challenge_repeat = challenge
                 challenge_repeat["active"] = True
                 challenge_repeat["id"] = uuid.uuid4()
-                challenge_repeat["start_datetime"] = datetime.now()
+                challenge_repeat["start_datetime"] = challenge["end_datetime"] + datetime.timedelta(days=1)
                 challenge_repeat["end_datetime"] = challenge_repeat["start_datetime"] + (challenge["end_datetime"] - challenge["start_datetime"])
                 challenge_repeat.pop("_id")
                 db_service.db.challenges.insert_one(challenge_repeat)
