@@ -147,5 +147,11 @@ export default styles = StyleSheet.create({
         padding: 10,
         borderBottomWidth: 1,
         borderBottomColor: 'gray',
-    }
+    },
+    titleText: {
+        fontSize: 25,
+        fontWeight: 'bold',
+        marginRight: 15,
+        marginLeft: 15,
+    },
   });

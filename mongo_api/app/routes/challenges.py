@@ -50,17 +50,24 @@ async def get_all_challenges(challenge_id: str = None):
     return challenges
 
 @challenge_router.get("/GeographicChallenges", response_model=List[GeographicChallenge])
-async def get_all_challenges(challenge_id: str = None):
-    challenges = []
+async def get_all_challenges(
+    challenge_id: str = None, 
+    limit: int = 50, 
+    offset: int = 0, 
+    active: bool = None
+):
+    query = {}
     if challenge_id is not None:
-        async for challenge_data in db_service.db.geographic_challenges.find({"id": challenge_id}):
-            challenges.append(challenge_data)
-            logger.info(f"Get Geographic Challenge {challenge_id}")
-    else:
-        async for challenge_data in db_service.db.geographic_challenges.find():
-            challenges.append(challenge_data)
-            logger.info(f"Get All Geographic Challenges")
+        query["id"] = challenge_id
+    if active is not None:
+        query["active"] = active
+
+    challenges = []
+    async for challenge_data in db_service.db.geographic_challenges.find(query).limit(limit).skip(offset):
+        challenges.append(challenge_data)
+        logger.info(f"Get Geographic Challenge {challenge_id}")
     return challenges
+
 
 @challenge_router.post("/Challenges", response_model=Challenge)
 async def create_challenge(challenge: Challenge):

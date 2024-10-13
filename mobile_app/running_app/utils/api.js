@@ -66,3 +66,25 @@ export const deleteTeam = async (team_id) => {
       throw error;
     }
 }
+
+export const fetchStateChallenges = async (team_id) => {
+    try {
+        const accessToken = await AsyncStorage.getItem('MyAccessToken');
+        const response = await fetch(`${settings.MONGO_API_URL}/GeographicChallenges`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${accessToken}`
+        }
+        });
+        if (response.ok) {
+            const data = await response.json();
+            return data;
+        } else {
+            throw new Error(`Error deleting team: ${response.status} ${response.statusText}`);
+        }
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+}

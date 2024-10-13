@@ -1,6 +1,7 @@
 import React from 'react';
 import { useEffect } from 'react';
-import { View, Text, Pressable, FlatList, RefreshControl, Modal } from 'react-native';
+import { View, Text, Pressable, FlatList, RefreshControl, Modal, Dimensions, Image } from 'react-native';
+import SwitchButton from '../components/switch_button';
 import { useContext } from 'react';
 import { UserContext } from '../utils/createContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -9,6 +10,7 @@ import styles from '../styles';
 import { sampleData } from '../utils/sample_data';
 import { TeamScreen } from './TeamScreen';
 import { CreateTeamScreen } from '../screens/CreateTeamScreen';
+import { fetchStateChallenges, } from '../utils/api';
 
 
 const ChallengeRunScreen = (navigation) => {
@@ -19,6 +21,8 @@ const ChallengeRunScreen = (navigation) => {
   const [refreshing, setRefreshing] = React.useState(false);
   const [createModalVisible, setCreateModalVisible] = React.useState(false);
   const [editModalVisible, setEditModalVisible] = React.useState(false);
+  const [challengeOrTeamSwtich, setChallengeOrTeamSwtich] = React.useState("Challenge");
+  const [challenges, setChallenges] = React.useState([]);
 
   
   const fetchTeams = async () => {
@@ -52,6 +56,7 @@ const ChallengeRunScreen = (navigation) => {
   
   React.useEffect(() => {
     fetchTeams();
+    setChallenges = fetchStateChallenges();
   }, []);
 
   const onLeaving = (team_id) => {
@@ -143,14 +148,46 @@ const editTeams = async (team) => {
       </View>
     );
   };
+
+  const ChallengeComponent = () => {
+    return (
+      <View style={{ justifyContent: 'flex-start', margin: 10, flexDirection: 'row' }}>
+        <Image 
+          source={require('../assets/us-map.png')}
+          style={{ width: 32, height: 32 }}
+        />
+        <Text style={styles.titleText}>State Challenges</Text>
+        <Image 
+          source={require('../assets/us-map.png')}
+          style={{ width: 32, height: 32 }}
+        />
+      </View>
+
+    );
+  };
   
   return (
-    <View style={{ flex: 1 , backgroundColor: 'lightgreen'}}>
-      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-        <Text style={{ margin: 10, fontSize: 20 }}>My teams</Text>
+    <View style={{ flex: 1 , backgroundColor: 'lightgreen', justifyContent: 'flex-start'}}>
+      <View style={{flexDirection: 'row', justifyContent: 'flex-start', width: '100%', paddingTop: 10}}>
+        <SwitchButton
+          handleValueChange={(value) => setChallengeOrTeamSwtich(value)}
+          switchWidth={Dimensions.get('window').width}
+          switchBackgroundColor="green"
+          switchBorderColor="blue"
+          btnBorderColor="blue"
+          btnBackgroundColor="blue"
+          fontColor="lightyellow"
+          text1 = 'Challenge'
+          text2 = 'Teams'
+        />
       </View>
-      <View style={{ flex: 1 }}>
-          <TeamsComponent teams={teams} />
+      <View style={{ flex: 1, justifyContent: 'flex-start', marginTop: 20 }}>
+          {
+            challengeOrTeamSwtich === "Challenge" ? 
+            <ChallengeComponent /> 
+            : 
+            <TeamsComponent teams={teams} />
+          }
       </View>
       <Modal visible={createModalVisible} animationType="slide" styles={styles.modal} >
         <View style={styles.modal}>

@@ -70,7 +70,7 @@ export default RunComponent = (navigation) => {
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
         >
-            <Text style={{ fontSize: 25 }}>Run History</Text>
+            <Text style={styles.titleText}>Run History</Text>
             {runs.map(run => (
                 <View key={run.id} style={{ flexDirection: 'column', marginBottom: 10, padding: 10, borderWidth: 2, borderColor: 'blue' }}>
                     <Text style={{ fontSize: 20 }}>Date: {moment(run.start_datetime).format('l')}</Text>
