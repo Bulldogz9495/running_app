@@ -18,7 +18,7 @@ async def add_run_to_state_challenge(inserted_run: Run):
     session = await db_service.client.start_session()
     try:
         session.start_transaction()
-        state_challenge = await db_service.db.geographic_challenges.find_one({"geography": state_data['admin1']})
+        state_challenge = await db_service.db.geographic_challenges.find_one({"geography": state_data['admin1'], "active": True})
         if state_challenge is not None:
             await db_service.db.geographic_challenges.update_one({"id": state_challenge['id']}, {"$addToSet": {"runs": inserted_run.id}})
             logger.info(f"Run {inserted_run.id} added to state challenge {state_challenge['id']} for state {state_data['admin1']}")

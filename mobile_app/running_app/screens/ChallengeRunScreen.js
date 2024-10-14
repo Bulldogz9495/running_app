@@ -189,7 +189,7 @@ const editTeams = async (team) => {
       return (
         <View style={styles.listItem}>
           <Text style={{ fontSize: 24, fontWeight: 'bold' }}>{challenge.title}</Text>
-          <Text style={{ fontSize: 20 }}>{challenge.score ? challenge.score : '0'} points</Text>
+          <Text style={{ fontSize: 20 }}>{challenge.score ? challenge.score : '0'} points this week</Text>
           <Text>{(challenge.runs).length} Runs Completed</Text>
           {challenge.score ? <Text>{(challenge.runs).length / challenge.score} Average Points per run</Text> : null}
         </View>

@@ -54,7 +54,8 @@ async def get_all_challenges(
     challenge_id: str = None, 
     limit: int = 50, 
     offset: int = 0, 
-    active: bool = None
+    active: bool = None,
+    include_runs: bool = False,
 ):
     query = {}
     if challenge_id is not None:
@@ -64,8 +65,17 @@ async def get_all_challenges(
 
     challenges = []
     async for challenge_data in db_service.db.geographic_challenges.find(query).limit(limit).skip(offset):
-        challenges.append(challenge_data)
-        logger.info(f"Get Geographic Challenge {challenge_id}")
+        if include_runs:
+            runs = []
+            for run_id in challenge_data.get("runs", []):
+                run = await db_service.db.runs.find_one({"id": run_id})
+                run["geopoints"] = []
+                run.pop("_id")
+                if run:
+                    runs.append(run)
+            challenge_data["runs"] = runs
+            challenges.append(challenge_data)
+        logger.info(f"Get Geographic Challenge {challenge_id}, {challenge_data}")
     return challenges
 
 

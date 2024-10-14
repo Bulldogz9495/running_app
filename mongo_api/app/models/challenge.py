@@ -2,6 +2,7 @@ from pydantic import BaseModel, Field
 from typing import Optional, List
 from uuid import UUID
 from datetime import datetime, timedelta
+from app.models.run import Run
 
 from .utility_models import Location
 
@@ -25,7 +26,7 @@ class TeamChallenge(Challenge):
 
 class GeographicChallenge(Challenge):
     geography: str
-    runs: List[str]
+    runs: List[Run]
 
 class UserChallenge(Challenge):
     users: List[str]
