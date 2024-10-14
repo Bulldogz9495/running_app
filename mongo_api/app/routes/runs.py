@@ -7,6 +7,7 @@ from app.settings import logger
 from pymongo.results import InsertOneResult
 import pymongo
 from datetime import datetime
+from app.utils.async_tasks import add_run_to_state_challenge
 
 run_router = APIRouter()
 
@@ -74,6 +75,7 @@ async def create_run(run_data: Run, token: str = Depends(oauth2_scheme)):
     inserted_run = await db_service.db.runs.find_one({"id": result.inserted_id})
     if isinstance(result, InsertOneResult) and result.acknowledged:
         logger.info(f"Run {run_data.id} Created for user {run_data.user_id}")
+        await add_run_to_state_challenge(run_data)
         return run_data
     else:
         return HTTPException(status_code=422, detail="Run failed to create")

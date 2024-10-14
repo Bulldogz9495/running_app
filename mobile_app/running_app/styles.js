@@ -162,4 +162,24 @@ export default styles = StyleSheet.create({
         borderRadius: 5,
         marginBottom: 2
     },
+    iconStyle: {
+        flexDirection: 'row', 
+        alignItems: 'center', 
+        justifyContent: 'center', 
+        position: 'absolute',
+        right: 0, 
+        borderRadius: 10, 
+        padding: 5, 
+        backgroundColor: 'lightgreen'
+    },
+    iconStyleSelected: {
+        flexDirection: 'row', 
+        alignItems: 'center', 
+        justifyContent: 'center', 
+        position: 'absolute',
+        right: 0, 
+        borderRadius: 10, 
+        padding: 5, 
+        backgroundColor: 'darkgreen'
+    },
   });

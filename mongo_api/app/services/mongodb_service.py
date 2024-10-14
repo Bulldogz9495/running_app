@@ -15,6 +15,12 @@ class MongoDBService:
         self.sync_db = self.sync_client[DATABASE_NAME]
         self.db = self.client[DATABASE_NAME]
         self._task = asyncio.ensure_future(self._background_task())
+        
+    def __del__(self):
+        self.sync_client.close()
+        self.client.close()
+        self.sync_db.close()
+        self.db.close()
 
     async def _background_task(self):
         while True:

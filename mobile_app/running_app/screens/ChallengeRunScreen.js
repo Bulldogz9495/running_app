@@ -2,7 +2,7 @@ import React from 'react';
 import { useEffect } from 'react';
 import { View, Text, Pressable, FlatList, RefreshControl, Modal, Dimensions, Image } from 'react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faArrowUpWideShort, faArrowDownShortWide } from '@fortawesome/free-solid-svg-icons';
+import { faArrowUpWideShort, faArrowDownWideShort } from '@fortawesome/free-solid-svg-icons';
 import SwitchButton from '../components/switch_button';
 import { useContext } from 'react';
 import { UserContext } from '../utils/createContext';
@@ -13,6 +13,7 @@ import { sampleData } from '../utils/sample_data';
 import { TeamScreen } from './TeamScreen';
 import { CreateTeamScreen } from '../screens/CreateTeamScreen';
 import { fetchStateChallenges, } from '../utils/api';
+import { icon } from '@fortawesome/fontawesome-svg-core';
 
 
 const ChallengeRunScreen = (navigation) => {
@@ -209,8 +210,11 @@ const editTeams = async (team) => {
             source={require('../assets/us-map.png')}
             style={{ width: 32, height: 32 }}
           />
-          <Pressable onPress={() => setChallengeOrder(challengeOrder === "sortAsc" ? "sortDesc" : "sortAsc")} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', position: 'absolute', right: 0, borderRadius: 10, padding: 5, backgroundColor: 'green' }}>
-            <FontAwesomeIcon icon={challengeOrder === "sortAsc" ? faArrowUpWideShort : faArrowDownShortWide} size={40} color="blue"/>
+          <Pressable 
+            onPress={() => setChallengeOrder(challengeOrder === "sortAsc" ? "sortDesc" : "sortAsc")} 
+            style={challengeOrder === "sortAsc" ? styles.iconStyleSelected : styles.iconStyle}
+          >
+            <FontAwesomeIcon icon={challengeOrder === "sortAsc" ? faArrowUpWideShort : faArrowDownWideShort} size={20} color="blue"/>
           </Pressable>
         </View>
         <FlatList
