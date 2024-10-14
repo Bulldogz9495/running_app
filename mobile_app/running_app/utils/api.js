@@ -1,5 +1,3 @@
-import { useContext } from 'react';
-import { UserContext } from '../utils/createContext';
 import { settings } from '../utils/settings';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -37,7 +35,7 @@ export const createTeam = async (team) => {
         body: JSON.stringify(team)
         });
         const data = await res.json();
-        console.log(data);
+        // console.log(data);
     } catch (error) {
       console.error(error);
       throw error;
@@ -67,21 +65,29 @@ export const deleteTeam = async (team_id) => {
     }
 }
 
-export const fetchStateChallenges = async (team_id) => {
+export const fetchStateChallenges = async (offset, limit, active) => {
     try {
         const accessToken = await AsyncStorage.getItem('MyAccessToken');
-        const response = await fetch(`${settings.MONGO_API_URL}/GeographicChallenges`, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${accessToken}`
-        }
+        const urlParams = new URLSearchParams({
+            offset: 0,
+            limit: 100,
+            active: true
         });
+        console.log("Params: ", urlParams.toString());
+        const response = await fetch(`${settings.MONGO_API_URL}/GeographicChallenges?${urlParams.toString()}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${accessToken}`
+            }
+        });
+        console.log("Response: ", response);
         if (response.ok) {
             const data = await response.json();
+            // console.log("Challenges: ", data);
             return data;
         } else {
-            throw new Error(`Error deleting team: ${response.status} ${response.statusText}`);
+            throw new Error(`Error Getting Challenges: ${response.status} ${response.statusText}`);
         }
     } catch (error) {
       console.error(error);

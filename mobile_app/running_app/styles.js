@@ -154,4 +154,12 @@ export default styles = StyleSheet.create({
         marginRight: 15,
         marginLeft: 15,
     },
+    listItem: { 
+        borderWidth: 1, 
+        padding: 10, 
+        borderWidth: 2.0, 
+        borderColor: 'blue',
+        borderRadius: 5,
+        marginBottom: 2
+    },
   });

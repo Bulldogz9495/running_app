@@ -1,6 +1,8 @@
 import React from 'react';
 import { useEffect } from 'react';
 import { View, Text, Pressable, FlatList, RefreshControl, Modal, Dimensions, Image } from 'react-native';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faArrowUpWideShort, faArrowDownShortWide } from '@fortawesome/free-solid-svg-icons';
 import SwitchButton from '../components/switch_button';
 import { useContext } from 'react';
 import { UserContext } from '../utils/createContext';
@@ -18,11 +20,13 @@ const ChallengeRunScreen = (navigation) => {
   const [newTeam, setNewTeam] = React.useState({});
   const [expandedTeam, setExpandedTeam] = React.useState(null);
   const { user, setUser } = useContext(UserContext);
-  const [refreshing, setRefreshing] = React.useState(false);
+  const [refreshingTeams, setRefreshingTeams] = React.useState(false);
+  const [refreshingChallenges, setRefreshingChallenges] = React.useState(false);
   const [createModalVisible, setCreateModalVisible] = React.useState(false);
   const [editModalVisible, setEditModalVisible] = React.useState(false);
   const [challengeOrTeamSwtich, setChallengeOrTeamSwtich] = React.useState("Challenge");
   const [challenges, setChallenges] = React.useState([]);
+  const [challengeOrder, setChallengeOrder] = React.useState("scoreDesc");
 
   
   const fetchTeams = async () => {
@@ -49,24 +53,55 @@ const ChallengeRunScreen = (navigation) => {
     }
   };
 
-  const onRefresh = React.useCallback(() => {
-    setRefreshing(true);
-    fetchTeams().then(() => setRefreshing(false));
-  }, [fetchTeams]);
+  const onRefreshTeams = React.useCallback(() => {
+    setRefreshingTeams(true);
+    fetchTeams()
+    setRefreshingTeams(false)
+  }, []);
+
+  const onRefreshChallenges = React.useCallback(() => {
+    setRefreshingChallenges(true);
+    fetchStateChallenges(51, 0, true).then(challenges => setChallenges(challenges));
+    setRefreshingChallenges(false);
+  }, []);
   
   React.useEffect(() => {
     fetchTeams();
-    setChallenges = fetchStateChallenges();
+    fetchStateChallenges(51, 0, true).then(challenges => setChallenges(challenges));
   }, []);
+
+  React.useEffect(() => {
+    if (challengeOrder === "scoreDesc") {
+      setChallenges(challenges.sort((a, b) => b.last_challenge_score - a.last_challenge_score));
+    } else if (challengeOrder === "scoreAsc") {
+      setChallenges(challenges.sort((a, b) => a.last_challenge_score - b.last_challenge_score));
+    } else if (challengeOrder === "nameAsc") {
+      setChallenges(challenges.sort((a, b) => a.name.localeCompare(b.name)));
+    } else if (challengeOrder === "nameDesc") {
+      setChallenges(challenges.sort((a, b) => b.name.localeCompare(a.name)));
+    }
+  }, [challengeOrder]);
 
   const onLeaving = (team_id) => {
     setTeams(teams.filter(team => team.id !== team_id))
   }
 
-  const renderTeam = ({ item, index }) => {
+  React.useEffect(() => {
+    if (challengeOrder === "scoreDesc") {
+      setChallenges(challenges.sort((a, b) => b.last_challenge_score - a.last_challenge_score));
+    } else if (challengeOrder === "scoreAsc") {
+      setChallenges(challenges.sort((a, b) => a.last_challenge_score - b.last_challenge_score));
+    } else if (challengeOrder === "nameAsc") {
+      setChallenges(challenges.sort((a, b) => a.name.localeCompare(b.name)));
+    } else if (challengeOrder === "nameDesc") {
+      setChallenges(challenges.sort((a, b) => b.name.localeCompare(a.name)));
+    }
+  }, [challengeOrder]);
+
+  const TeamListItemComponent = ({ item, index }) => {
     const isExpanded = item?.id === expandedTeam?.id;
     return (
-      <View key={index} style={{ borderWidth: 1, padding: 10, borderWidth: 2.0, borderColor: 'blue'  }}>
+      <View key={index} style={styles.listItem}>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
           <Pressable onPress={() => setExpandedTeam(item)}>
             <Text style={{ fontSize: 24, fontWeight: 'bold' }}>
@@ -139,30 +174,58 @@ const editTeams = async (team) => {
         <FlatList
           data={teams}
           keyExtractor={(item, index) => index.toString()}
-          renderItem={renderTeam}
+          renderItem={TeamListItemComponent}
           style={{ flex: 1 }}
           refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            <RefreshControl refreshing={refreshingTeams} onRefresh={onRefreshTeams} />
           }
         />
       </View>
     );
   };
 
+  const ChallengeListItemComponent = ({ challenge }) => {
+      return (
+        <View style={styles.listItem}>
+          <Text style={{ fontSize: 24, fontWeight: 'bold' }}>{challenge.title}</Text>
+          <Text style={{ fontSize: 20 }}>{challenge.score ? challenge.score : '0'} points</Text>
+          <Text>{(challenge.runs).length} Runs Completed</Text>
+          {challenge.score ? <Text>{(challenge.runs).length / challenge.score} Average Points per run</Text> : null}
+        </View>
+      );
+    };
+
+
   const ChallengeComponent = () => {
     return (
-      <View style={{ justifyContent: 'flex-start', margin: 10, flexDirection: 'row' }}>
-        <Image 
-          source={require('../assets/us-map.png')}
-          style={{ width: 32, height: 32 }}
-        />
-        <Text style={styles.titleText}>State Challenges</Text>
-        <Image 
-          source={require('../assets/us-map.png')}
-          style={{ width: 32, height: 32 }}
+      <View style={{ flex: 1, width: '100%' }}>
+        <View style={{ justifyContent: 'flex-start', margin: 10, flexDirection: 'row' }}>
+          <Image 
+            source={require('../assets/us-map.png')}
+            style={{ width: 32, height: 32 }}
+          />
+          <Text style={styles.titleText}>State Challenges</Text>
+          <Image 
+            source={require('../assets/us-map.png')}
+            style={{ width: 32, height: 32 }}
+          />
+          <Pressable onPress={() => setChallengeOrder(challengeOrder === "sortAsc" ? "sortDesc" : "sortAsc")} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', position: 'absolute', right: 0, borderRadius: 10, padding: 5, backgroundColor: 'green' }}>
+            <FontAwesomeIcon icon={challengeOrder === "sortAsc" ? faArrowUpWideShort : faArrowDownShortWide} size={40} color="blue"/>
+          </Pressable>
+        </View>
+        <FlatList
+          data={challenges}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item, index }) => {
+            return (
+              <ChallengeListItemComponent challenge={item} />
+            )
+          }}
+          refreshControl={
+            <RefreshControl refreshing={refreshingChallenges} onRefresh={onRefreshChallenges} />
+          }
         />
       </View>
-
     );
   };
   
