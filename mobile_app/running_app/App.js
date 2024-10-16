@@ -15,6 +15,7 @@ import InvitationScreen from './screens/InvitationScreen';
 import InviteMembersScreen from './screens/InviteMembersScreen';
 import MessageScreen from './screens/MessageScreen';
 import ChallengeScreen from './screens/ChallengeScreen';
+import RunScreen from './screens/RunScreen';
 import { ActivityIndicator } from 'react-native';
 import { UserProvider } from './utils/createContext';
 
@@ -95,6 +96,7 @@ export default function App() {
           <Stack.Screen name="inviteMembers" component={InviteMembersScreen}/>
           <Stack.Screen name="messages" component={MessageScreen}/>
           <Stack.Screen name="challengeInfo" component={ChallengeScreen} />
+          <Stack.Screen name="run" component={RunScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </UserProvider>

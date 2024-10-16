@@ -98,3 +98,22 @@ export const fetchStateChallenges = async (offset, limit, active) => {
       throw error;
     }
 }
+
+
+export const fetchRun = async (run_id) => {
+    try {
+        const accessToken = await AsyncStorage.getItem('MyAccessToken');
+        const url = `${settings.MONGO_API_URL}/Runs/${run_id}`
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${accessToken}`
+            }
+        })
+        return response.data
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+}

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, ActivityIndicator, ScrollView, RefreshControl } from 'react-native';
+import { View, Text, ActivityIndicator, ScrollView, RefreshControl, Pressable } from 'react-native';
 import { settings } from '../utils/settings';
 import { useContext } from 'react';
 import { UserContext } from '../utils/createContext';
@@ -10,6 +10,23 @@ import moment from 'moment';
 import { useFocusEffect } from '@react-navigation/native';
 import { DisplayTime } from './displayTime';
 
+
+
+export const RunComponent = ({ navigation, run }) => {
+
+    return (
+        <View key={run.id} style={{ flexDirection: 'column', marginBottom: 10, padding: 10, borderWidth: 2, borderColor: 'blue' }}>
+            <Pressable onPress={() => navigation.navigate('run', { run: run })}>
+                <Text style={{ fontSize: 20 }}>Score: {run.score.toFixed(1)}</Text>
+                <Text style={{ fontSize: 20 }}>Distance: {run.distance.toFixed(1)} miles</Text>
+                <Text style={{ fontSize: 20 }}>Duration: {Math.round(run.duration / 60)} min
+                    {run.duration > 0 && <Text> ({Math.round(run.distance)} miles at {<DisplayTime totalTimeSeconds={run.pace*60} additionalStyles={{fontSize: 20, fontWeight: 'normal'}}/>} min/mile)</Text>}
+                </Text>
+                <Text style={{ fontSize: 20 }}>Date: {moment(run.start_datetime).format('l')}</Text>
+            </Pressable>
+        </View>
+    )
+}
 
 export const UserRunComponent = (navigation) => {
     const [runs, setRuns] = useState([]);
@@ -71,16 +88,7 @@ export const UserRunComponent = (navigation) => {
         }
         >
             <Text style={styles.titleText}>Run History</Text>
-            {runs.map(run => (
-                <View key={run.id} style={{ flexDirection: 'column', marginBottom: 10, padding: 10, borderWidth: 2, borderColor: 'blue' }}>
-                    <Text style={{ fontSize: 20 }}>Date: {moment(run.start_datetime).format('l')}</Text>
-                    <Text style={{ fontSize: 20 }}>Score: {run.score.toFixed(1)}</Text>
-                    <Text style={{ fontSize: 20 }}>Duration: {Math.round(run.duration / 60)} min
-                        {run.duration > 0 && <Text> ({Math.round(run.distance)} miles at {<DisplayTime totalTimeSeconds={run.pace*60} additionalStyles={{fontSize: 20, fontWeight: 'normal'}}/>} min/mile)</Text>}
-                    </Text>
-                    <Text style={{ fontSize: 20 }}>Distance: {run.distance.toFixed(1)} miles</Text>
-                </View>
-            ))}
+            {runs.map(run => ( <RunComponent navigation={navigation} run={run} />))}
         </ScrollView>
     );
 };

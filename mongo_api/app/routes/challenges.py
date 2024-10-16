@@ -70,7 +70,7 @@ async def get_all_challenges(
             runs = []
             for run_id in challenge_data.get("runs", []):
                 run = await db_service.db.runs.find_one({"id": run_id})
-                run["geopoints"] = []
+                run.pop("geopoints")
                 run.pop("_id")
                 if run:
                     if include_users:
