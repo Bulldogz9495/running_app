@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import MapComponent from '../components/MapComponent';
-import RunComponent from '../components/RunComponent';
+import { UserRunComponent } from '../components/RunComponent';
 import { View, Image, Button, Modal, Text, Pressable } from 'react-native';
 import axios from 'axios';
 import * as Location from 'expo-location';
@@ -186,7 +186,7 @@ const MyActivityScreen = () => {
         totalTimeSeconds={totalTimeSeconds}
       />
       : 
-      <RunComponent/>}
+      <UserRunComponent/>}
       <Modal visible={showModal} animationType="slide" style={{flex: 1}}>
         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'lightgreen'}}>
           <View style={{alignItems: 'center'}}>

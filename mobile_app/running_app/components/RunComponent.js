@@ -11,7 +11,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { DisplayTime } from './displayTime';
 
 
-export default RunComponent = (navigation) => {
+export const UserRunComponent = (navigation) => {
     const [runs, setRuns] = useState([]);
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = React.useState(false);

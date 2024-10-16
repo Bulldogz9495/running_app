@@ -10,7 +10,7 @@ from .utility_models import Location
 class GeoPoint(BaseModel):
     location: Location
     datetime: datetime
-    altitude: float = None
+    altitude: Optional[float] = None
     cadence: Optional[int] = None
     pace: Optional[float] = None
     accuracy: Optional[float] = None
@@ -31,8 +31,8 @@ class Run(BaseModel):
     pace: Optional[float] = None
     duration: float # seconds
     score: Optional[float] = Field(None, ge=0, le=1500)  # Min value of 0 and max value of 1500
-    geopoints: Optional[List[GeoPoint]]  # New field for an array of geopoints
-    user: Optional[Dict]
+    geopoints: Optional[List[GeoPoint]] = None # New field for an array of geopoints
+    user: Optional[Dict] = None
 
 run_schema = {
     "id": {"type": "uuid", "required": True, "unique": True},

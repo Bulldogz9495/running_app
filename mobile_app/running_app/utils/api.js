@@ -72,7 +72,8 @@ export const fetchStateChallenges = async (offset, limit, active) => {
             offset: 0,
             limit: 100,
             active: true,
-            include_runs: true
+            include_runs: true,
+            include_users: true
         });
         const response = await fetch(`${settings.MONGO_API_URL}/GeographicChallenges?${urlParams.toString()}`, {
             method: 'GET',
