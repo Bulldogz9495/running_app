@@ -1,7 +1,8 @@
 from pydantic import BaseModel, Field
-from typing import Optional, List
+from typing import Optional, List, Dict
 from uuid import UUID
 from datetime import datetime
+from app.models.user import User
 
 from .utility_models import Location
 
@@ -31,6 +32,7 @@ class Run(BaseModel):
     duration: float # seconds
     score: Optional[float] = Field(None, ge=0, le=1500)  # Min value of 0 and max value of 1500
     geopoints: Optional[List[GeoPoint]]  # New field for an array of geopoints
+    user: Optional[Dict]
 
 run_schema = {
     "id": {"type": "uuid", "required": True, "unique": True},

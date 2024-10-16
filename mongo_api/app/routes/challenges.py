@@ -56,6 +56,7 @@ async def get_all_challenges(
     offset: int = 0, 
     active: bool = None,
     include_runs: bool = False,
+    include_users: bool = False
 ):
     query = {}
     if challenge_id is not None:
@@ -72,10 +73,16 @@ async def get_all_challenges(
                 run["geopoints"] = []
                 run.pop("_id")
                 if run:
+                    if include_users:
+                        run["user"] = await db_service.db.users.find_one({"id": run["user_id"]})
+                        print(run["user"])
+                        run['user'].pop("_id")
+                        run["user"].pop("password")
+                        run["user"].pop("messages")
                     runs.append(run)
             challenge_data["runs"] = runs
             challenges.append(challenge_data)
-        logger.info(f"Get Geographic Challenge {challenge_id}, {challenge_data}")
+        logger.info(f"Get Geographic Challenge {challenge_id}")
     return challenges
 
 

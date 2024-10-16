@@ -13,7 +13,7 @@ import { sampleData } from '../utils/sample_data';
 import { TeamScreen } from './TeamScreen';
 import { CreateTeamScreen } from '../screens/CreateTeamScreen';
 import { fetchStateChallenges, } from '../utils/api';
-import { icon } from '@fortawesome/fontawesome-svg-core';
+import { ChallengeListItemComponent } from '../components/challengeListItems';
 
 
 const ChallengeRunScreen = (navigation) => {
@@ -73,9 +73,9 @@ const ChallengeRunScreen = (navigation) => {
 
   React.useEffect(() => {
     if (challengeOrder === "scoreDesc") {
-      setChallenges(challenges.sort((a, b) => b.last_challenge_score - a.last_challenge_score));
+      setChallenges(challenges.sort((a, b) => b.score - a.score));
     } else if (challengeOrder === "scoreAsc") {
-      setChallenges(challenges.sort((a, b) => a.last_challenge_score - b.last_challenge_score));
+      setChallenges(challenges.sort((a, b) => a.score - b.score));
     } else if (challengeOrder === "nameAsc") {
       setChallenges(challenges.sort((a, b) => a.name.localeCompare(b.name)));
     } else if (challengeOrder === "nameDesc") {
@@ -86,18 +86,6 @@ const ChallengeRunScreen = (navigation) => {
   const onLeaving = (team_id) => {
     setTeams(teams.filter(team => team.id !== team_id))
   }
-
-  React.useEffect(() => {
-    if (challengeOrder === "scoreDesc") {
-      setChallenges(challenges.sort((a, b) => b.last_challenge_score - a.last_challenge_score));
-    } else if (challengeOrder === "scoreAsc") {
-      setChallenges(challenges.sort((a, b) => a.last_challenge_score - b.last_challenge_score));
-    } else if (challengeOrder === "nameAsc") {
-      setChallenges(challenges.sort((a, b) => a.name.localeCompare(b.name)));
-    } else if (challengeOrder === "nameDesc") {
-      setChallenges(challenges.sort((a, b) => b.name.localeCompare(a.name)));
-    }
-  }, [challengeOrder]);
 
   const TeamListItemComponent = ({ item, index }) => {
     const isExpanded = item?.id === expandedTeam?.id;
@@ -185,18 +173,6 @@ const editTeams = async (team) => {
     );
   };
 
-  const ChallengeListItemComponent = ({ challenge }) => {
-      return (
-        <View style={styles.listItem}>
-          <Text style={{ fontSize: 24, fontWeight: 'bold' }}>{challenge.title}</Text>
-          <Text style={{ fontSize: 20 }}>{challenge.score ? challenge.score : '0'} points this week</Text>
-          <Text>{(challenge.runs).length} Runs Completed</Text>
-          {challenge.score ? <Text>{(challenge.runs).length / challenge.score} Average Points per run</Text> : null}
-        </View>
-      );
-    };
-
-
   const ChallengeComponent = () => {
     return (
       <View style={{ flex: 1, width: '100%' }}>
@@ -211,8 +187,8 @@ const editTeams = async (team) => {
             style={{ width: 32, height: 32 }}
           />
           <Pressable 
-            onPress={() => setChallengeOrder(challengeOrder === "sortAsc" ? "sortDesc" : "sortAsc")} 
-            style={challengeOrder === "sortAsc" ? styles.iconStyleSelected : styles.iconStyle}
+            onPress={() => setChallengeOrder(challengeOrder === "scoreAsc" ? "scoreDesc" : "scoreAsc")} 
+            style={challengeOrder === "scoreAsc" ? styles.iconStyleSelected : styles.iconStyle}
           >
             <FontAwesomeIcon icon={challengeOrder === "sortAsc" ? faArrowUpWideShort : faArrowDownWideShort} size={20} color="blue"/>
           </Pressable>

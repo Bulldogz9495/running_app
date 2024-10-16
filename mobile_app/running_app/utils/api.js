@@ -71,9 +71,9 @@ export const fetchStateChallenges = async (offset, limit, active) => {
         const urlParams = new URLSearchParams({
             offset: 0,
             limit: 100,
-            active: true
+            active: true,
+            include_runs: true
         });
-        console.log("Params: ", urlParams.toString());
         const response = await fetch(`${settings.MONGO_API_URL}/GeographicChallenges?${urlParams.toString()}`, {
             method: 'GET',
             headers: {
@@ -81,10 +81,13 @@ export const fetchStateChallenges = async (offset, limit, active) => {
                 'Authorization': `Bearer ${accessToken}`
             }
         });
-        console.log("Response: ", response);
         if (response.ok) {
             const data = await response.json();
-            // console.log("Challenges: ", data);
+            console.log(data);
+            data.map(challenge => {
+                challenge.score = challenge.runs.reduce((total, run) => total + run?.score, 0);
+            });
+            data.sort((a, b) => b.score - a.score)
             return data;
         } else {
             throw new Error(`Error Getting Challenges: ${response.status} ${response.statusText}`);
