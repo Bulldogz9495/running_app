@@ -17,7 +17,7 @@ geochallenge = GeographicChallenge(
     end_datetime=datetime(year=2024, month=10, day=12),
     notes="The more points you score the better your state is. Always remeber the best run is one you can repeat tomorrow. Be careful out there!",
     scoring_method="total_points",
-    challenge_type="Georaphic",
+    challenge_type="Geographic",
     creator="933d1bba-aa0b-485f-8e10-95697fb86bd2",
     repeat=True,
     active=True,

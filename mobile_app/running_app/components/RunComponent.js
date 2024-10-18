@@ -7,8 +7,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { sampleData } from '../utils/sample_data';
 import moment from 'moment';
-import { useFocusEffect } from '@react-navigation/native';
 import { DisplayTime } from './displayTime';
+import { useNavigation } from '@react-navigation/native';
 
 
 
@@ -28,11 +28,12 @@ export const RunComponent = ({ navigation, run }) => {
     )
 }
 
-export const UserRunComponent = (navigation) => {
+export const UserRunComponent = () => {
     const [runs, setRuns] = useState([]);
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = React.useState(false);
     const { user, setUser } = useContext(UserContext);
+    const navigation = useNavigation();
 
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
@@ -88,7 +89,7 @@ export const UserRunComponent = (navigation) => {
         }
         >
             <Text style={styles.titleText}>Run History</Text>
-            {runs.map(run => ( <RunComponent navigation={navigation} run={run} />))}
+            {runs.map(run => ( <RunComponent navigation={navigation} run={run} key={run.id} />))}
         </ScrollView>
     );
 };

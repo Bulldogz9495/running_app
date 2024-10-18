@@ -84,7 +84,6 @@ export const fetchStateChallenges = async (offset, limit, active) => {
         });
         if (response.ok) {
             const data = await response.json();
-            console.log(data);
             data.map(challenge => {
                 challenge.score = challenge.runs.reduce((total, run) => total + run?.score, 0);
             });
@@ -111,7 +110,8 @@ export const fetchRun = async (run_id) => {
                 'Authorization': `Bearer ${accessToken}`
             }
         })
-        return response.data
+        const data = await response.json();
+        return data
     } catch (error) {
       console.error(error);
       throw error;
