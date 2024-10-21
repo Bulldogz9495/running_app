@@ -12,6 +12,7 @@ import { UserContext } from '../utils/createContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import styles from '../styles';
 import { DisplayTime } from '../components/displayTime';
+import RunScreen from './RunScreen';
 
 let intervalId;
 
@@ -189,10 +190,24 @@ const MyActivityScreen = () => {
       <UserRunComponent/>}
       <Modal visible={showModal} animationType="slide" style={{flex: 1}}>
         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'lightgreen'}}>
-          <View style={{alignItems: 'center'}}>
-            <Text style={styles.userText}>Total Distance: {totalDistanceMiles.toFixed(2)} miles</Text>
-            <Text style={styles.userText}>Total Score: {totalScore.toFixed(2)}</Text>
-            <Text style={styles.userText}>Average Pace: {<DisplayTime totalTimeSeconds={averagePacePmin*60}/>} minutes per mile</Text>
+          <View style={{alignItems: 'center', marginBottom: 30}}>
+            <RunScreen route={{
+              params: {
+                run: {
+                    user_id: user.id,
+                    start_location: locations.length > 0 ? {"latitude": locations[0].location.latitude, "longitude": locations[0].location.longitude} : {"latitude": 0, "longitude": 0},
+                    end_location: locations.length > 0 ? {"latitude": locations[locations.length - 1].location.latitude, "longitude": locations[locations.length - 1].location.longitude} : {"latitude": 0, "longitude": 0},
+                    start_datetime: locations.length > 0 ? locations[0].datetime : new Date().toISOString(),
+                    end_datetime: locations.length > 0 ? locations[locations.length - 1].datetime : new Date().toISOString(),
+                    distance: locations.length > 0 ? totalDistanceMiles : 0,
+                    duration: locations.length > 0 ? (new Date() - new Date(locations[0].datetime)) / 1000.0 : 0,
+                    pace: locations.length > 0 && !isNaN(averagePacePmin) ? averagePacePmin : 0,
+                    score: locations.length > 0 ? totalScore : 0,
+                    geopoints: locations.length > 0 ? locations : []
+                  }
+                }
+              }}
+            />
             <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
               <Pressable style={styles.pressableArea} onPress={handleConfirm}>
                 <Text style={styles.pressableText}>Save Run</Text>
@@ -201,7 +216,7 @@ const MyActivityScreen = () => {
                 <Text style={styles.pressableText}>Resume Run</Text>
               </Pressable>
               <Pressable style={styles.pressableArea} onPress={handleDelete}>
-                <Text style={styles.pressableText}>Delete Run</Text>
+                <Text style={styles.pressableText}>Forget Run</Text>
               </Pressable>
             </View>
           </View>

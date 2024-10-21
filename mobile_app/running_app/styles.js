@@ -159,7 +159,7 @@ export default styles = StyleSheet.create({
         padding: 10, 
         borderWidth: 2.0, 
         borderColor: 'blue',
-        borderRadius: 5,
+        borderRadius: 10,
         marginBottom: 2
     },
     iconStyle: {

@@ -13,9 +13,8 @@ import { useNavigation } from '@react-navigation/native';
 
 
 export const RunComponent = ({ navigation, run }) => {
-
     return (
-        <View key={run.id} style={{ flexDirection: 'column', marginBottom: 10, padding: 10, borderWidth: 2, borderColor: 'blue' }}>
+        <View key={run.id} style={ styles.listItem }>
             <Pressable onPress={() => navigation.navigate('run', { run: run })}>
                 <Text style={{ fontSize: 20 }}>Score: {run.score.toFixed(1)}</Text>
                 <Text style={{ fontSize: 20 }}>Distance: {run.distance.toFixed(1)} miles</Text>
@@ -83,10 +82,10 @@ export const UserRunComponent = () => {
 
     return (
         <ScrollView 
-        style={{ flex: 1, flexDirection: 'column' }}
-        refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
+            style={{ flex: 1, flexDirection: 'column' }}
+            refreshControl={
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
         >
             <Text style={styles.titleText}>Run History</Text>
             {runs.map(run => ( <RunComponent navigation={navigation} run={run} key={run.id} />))}

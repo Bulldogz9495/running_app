@@ -10,11 +10,8 @@ const MapComponent = ({locations, recording, totalDistanceMiles, totalScore, ave
 
   useEffect(() => {
     if (locations.length > 0) {
-      const newPolylines = [...polylines];
-      newPolylines.push({
-        coordinates: [locations[locations.length - 1].location]
-      });
-      setPolylines(newPolylines);
+      let coordinates = locations.map(location => ({latitude: location?.location?.latitude, longitude: location?.location?.longitude}))
+      setPolylines(coordinates)
     }
   }, [locations]);
 
@@ -55,7 +52,7 @@ const MapComponent = ({locations, recording, totalDistanceMiles, totalScore, ave
       <View style={{
         zIndex: 1,
         position: 'absolute',
-        top: '7%',
+        top: '10%',
         left: '2%',
         alignItems: 'center',
         justifyContent: 'center',
@@ -77,7 +74,7 @@ const MapComponent = ({locations, recording, totalDistanceMiles, totalScore, ave
       <View style={{
         zIndex: 1,
         position: 'absolute',
-        top: '7%',
+        top: '10%',
         alignItems: 'center',
         justifyContent: 'center',
         right: '2%',

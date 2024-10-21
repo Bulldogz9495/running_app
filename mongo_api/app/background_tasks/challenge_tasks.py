@@ -83,6 +83,7 @@ async def finish_create_geographic_challenges():
                     challenge_repeat = challenge.copy()
                     challenge_repeat["active"] = True
                     challenge_repeat["id"] = str(uuid.uuid4())
+                    challenge_repeat["runs"] = []
                     challenge_repeat["start_datetime"] = datetime.now()
                     logger.info(f"start_datetime: {challenge_repeat['start_datetime']}")
                     duration = (challenge["end_datetime"] - challenge["start_datetime"])
