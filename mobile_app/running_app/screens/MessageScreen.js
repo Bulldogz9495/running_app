@@ -10,6 +10,8 @@ import styles from '../styles';
 import { useFocusEffect } from '@react-navigation/native';
 import { formatDate } from '../utils/display_utils';
 import IndividualMessageModal from '../components/individualMessageModal';
+import TextMessageComponent from '../components/textMessageComponent';
+import InvitationMessageComponent from '../components/invitationMessageComponent';
 
 
 const MessageScreen = () => {
@@ -61,63 +63,16 @@ const MessageScreen = () => {
     setIndividualMessageModalShow(true);
   }
 
-
-  const acceptInvitation = async (item, accepted) => {
-    try {
-      const userInfo = user;
-      const accessToken = await AsyncStorage.getItem('MyAccessToken');
-      const response1 = await fetch(`${settings.MONGO_API_URL}/Teams/${item?.metadata?.team_id}/invitations/${item?.metadata?.invitation_id}?accepted=${accepted}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${accessToken}`
-        },
-      })
-      const response2 = await fetch(`${settings.MONGO_API_URL}/Users/${userInfo.id}/messages/${item.id}?read=true`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${accessToken}`
-        }
-      });
-      const responseData = await response2.json();
-      setMessages(prevMessages => prevMessages.map(message => {
-        if (message.id === item.id) {
-          return {...message, "read": true}; // Update with the new data
-        }
-        return message; // Return unchanged items
-      }));
-      console.log(responseData);
-      navigation.navigate('Challenge Run');
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   const renderMessage = ({ item }) => {
-    const date = new Date(item.updated);
-    const formattedDate = formatDate(date);
-    if (item.read) {return (<></>)}
+    console.log("Item Flatlist: ", item);
+    // if (item.read) {return (<></>)}
     if (item.message_type === "invitation") {
       return (
-        <Pressable onPress={() => changeSelectedMessage(item)}>
-          <View style={styles.message}>
-            <Text>Invitation from {item.metadata.user_name}</Text>
-            <Text>Join {item.metadata.team_name}</Text>
-            <Button title="Accept Invitation" onPress={() => acceptInvitation(item, true)} />
-            <Button title="Deny Invitation" onPress={() => acceptInvitation(item, false)} />
-            <Text>Sent: {formattedDate}</Text>
-          </View>
-        </Pressable>
+        <InvitationMessageComponent item={item} changeSelectedMessage={changeSelectedMessage} />
       );
     } else {
       return (
-        <Pressable onPress={() => changeSelectedMessage(item)}>
-          <View style={styles.message}>
-            <Text>{item.message}</Text>
-            <Text>Sent: {formattedDate}</Text>
-          </View>
-        </Pressable>
+        <TextMessageComponent item={item} changeSelectedMessage={changeSelectedMessage} />
       );
     };
   };
@@ -150,7 +105,6 @@ const MessageScreen = () => {
         selectedMessage={selectedMessage} 
         individualMessageModalShow={individualMessageModalShow} 
         setIndividualMessageModalShow={setIndividualMessageModalShow}
-        acceptInvitation={acceptInvitation}
       />
     </View>
   );

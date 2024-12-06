@@ -143,10 +143,18 @@ export default styles = StyleSheet.create({
         fontSize: 18
     },
     message: {
-        marginVertical: 10,
+        marginVertical: 2,
         padding: 10,
-        borderBottomWidth: 1,
-        borderBottomColor: 'gray',
+        borderRadius: 10,
+        borderWidth: 1,
+        borderColor: 'gray',
+    },
+    unreadMessage: {
+        marginVertical: 2,
+        padding: 10,
+        borderRadius: 10,
+        borderWidth: 2,
+        borderColor: 'black',
     },
     titleText: {
         fontSize: 25,
@@ -160,7 +168,7 @@ export default styles = StyleSheet.create({
         borderWidth: 2.0, 
         borderColor: 'blue',
         borderRadius: 10,
-        marginBottom: 2
+        margin: 3
     },
     iconStyle: {
         flexDirection: 'row', 

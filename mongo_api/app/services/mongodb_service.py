@@ -34,12 +34,12 @@ class MongoDBService:
     def setupDatabaseUrl(self):
         if ENVIRONMENT == 'local':
             db_url = f"""mongodb+srv://{DATABASE_USER}:{DATABASE_PASSWORD}@cluster0.dku630t.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"""
-            logger.info(f"Local Database URL: {db_url}")
+            # logger.info(f"Local Database URL: {db_url}")
             return db_url
         else:
             credentials=boto3.Session().get_credentials()
             db_url = f"""mongodb+srv://{DATABASE_USER}:{DATABASE_PASSWORD}@serverlessinstance0-pe-1.ytovzs1.mongodb.net/?retryWrites=true&w=majority&appName=ServerlessInstance0"""
-            logger.info(f"Production Database URL: {db_url}")
+            # logger.info(f"Production Database URL: {db_url}")
             return db_url
     
     
