@@ -149,7 +149,7 @@ async def get_user_messages(user_id: str, skip: int = 0, limit: int = 10):
         ]).to_list(limit)
         print("Messages: ", messages)
         for message in messages:
-            creator = await db_service.db.users.find_one({"id": message.created_by})
+            creator = await db_service.db.users.find_one({"id": message["created_by"]})
             if creator is not None:
                 message.metadata.creator_name = f"{creator.first_name} {creator.last_name}"
         return messages
