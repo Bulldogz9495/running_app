@@ -1,9 +1,6 @@
 import { settings } from '../utils/settings';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import { useContext } from 'react';
-import { UserContext } from '../utils/createContext';
-
 
 export const leaveTeam = async (team_id, user_id) => {
     try {
@@ -138,11 +135,10 @@ export const acceptInvitation = async (team_id, invitation_id, accepted) => {
     }
 }
 
-export const markMessageRead = async (message_id) => {
+export const markMessageRead = async (message_id, user_id) => {
     try {
-        const { user } = useContext(UserContext);
         const accessToken = await AsyncStorage.getItem('MyAccessToken');
-        const response = await fetch(`${settings.MONGO_API_URL}/Users/${user.id}/messages/${message_id}?read=true`, {
+        const response = await fetch(`${settings.MONGO_API_URL}/Users/${user_id}/messages/${message_id}?read=true`, {
             method: 'PATCH',
             headers: {
             'Content-Type': 'application/json',

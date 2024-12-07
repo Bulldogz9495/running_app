@@ -12,6 +12,7 @@ import { formatDate } from '../utils/display_utils';
 import IndividualMessageModal from '../components/individualMessageModal';
 import TextMessageComponent from '../components/textMessageComponent';
 import InvitationMessageComponent from '../components/invitationMessageComponent';
+import { markMessageRead } from '../utils/api';
 
 
 const MessageScreen = () => {
@@ -58,13 +59,14 @@ const MessageScreen = () => {
   }, []);
 
   const changeSelectedMessage = (item) => {
-    console.log("Item: ", item)
+    // console.log("Item: ", item)
     setSelectedMessage(item);
     setIndividualMessageModalShow(true);
+    markMessageRead(item.id, user.id);
   }
 
   const renderMessage = ({ item }) => {
-    console.log("Item Flatlist: ", item);
+    // console.log("Item Flatlist: ", item);
     // if (item.read) {return (<></>)}
     if (item.message_type === "invitation") {
       return (
