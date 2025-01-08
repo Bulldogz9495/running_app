@@ -151,3 +151,23 @@ export const markMessageRead = async (message_id, user_id) => {
       throw error;
     }
 }
+
+export const patchUserInformation = async (user_id, data) => {
+    try {
+        const accessToken = await AsyncStorage.getItem('MyAccessToken');
+        const response = await fetch(`${settings.MONGO_API_URL}/Users/id/${user_id}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${accessToken}`
+            },
+            body: JSON.stringify({
+                data
+            })
+        });
+        return await response.json();
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+}

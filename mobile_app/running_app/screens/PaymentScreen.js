@@ -5,6 +5,7 @@ import Purchases from 'react-native-purchases';
 import { useContext } from 'react';
 import { UserContext } from '../utils/createContext';
 import * as Linking  from 'expo-linking';
+import { patchUserInformation } from '../utils/api';
 
 
 const PaymentScreen = ( {navigation} ) => {
@@ -53,6 +54,7 @@ const PaymentScreen = ( {navigation} ) => {
               <Pressable style={styles.pressableArea} onPress={() => { 
                 Purchases.purchasePackage(product_package); 
                 setUser({ ...user, customerInfo: Purchases.getCustomerInfo() });
+                patchUserInformation(user.id, {subscription_level: customerInfo?.activeSubscriptions[0]});
                 }}>
                 <Text style={styles.pressableText}>Buy</Text>
               </Pressable>

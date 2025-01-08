@@ -10,6 +10,7 @@ import sampleData from '../utils/sample_data';
 import { v4 as uuidv4 } from 'uuid';
 import styles from '../styles';
 import Purchases from 'react-native-purchases';
+import { patchUserInformation } from '../utils/api';
 
 const LoginScreen = ({ navigation }) => {
     const { user, setUser } = useContext(UserContext);
@@ -75,10 +76,11 @@ const LoginScreen = ({ navigation }) => {
             // console.log("userData ", userDataTrimmed, " data retrieved")
             const key = process.env.EXPO_PUBLIC_APPLE_REVENUE_CAT;
             Purchases.configure({ apiKey: key, appUserId: user.id });
-            custoimerInfo = await Purchases.getCustomerInfo();
-            console.log("custoimerInfo: ", custoimerInfo);
-            userDataTrimmed.customerInfo = custoimerInfo;
+            customerInfo = await Purchases.getCustomerInfo();
+            userDataTrimmed.customerInfo = customerInfo;
+            console.log("customerinfo ---", customerInfo)
             await setUser(userDataTrimmed);
+            await patchUserInformation(user.id, {subscription_level: customerInfo?.activeSubscriptions[0]});
         } catch (error) {
             if (error.response.status >= 500) {
                 console.log(error);

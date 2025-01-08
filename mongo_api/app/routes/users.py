@@ -97,7 +97,7 @@ async def update_user_by_id(user_data: dict, item_id: str, token: str = Security
     for k, v in user_data.items():
         if k in existing_data:
             existing_data[k] = v
-    update_data = user_data.model_dump()
+    update_data = user_data
     await db_service.db.users.update_one({'id': item_id}, {'$set': update_data})
     # Fetch and return the updated user data
     updated_user = await db_service.db.users.find_one({'id': item_id})
