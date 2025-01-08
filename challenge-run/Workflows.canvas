@@ -1,5 +1,7 @@
 {
 	"nodes":[
+		{"id":"10eb254112d7286e","x":-20,"y":60,"width":240,"height":320,"type":"group","label":"Revenue Cat"},
+		{"id":"e8d025dbeb52d6ea","type":"group","x":220,"y":60,"width":240,"height":320,"label":"Apple Subscriptions"},
 		{"id":"0f9398c5cba49aa6","type":"text","text":"iOS\nOpen App","x":-180,"y":-680,"width":137,"height":58},
 		{"id":"60dc7457b5fabc75","type":"text","text":"[[Login Screen]]\nCreate New User","x":-20,"y":-622,"width":183,"height":58},
 		{"id":"15319b0b82b79903","type":"text","text":"[[Login Screen]]\nLogin Button Pressed","x":-218,"y":-540,"width":214,"height":58},
@@ -18,7 +20,15 @@
 		{"id":"aea3214513808dc3","type":"text","text":"[[SubscriptionScreen]]\nSubscription Screen","x":118,"y":-92,"width":204,"height":57},
 		{"id":"01bc523ddfc400d5","type":"text","text":"[[Message Screen]]","x":560,"y":-189,"width":178,"height":29},
 		{"id":"ec48aceafe9135f8","type":"text","text":"[[Invitation message]]","x":738,"y":-99,"width":197,"height":29},
-		{"id":"e7f914cec4863233","type":"text","text":"[[Text message]]","x":402,"y":-99,"width":158,"height":29}
+		{"id":"e7f914cec4863233","type":"text","text":"[[Text message]]","x":402,"y":-99,"width":158,"height":29},
+		{"id":"e1eddc46d79dc99d","type":"text","text":"Challenge Team Leader Annual","x":-4,"y":160,"width":204,"height":57},
+		{"id":"59df8fd01fc0efdc","type":"text","text":"Challenge Sponsor Monthly","x":-4,"y":237,"width":204,"height":57},
+		{"id":"5f4854efe1e4e348","type":"text","text":"Challenge Sponsor Annual","x":-4,"y":314,"width":204,"height":57},
+		{"id":"cf4e269415615b45","type":"text","text":"Challenge Sponsor Monthly","x":235,"y":237,"width":204,"height":57},
+		{"id":"323040a55733da4b","type":"text","text":"Challenge Team Leader Annual","x":235,"y":160,"width":204,"height":57},
+		{"id":"8fed2fc92183eb26","type":"text","text":"Challenge Sponsor Annual","x":235,"y":314,"width":204,"height":57},
+		{"id":"5e74965ec4e4c0af","type":"text","text":"Challenge Team Leader Monthly","x":-4,"y":83,"width":204,"height":57},
+		{"id":"b6eb688d576cae91","type":"text","text":"Challenge Team Leader Monthly","x":235,"y":83,"width":204,"height":57}
 	],
 	"edges":[
 		{"id":"7fec37b54eb808d8","fromNode":"0f9398c5cba49aa6","fromSide":"bottom","toNode":"15319b0b82b79903","toSide":"top"},
@@ -40,6 +50,11 @@
 		{"id":"ed68a2bed8ef521b","fromNode":"ece291aeb5742896","fromSide":"bottom","toNode":"aea3214513808dc3","toSide":"top"},
 		{"id":"270d48580749d4c3","fromNode":"1288e643e3618b3f","fromSide":"bottom","toNode":"01bc523ddfc400d5","toSide":"top"},
 		{"id":"4d55f405f4e0f677","fromNode":"01bc523ddfc400d5","fromSide":"bottom","toNode":"e7f914cec4863233","toSide":"top"},
-		{"id":"1f9581895cd87c70","fromNode":"01bc523ddfc400d5","fromSide":"bottom","toNode":"ec48aceafe9135f8","toSide":"top"}
+		{"id":"1f9581895cd87c70","fromNode":"01bc523ddfc400d5","fromSide":"bottom","toNode":"ec48aceafe9135f8","toSide":"top"},
+		{"id":"41a1e55f141a98dd","fromNode":"5e74965ec4e4c0af","fromSide":"right","toNode":"b6eb688d576cae91","toSide":"left"},
+		{"id":"b2986f7274af2f6a","fromNode":"e1eddc46d79dc99d","fromSide":"right","toNode":"323040a55733da4b","toSide":"left"},
+		{"id":"ac8242713a2fe950","fromNode":"59df8fd01fc0efdc","fromSide":"right","toNode":"cf4e269415615b45","toSide":"left"},
+		{"id":"04fd2e402893748b","fromNode":"5f4854efe1e4e348","fromSide":"right","toNode":"8fed2fc92183eb26","toSide":"left"},
+		{"id":"b2e85655e36dcec1","fromNode":"aea3214513808dc3","fromSide":"bottom","toNode":"5e74965ec4e4c0af","toSide":"top"}
 	]
 }

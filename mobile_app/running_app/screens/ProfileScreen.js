@@ -76,7 +76,7 @@ const ProfileScreen = ({navigation}) => {
             <Pressable style={styles.pressableArea} onPress={handleEdit}>
               <Text style={styles.pressableText}>Edit</Text>
             </Pressable>
-            <Pressable style={styles.pressableArea} onPress={() => navigation.navigate('Payment')}>
+            <Pressable style={styles.pressableArea} onPress={() => navigation.navigate('payment')}>
               <Text style={styles.pressableText}>Subscribe</Text>
             </Pressable>
           </View>

@@ -35,6 +35,7 @@ class User(BaseModel):
     created: datetime = Field(default_factory=datetime.now)
     updated: datetime = Field(default_factory=datetime.now)
     paid: Optional[bool] = False
+    subscription_level: Optional[str] = "free"
     messages: Optional[List[Message]]
 
 

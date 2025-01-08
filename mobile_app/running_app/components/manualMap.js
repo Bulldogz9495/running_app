@@ -23,7 +23,7 @@ export default manualMap = () => {
         // Local resource does not exist, fetch from API
         console.log("Cannot find local resource: ", error)
         const response = await fetch(
-          `https://maps.googleapis.com/maps/api/staticmap?center=${latitude},${longitude}&zoom=14&key=${GOOGLE_MAPS_API_KEY}&size=400x500&scale=2`
+          `https://maps.googleapis.com/maps/api/staticmap?center=${latitude},${longitude}&zoom=14&key=${EXPO_PUBLIC_GOOGLE_MAPS_API_KEY}&size=400x500&scale=2`
         );
         const blob = await response.blob();
         setMapImageUri(URL.createObjectURL(blob));
@@ -62,19 +62,3 @@ export default manualMap = () => {
     </View>
   );
 };
-
-// const styles = StyleSheet.create({
-//   mapImage: {
-//     flex: 1,
-//   },
-//   marker: {
-//       position: 'absolute',
-//       borderRadius: 1,
-//       fontcolor: 'green',
-//       transform:[{rotate: '-90deg'}]
-//   },
-//   arrow: {
-//     color: 'green',
-//     fontSize: 40
-//   }
-// });

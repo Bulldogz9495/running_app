@@ -28,7 +28,7 @@ export default function InvitationScreen({ navigation }) {
         const params = Linking.parse(url);
         const { inviter_id, team_id } = splitUrlParams(params.path);
         const userInfo = user;
-        console.log("USERINFO: ", userInfo);
+        // console.log("USERINFO: ", userInfo);
         const accessToken = await AsyncStorage.getItem('MyAccessToken');
         const response = await axios.get(`${settings.MONGO_API_URL}/Teams/${team_id}`, {
             headers: {

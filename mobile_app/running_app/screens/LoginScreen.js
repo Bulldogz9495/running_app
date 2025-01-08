@@ -9,6 +9,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import sampleData from '../utils/sample_data';
 import { v4 as uuidv4 } from 'uuid';
 import styles from '../styles';
+import Purchases from 'react-native-purchases';
 
 const LoginScreen = ({ navigation }) => {
     const { user, setUser } = useContext(UserContext);
@@ -71,7 +72,12 @@ const LoginScreen = ({ navigation }) => {
                 }
             });
             const userDataTrimmed = userData.data;
-            console.log("userData ", userDataTrimmed, " data retrieved")
+            // console.log("userData ", userDataTrimmed, " data retrieved")
+            const key = process.env.EXPO_PUBLIC_APPLE_REVENUE_CAT;
+            Purchases.configure({ apiKey: key, appUserId: user.id });
+            custoimerInfo = await Purchases.getCustomerInfo();
+            console.log("custoimerInfo: ", custoimerInfo);
+            userDataTrimmed.customerInfo = custoimerInfo;
             await setUser(userDataTrimmed);
         } catch (error) {
             if (error.response.status >= 500) {
@@ -92,7 +98,7 @@ const LoginScreen = ({ navigation }) => {
 
     useEffect(() => {
         if (Object.keys(user).length > 0) {
-            console.log("User data retrieved: ", user)
+            // console.log("User data retrieved: ", user)
             navigation.navigate('main'); // Navigate to Challenge Run screen after successful login
         }
     }, [user]);

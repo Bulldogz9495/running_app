@@ -108,6 +108,20 @@ async def update_user_by_id(user_data: dict, item_id: str, token: str = Security
 
 @user_router.patch("/Users/username/{username}", response_model=User)
 async def update_user_by_(user_data: dict, username: str, token: str = Security(oauth2_scheme)):
+    """
+    Patch a user by their username.
+
+    Args:
+        user_data (dict): A dictionary of user data to update.
+        username (str): The username of the user to update.
+        token (str): The JWT token for authentication.
+
+    Returns:
+        User: The updated user data.
+
+    Raises:
+        HTTPException: 404 if the user is not found.
+    """
     existing_data = await db_service.db.users.find_one({"email": username})
     if existing_data is None:
         raise HTTPException(status_code=404, detail="User could not be found")

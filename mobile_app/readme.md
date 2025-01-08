@@ -47,6 +47,13 @@ Docker
 Android sdk
 
 
+# Start Local Development Server
+```APP_VARIENT=development npx expo start```
+
+
+# Build New Development Build
+```npx eas build --profile development --platform ios``` 
+
 #  Build / Deploy
 ```npx eas build -p ios```
 Set a version number (app.json) and build numnber (app.json ios.buildnumber) This will build the ios version and push it to apple connect 

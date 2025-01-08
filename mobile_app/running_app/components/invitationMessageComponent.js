@@ -15,9 +15,8 @@ const InvitationMessageComponent = ({ item, changeSelectedMessage }) => {
         console.log(responseData);
         navigation.navigate('Challenge Run');
     }
-    
 
-    console.log("Item: ", item);
+    // console.log("Item: ", item);
     const date = new Date(item?.updated);
     const formattedDate = formatDate(date);
     return (

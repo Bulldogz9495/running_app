@@ -32,9 +32,9 @@ const ChallengeRunScreen = (navigation) => {
   
   const fetchTeams = async () => {
     try {
-      console.log("User Info from ChallengeRunScreen: ", user);
+      // console.log("User Info from ChallengeRunScreen: ", user);
       const userInfo = user;
-      console.log("USERINFO: ", userInfo);
+      // console.log("USERINFO: ", userInfo);
       const accessToken = await AsyncStorage.getItem('MyAccessToken');
       const url = `${settings.MONGO_API_URL}/Teams/user_id/${encodeURIComponent(userInfo.id)}`;
       const response = await fetch(url,
@@ -46,7 +46,7 @@ const ChallengeRunScreen = (navigation) => {
         }
       );
       const data = await response.json();
-      console.log("Teams Data: ", data);
+      // console.log("Teams Data: ", data);
       setTeams(data);
     } catch (error) {
       console.error(error);
@@ -109,7 +109,7 @@ const ChallengeRunScreen = (navigation) => {
               <Text>Team Size: {item.size}</Text>
             </View>
           </Pressable>
-          <Pressable onPress={() => {console.log("ITEM: ", item); setNewTeam(item); setEditModalVisible(true)}}>
+          <Pressable onPress={() => {setNewTeam(item); setEditModalVisible(true)}}>
             <Text>View Team</Text>
           </Pressable>
         </View>
